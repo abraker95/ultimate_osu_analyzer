@@ -11,6 +11,22 @@ class SliderHitobject(Hitobject):
         self.__process_slider_data(beatmap_data)
         
 
+    def get_slider_pos(self, time):
+        pass
+
+
+    def get_end_time(self):
+        pass
+
+
+    def get_last_time(self):
+        pass
+
+
+    def get_velocity(self):
+        pass
+
+
     def __process_slider_data(self, beatmap_data):
         slider_data = beatmap_data[5].split('|')
         self.curve_type = slider_data[0].strip()
