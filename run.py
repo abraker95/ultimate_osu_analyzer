@@ -3,7 +3,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from gui.main_frame import MainFrame
+from gui.frames.main_frame import MainFrame
 
 
 
