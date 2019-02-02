@@ -14,3 +14,17 @@ osu/local/beatmap/__pycache__/beatmapIO.cpython-36.pyc
 osu/local/hitobject/__pycache__/hitobject.cpython-36.pyc
 osu/local/hitobject/__pycache__/sliderhitobject.cpython-36.pyc
 unit_tests/__pycache__/beatmap_tests.cpython-36.pyc
+gui/frames/__pycache__/__init__.cpython-36.pyc
+gui/frames/__pycache__/main_frame.cpython-36.pyc
+gui/frames/bottom_frame/__pycache__/__init__.cpython-36.pyc
+gui/frames/bottom_frame/__pycache__/bottom_frame.cpython-36.pyc
+gui/frames/center_frame/__pycache__/__init__.cpython-36.pyc
+gui/frames/center_frame/__pycache__/center_frame.cpython-36.pyc
+gui/frames/center_frame/children/__pycache__/left_frame.cpython-36.pyc
+gui/frames/center_frame/children/__pycache__/mid_frame.cpython-36.pyc
+gui/frames/center_frame/children/__pycache__/right_frame.cpython-36.pyc
+gui/widgets/__pycache__/osu_playfield.cpython-36.pyc
+gui/widgets/__pycache__/playfield.cpython-36.pyc
+osu/local/beatmap/__pycache__/beatmap.cpython-36.pyc
+unit_tests/__pycache__/playfield_test.cpython-36.pyc
+unit_tests/__pycache__/widget_tests.cpython-36.pyc
