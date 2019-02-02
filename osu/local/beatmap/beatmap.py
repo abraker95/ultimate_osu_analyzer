@@ -1,10 +1,11 @@
-from beatmapIO import BeatmapIO
+from .beatmap_utility import BeatmapUtil
+from .beatmapIO import BeatmapIO
 
 
 class Beatmap(BeatmapIO):
 
-    def __init__(self):
-        pass
+    def __init__(self, filepath):
+        super().__init__(filepath)
 
     
     def set_rate_mult(self, rate):
@@ -36,7 +37,7 @@ class Beatmap(BeatmapIO):
 
 
     def set_cs_px(self, px):
-        pass
+        self.cs = BeatmapUtil.px_to_cs(px)
 
 
     def get_cs_val(self):
@@ -44,7 +45,7 @@ class Beatmap(BeatmapIO):
 
 
     def get_cs_px(self):
-        pass
+        return BeatmapUtil.cs_to_px(self.cs)
 
 
     def set_ar_val(self, ar):
@@ -52,7 +53,7 @@ class Beatmap(BeatmapIO):
 
 
     def set_ar_ms(self, ms):
-        pass
+        self.ar = BeatmapUtil.ms_to_ar(ms)
 
 
     def get_ar_val(self):
@@ -60,7 +61,7 @@ class Beatmap(BeatmapIO):
 
 
     def get_ar_ms(self):
-        pass
+        return BeatmapUtil.ar_to_ms(self.ar)
 
 
     def set_od_val(self, od):
