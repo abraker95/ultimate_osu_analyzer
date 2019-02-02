@@ -2,8 +2,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from gui.center_frame.center_frame import CenterFrame
-from gui.bottom_frame.bottom_frame import BottomFrame
+from .center_frame.center_frame import CenterFrame
+from .bottom_frame.bottom_frame import BottomFrame
 
 
 class MainFrame(QWidget):
