@@ -28,3 +28,12 @@ gui/widgets/__pycache__/playfield.cpython-36.pyc
 osu/local/beatmap/__pycache__/beatmap.cpython-36.pyc
 unit_tests/__pycache__/playfield_test.cpython-36.pyc
 unit_tests/__pycache__/widget_tests.cpython-36.pyc
+misc/__pycache__/__init__.cpython-36.pyc
+misc/__pycache__/bezier.cpython-36.pyc
+misc/__pycache__/callback.cpython-36.pyc
+misc/__pycache__/math_utils.cpython-36.pyc
+misc/__pycache__/pos.cpython-36.pyc
+osu/local/__pycache__/playfield.cpython-36.pyc
+osu/local/hitobject/__pycache__/circle_hitobject.cpython-36.pyc
+osu/local/hitobject/__pycache__/slider_hitobject.cpython-36.pyc
+gui/objects/__pycache__/hitcircle.cpython-36.pyc
