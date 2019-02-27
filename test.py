@@ -26,7 +26,9 @@ if __name__ == '__main__':
     BeatmapTests.test_beatmap_loading_std('unit_tests\\Mutsuhiko Izumi - Red Goose (nold_1702) [ERT Basic].osu')
     print('OK\n\n')
 
-    # test_hitobject_visibility_std()
+    print('Running std hitobjet visibility test . . .')
+    BeatmapTests.test_hitobject_visibility_std()
+    print('OK\n\n')
 
     app = QApplication(sys.argv)
     ex  = PlayFieldTest('unit_tests\\abraker - unknown (abraker) [250ms].osu')

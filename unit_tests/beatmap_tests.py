@@ -1,3 +1,4 @@
+from misc.math_utils import *
 from osu.local.beatmap.beatmapIO import BeatmapIO
 from osu.local.beatmap.beatmap_utility import BeatmapUtil
 
@@ -67,15 +68,19 @@ class BeatmapTests():
 
     @staticmethod
     def test_hitobject_visibility_std():
-        beatmap = BeatmapIO('abraker - unknown (abraker) [250ms].osu')
+        beatmap = BeatmapIO('unit_tests\\abraker - unknown (abraker) [250ms].osu')
 
         test_data_ar7 = {
             # time : list of objects expected to be visible
             0      : [ 0 ],
+            250    : [ 0, 1 ],
             500    : [ 0, 1 ],
+            750    : [ 1, 2 ],
             1000   : [ 1, 2 ],
+            1250   : [ 2, 3 ],
             1500   : [ 2, 3 ],
-            2000   : [ 2, 3 ],
+            1750   : [ 3, 4 ],
+            2000   : [ 3, 4 ],
             2500   : [ 4 ],
             3000   : [  ],
             3250   : [ 5 ],
@@ -115,12 +120,14 @@ class BeatmapTests():
             52000  : [ 14, 19, 20 ],
             52250  : [ 14, 20 ],
             52500  : [ 14, 20 ],
-            52750  : [ ]
+            52750  : [ 14 ],
+            53000  : [ ]
         }
 
-        for test_time, test_objs in test_data_ar7.items():
+        for test_time, test_obj_idxs in test_data_ar7.items():
             result_objs = BeatmapUtil.get_hitobjects_visible_at_time(beatmap, test_time)
-            assert len(result_objs) == len(test_objs), 'Wrong number of objects visible; Expected: %s,  Result: %s' % str(test_objs) % str(result_objs)
+            assert len(result_objs) == len(test_obj_idxs), 'Wrong number of objects visible at t=%s; Expected: %s,  Result: %s' % (test_time, str(len(test_obj_idxs)), str(len(result_objs)))
 
-            for test_obj, result_obj in zip(test_objs, result_objs):
-                assert result_obj == test_obj, 'Wrong object visible; Expected: %s,  Result: %s' % str(test_obj) % str(result_obj)
+            result_obj_idxs = [ beatmap.hitobjects.index(result_obj) for result_obj in result_objs ] 
+            for test_obj_idx in test_obj_idxs:
+                assert test_obj_idx in result_obj_idxs, 'Wrong object visible at t=%s; Expected index: %s,  Resultant list: %s' % (test_time, str(test_obj_idx), str(result_obj_idxs))
