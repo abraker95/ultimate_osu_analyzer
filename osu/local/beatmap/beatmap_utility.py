@@ -83,11 +83,6 @@ class BeatmapUtil():
         # The list of visible hitobjects
         hitobject_list = beatmap.hitobjects[idx_begin_time_soonest : idx_begin_time_latest + 1]
 
-        # Remove hitobjects for which end time passed
-        for hitobject in hitobject_list:
-            if hitobject.get_end_time() < time:
-                hitobject_list.remove(hitobject)
-
         # Iterate through the list of hitobject end timings between the soonest and latest found end times
         # to see if we missed any hitobjects. This is required since 2B maps can throw end timings out of
         # order such that there can be sliders that start and end before other sliders have finished.
@@ -96,6 +91,11 @@ class BeatmapUtil():
             if hitobject.time <= time <= hitobject.get_end_time():
                 if not hitobject in hitobject_list: hitobject_list.append(hitobject)
 
+        # Remove hitobjects for which end time passed
+        for hitobject in hitobject_list[:]:
+            if hitobject.get_end_time() < time:
+                hitobject_list.remove(hitobject)
+                
         return hitobject_list
 
 
