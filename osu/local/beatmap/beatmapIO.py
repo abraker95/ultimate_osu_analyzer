@@ -468,7 +468,7 @@ class BeatmapIO():
             timing_point = self.timing_points[idx_timing_point]
             bpm = timing_point.bpm
 
-            hitobject.to_repeat_time = round(((-600.0/bpm) * hitobject.pixel_length * timing_point.slider_multiplier) / 100.0 * self.sm)
+            hitobject.to_repeat_time = round(((-600.0/bpm) * hitobject.pixel_length * timing_point.slider_multiplier) / (100.0 * self.sm))
             hitobject.end_time = hitobject.time + hitobject.to_repeat_time*hitobject.repeat
             # TODO: slider.record_repeat_times() ???
 
