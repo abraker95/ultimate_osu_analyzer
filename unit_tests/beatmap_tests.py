@@ -1,4 +1,5 @@
 from osu.local.beatmap.beatmapIO import BeatmapIO
+from osu.local.beatmap.beatmap_utility import BeatmapUtil
 
 
 class BeatmapTests():
@@ -61,3 +62,65 @@ class BeatmapTests():
         assert len(beatmap.hitobjects) == 102, '# hitobjects = (%s)' % str(len(beatmap.hitobjects))
 
         # TODO: test hitobjects
+            # TODO: hitobject find & visibility test
+
+
+    @staticmethod
+    def test_hitobject_visibility_std():
+        beatmap = BeatmapIO('abraker - unknown (abraker) [250ms].osu')
+
+        test_data_ar7 = {
+            # time : list of objects expected to be visible
+            0      : [ 0 ],
+            500    : [ 0, 1 ],
+            1000   : [ 1, 2 ],
+            1500   : [ 2, 3 ],
+            2000   : [ 2, 3 ],
+            2500   : [ 4 ],
+            3000   : [  ],
+            3250   : [ 5 ],
+            4000   : [ 5 ],
+            7250   : [ 5, 6 ],
+            7500   : [ 5, 6 ],
+            8000   : [ 6 ],
+            12250  : [ 6, 7 ],
+            12500  : [ 6, 7 ],
+            13000  : [ 7 ],
+            17250  : [ 7, 8 ],
+            17500  : [ 7, 8 ],
+            18000  : [ 8 ],
+            22750  : [ 8, 9 ],
+            23500  : [ 9 ],
+            32250  : [ 9, 10 ],
+            33000  : [ 10 ],
+            37500  : [ 10, 11 ],
+            38250  : [ 11 ],
+            43250  : [ 11, 12 ],
+            44000  : [ 12 ],
+            46250  : [ 12, 13 ],
+            47000  : [ 13 ],
+            47500  : [ ],
+            48000  : [ ],
+            48500  : [ 14 ],
+            49250  : [ 14, 15 ],
+            49750  : [ 14, 15, 16 ],
+            50000  : [ 14, 15, 16 ],
+            50250  : [ 14, 16, 17 ],
+            50500  : [ 14, 16, 17 ],
+            50750  : [ 14, 17, 18 ],
+            51000  : [ 14, 17, 18 ],
+            51250  : [ 14, 18, 19 ],
+            51500  : [ 14, 18, 19 ],
+            51750  : [ 14, 19, 20 ],
+            52000  : [ 14, 19, 20 ],
+            52250  : [ 14, 20 ],
+            52500  : [ 14, 20 ],
+            52750  : [ ]
+        }
+
+        for test_time, test_objs in test_data_ar7.items():
+            result_objs = BeatmapUtil.get_hitobjects_visible_at_time(beatmap, test_time)
+            assert len(result_objs) == len(test_objs), 'Wrong number of objects visible; Expected: %s,  Result: %s' % str(test_objs) % str(result_objs)
+
+            for test_obj, result_obj in zip(test_objs, result_objs):
+                assert result_obj == test_obj, 'Wrong object visible; Expected: %s,  Result: %s' % str(test_obj) % str(result_obj)

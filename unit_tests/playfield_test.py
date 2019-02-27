@@ -2,7 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from gui.widgets.osu_playfield import OsuPlayField
+from osu.local.playfield import Playfield
 from osu.local.beatmap.beatmap import Beatmap
 
 
@@ -14,15 +14,27 @@ class PlayFieldTest(QMainWindow):
     width  = 1080
     height = 720
 
-    def __init__(self, beatmap_filepath, parent=None):
+    def __init__(self, beatmap_filepath):
+        QMainWindow.__init__(self)
+        
+        self.playfield = Playfield()
+        self.playfield.setFocusPolicy(Qt.NoFocus)
 
-        super(PlayFieldTest, self).__init__(parent)
+        self.beatmap = Beatmap(beatmap_filepath)
+        self.playfield.load_beatmap(self.beatmap)
 
-        beatmap = Beatmap(beatmap_filepath)
-
-        self.widget = OsuPlayField(beatmap)
-        self.setCentralWidget(self.widget)
+        self.setCentralWidget(self.playfield)
 
         self.setWindowTitle(PlayFieldTest.title)
-        self.setGeometry(PlayFieldTest.left, PlayFieldTest.top, PlayFieldTest.width, PlayFieldTest.height)
+        self.setGeometry(0, 0, self.playfield.width(), self.playfield.height())
         self.show()
+
+
+    def keyPressEvent(self, event):
+        key = event.key()
+
+        if key == Qt.Key_Left:
+            self.playfield.set_time(self.playfield.time - 50)
+
+        if key == Qt.Key_Right:
+            self.playfield.set_time(self.playfield.time + 50)

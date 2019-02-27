@@ -1,0 +1,74 @@
+osu file format v14
+
+[General]
+AudioFilename: blank.mp3
+AudioLeadIn: 0
+PreviewTime: -1
+Countdown: 0
+SampleSet: Normal
+StackLeniency: 0.5
+Mode: 0
+LetterboxInBreaks: 1
+WidescreenStoryboard: 1
+
+[Editor]
+DistanceSpacing: 0.9
+BeatDivisor: 4
+GridSize: 4
+TimelineZoom: 1.5
+
+[Metadata]
+Title:unknown
+TitleUnicode:unknown
+Artist:abraker
+ArtistUnicode:abraker
+Creator:abraker
+Version:250ms
+Source:
+Tags:
+BeatmapID:0
+BeatmapSetID:-1
+
+[Difficulty]
+HPDrainRate:8
+CircleSize:4
+OverallDifficulty:10
+ApproachRate:7
+SliderMultiplier:1.4
+SliderTickRate:1
+
+[Events]
+//Background and Video events
+//Break Periods
+//Storyboard Layer 0 (Background)
+//Storyboard Layer 1 (Fail)
+//Storyboard Layer 2 (Pass)
+//Storyboard Layer 3 (Foreground)
+//Storyboard Sound Samples
+
+[TimingPoints]
+0,1000,4,1,1,100,1,0
+
+
+[HitObjects]
+0,0,500,5,0,0:0:0:0:
+512,384,1000,1,0,0:0:0:0:
+512,0,1500,1,0,0:0:0:0:
+0,384,2000,1,0,0:0:0:0:
+256,192,2500,1,0,0:0:0:0:
+0,192,4000,2,0,L|512:192,1,490
+0,384,8000,2,0,L|512:0,1,630
+0,0,13000,2,0,L|512:384,1,630
+0,192,18000,2,0,P|256:0|512:192,1,665
+56,192,23500,2,0,P|452:192|56:196,1,1225
+0,192,33000,2,0,B|256:0|256:0|512:192|504:212,1,630
+0,192,38250,2,0,B|256:192|256:0|256:0|256:192|512:192|504:212,1,700
+0,192,44000,2,0,B|0:192|12:192|12:192|0:192|0:192|12:192|12:192|0:192|0:192|12:192|12:192|0:192|0:192|12:192|12:192|256:192,1,315
+260,192,47000,2,0,B|248:192,1,8.75
+0,192,49250,2,0,B|512:192,1,490
+104,116,50000,1,0,0:0:0:0:
+172,260,50500,1,0,0:0:0:0:
+256,112,51000,1,0,0:0:0:0:
+316,260,51500,1,0,0:0:0:0:
+352,96,52000,1,0,0:0:0:0:
+448,96,52500,1,0,0:0:0:0:
