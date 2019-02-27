@@ -1,4 +1,3 @@
-from misc.math_utils import *
 from osu.local.beatmap.beatmapIO import BeatmapIO
 from osu.local.beatmap.beatmap_utility import BeatmapUtil
 
