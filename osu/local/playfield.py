@@ -56,17 +56,13 @@ class Playfield(QGraphicsView):
         print('time: ', time)
         for hitobject in self.visible_hitobjects: 
             hitobject.setVisible(False)
-            
-            if hitobject.is_hitobject_long():
-                self.set_time.disconnect(hitobject.update_slider_tick_pos)
 
         self.visible_hitobjects = BeatmapUtil.get_hitobjects_visible_at_time(self.beatmap, time)
         for hitobject in self.visible_hitobjects:
-            hitobject.setVisible(True)
+            hitobject.time_changed(self.time)
             hitobject.set_opacity(BeatmapUtil.get_opacity_at(self.beatmap, hitobject, time))
-
-            if hitobject.is_hitobject_long():
-                self.set_time.connect(hitobject.update_slider_tick_pos).emit(self.time)
+            hitobject.setVisible(True)
+            
             
         self.scene.update()
 
