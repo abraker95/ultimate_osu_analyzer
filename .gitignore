@@ -37,3 +37,4 @@ osu/local/__pycache__/playfield.cpython-36.pyc
 osu/local/hitobject/__pycache__/circle_hitobject.cpython-36.pyc
 osu/local/hitobject/__pycache__/slider_hitobject.cpython-36.pyc
 gui/objects/__pycache__/hitcircle.cpython-36.pyc
+osu/local/hitobject/__pycache__/spinner_hitobject.cpython-36.pyc
