@@ -33,7 +33,7 @@ class SpinnerHitobject(QGraphicsItem, Hitobject):
 
 
     def time_changed(self, time):
-        self.radius = 512*(1 - value_to_percent(self.time, self.end_time, time))
+        self.radius = 384*(1 - value_to_percent(self.time, self.end_time, time))
         print(self.radius)
 
 
