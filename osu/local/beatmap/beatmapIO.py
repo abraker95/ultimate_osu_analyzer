@@ -5,6 +5,7 @@ from osu.local.beatmap.beatmap_utility import BeatmapUtil
 from osu.local.hitobject.hitobject import Hitobject
 from osu.local.hitobject.slider_hitobject import SliderHitobject
 from osu.local.hitobject.circle_hitobject import CircleHitobject
+from osu.local.hitobject.spinner_hitobject import SpinnerHitobject
 
 
 '''
@@ -417,7 +418,7 @@ class BeatmapIO():
             return
 
         if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.SPINNER):
-            self.hitobjects.append(SliderHitobject(data))
+            self.hitobjects.append(SpinnerHitobject(data))
             return
 
         if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.MANIALONG):

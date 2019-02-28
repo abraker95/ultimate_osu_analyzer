@@ -78,7 +78,7 @@ class SliderHitobject(QGraphicsItem, Hitobject):
         pass
 
 
-    def update_slider_tick_pos(self, time):
+    def time_changed(self, time):
         self.slider_point_pos = self.time_to_pos(time)
 
 
