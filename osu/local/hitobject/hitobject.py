@@ -52,6 +52,10 @@ class Hitobject():
         return self.is_hitobject_type(Hitobject.SLIDER) or self.is_hitobject_type(Hitobject.MANIALONG)
 
 
+    def time_changed(self, time):
+        pass
+
+
     @callback
     def set_radius(self, radius):
         self.radius = radius

@@ -23,10 +23,6 @@ class CircleHitobject(QGraphicsItem, Hitobject):
         Hitobject.__init__(self, data)
 
 
-    def time_changed(self, time):
-        pass
-
-
     def paint(self, painter, option, widget):
         painter.setPen(QColor(255, 0, 0, self.opacity*255))
 
