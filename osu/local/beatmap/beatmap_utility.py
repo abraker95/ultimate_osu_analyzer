@@ -66,7 +66,12 @@ class BeatmapUtil():
             return min(ar_ms, 400)
 
 
-    # TODO: factor in hidden mod
+    # TODO: Factor in hidden mod
+    # TODO: This breaks on the following condition, where t is any time value:
+    #   hitobject_timings = [ (t , 5t), (2t, 3t), (3t, 4t) ]
+    #   Condition: t < time < 2t
+    #   Returns: [ ]
+    #   Expected: [ 0 ]
     @staticmethod
     def get_hitobjects_visible_at_time(beatmap, time, hidden_mod=False):
         # Need to index the ordered dictionary
