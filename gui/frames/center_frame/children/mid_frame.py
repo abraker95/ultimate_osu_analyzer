@@ -21,15 +21,10 @@ class MidFrame(QFrame):
         self.tabs_area = QTabWidget()
         self.tabs      = []
 
-        self.label1  = QLabel("Map 1", self)
-        self.label2  = QLabel("Map 2", self)
-
 
     def construct_gui(self):
         self.setLayout(self.layout)
         
-        self.tabs_area.addTab(self.label1, "Test tab 2")
-        self.tabs_area.addTab(self.label2, "Test tab 2")
         self.tabs_area.currentChanged.connect(self.tabs_changed)
         self.layout.addWidget(self.tabs_area)
 
@@ -40,8 +35,6 @@ class MidFrame(QFrame):
 
     def update_gui(self):
         self.setFrameShape(QFrame.StyledPanel)
-        self.label1.setAlignment(Qt.AlignCenter)
-        self.label2.setAlignment(Qt.AlignCenter)
 
 
     def add_tab(self, playfield, name):

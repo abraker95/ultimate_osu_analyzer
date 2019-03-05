@@ -17,11 +17,10 @@ class MainFrame(QWidget):
 
 
     def init_gui_elements(self):
-        self.layout            = QVBoxLayout()
-
-        self.splitter          = QSplitter(Qt.Vertical)
-        self.center_frame      = CenterFrame()
-        self.bottom_frame      = BottomFrame()
+        self.layout       = QVBoxLayout()
+        self.splitter     = QSplitter(Qt.Vertical)
+        self.center_frame = CenterFrame()
+        self.bottom_frame = BottomFrame()
 
 
     def construct_gui(self):
