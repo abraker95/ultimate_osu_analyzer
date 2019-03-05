@@ -10,7 +10,7 @@ from misc.callback import callback
 Visualizes a beatmap
 
 Input: 
-    beatmaap - The beatmap to visualize
+    beatmap - The beatmap to visualize
     time - The time value of the playfield. The time value which point in time to view the beatmap for.
 
 Output: 
@@ -62,7 +62,6 @@ class Playfield(QGraphicsView):
             hitobject.time_changed(self.time)
             hitobject.set_opacity(BeatmapUtil.get_opacity_at(self.beatmap, hitobject, time))
             hitobject.setVisible(True)
-            
             
         self.scene.update()
 
