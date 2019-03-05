@@ -38,3 +38,8 @@ class MidFrame(QFrame):
         self.setFrameShape(QFrame.StyledPanel)
         self.label1.setAlignment(Qt.AlignCenter)
         self.label2.setAlignment(Qt.AlignCenter)
+
+
+    def add_tab(self, playfield, name):
+        self.tabs.append(playfield)
+        self.tabs_area.addTab(playfield, name)
