@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 
-
 class MidFrame(QFrame):
  
     def __init__(self):
@@ -15,13 +14,20 @@ class MidFrame(QFrame):
 
 
     def init_gui_elements(self):
-        self.layout = QHBoxLayout()
-        self.label  = QLabel("MidFrame", self)
+        self.layout    = QHBoxLayout()
+        self.tabs_area = QTabWidget()
+        self.tabs      = []
+
+        self.label1  = QLabel("Map 1", self)
+        self.label2  = QLabel("Map 2", self)
 
 
     def construct_gui(self):
         self.setLayout(self.layout)
-        self.layout.addWidget(self.label)        # TODO: Replace with tabbed widget and create a inner mid frame
+        
+        self.tabs_area.addTab(self.label1, "Test tab 2")
+        self.tabs_area.addTab(self.label2, "Test tab 2")
+        self.layout.addWidget(self.tabs_area)
 
         # TODO: play area
         # TODO: label showing cursor pos
@@ -30,4 +36,5 @@ class MidFrame(QFrame):
 
     def update_gui(self):
         self.setFrameShape(QFrame.StyledPanel)
-        self.label.setAlignment(Qt.AlignCenter)
+        self.label1.setAlignment(Qt.AlignCenter)
+        self.label2.setAlignment(Qt.AlignCenter)
