@@ -2,6 +2,9 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
+from misc.callback import callback
+
+
 
 class MidFrame(QFrame):
  
@@ -27,6 +30,7 @@ class MidFrame(QFrame):
         
         self.tabs_area.addTab(self.label1, "Test tab 2")
         self.tabs_area.addTab(self.label2, "Test tab 2")
+        self.tabs_area.currentChanged.connect(self.tabs_changed)
         self.layout.addWidget(self.tabs_area)
 
         # TODO: play area
@@ -43,3 +47,9 @@ class MidFrame(QFrame):
     def add_tab(self, playfield, name):
         self.tabs.append(playfield)
         self.tabs_area.addTab(playfield, name)
+
+
+    @callback
+    def tabs_changed(self, idx):
+        print('Tab changed to index ', idx)
+        self.tabs_changed.emit(self.tabs[idx])

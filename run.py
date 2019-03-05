@@ -51,6 +51,8 @@ class MainWindow(QMainWindow):
         self.close_action.setStatusTip('Quit the application')
         self.close_action.setShortcut('Ctrl+Q')
         self.close_action.triggered.connect(self.close_application)
+
+        self.main_frame.center_frame.mid_frame.tabs_changed.connect(self.playfield_change_event)
         
 
     def update_gui(self):
@@ -82,6 +84,12 @@ class MainWindow(QMainWindow):
         
         if file_dialog.exec_():
             return file_dialog.selectedFiles()
+
+
+    def playfield_change_event(self, playfield):
+        print('Playfield changed!')
+        print('\tTODO: update timeline')
+        print('\tTODO: update statistics on the right side')
 
 
     def close_application(self):
