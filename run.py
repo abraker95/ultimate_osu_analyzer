@@ -53,6 +53,7 @@ class MainWindow(QMainWindow):
         self.close_action.triggered.connect(self.close_application)
 
         self.main_frame.center_frame.mid_frame.tabs_changed.connect(self.playfield_change_event)
+        self.main_frame.bottom_frame.timeline.time_changed.connect(self.time_changed_event)
         
 
     def update_gui(self):
@@ -73,7 +74,8 @@ class MainWindow(QMainWindow):
             playfield.setFocusPolicy(Qt.NoFocus)
             playfield.load_beatmap(Beatmap(beatmap_filename))
 
-            self.main_frame.center_frame.mid_frame.add_tab(playfield, 'map')
+            map_name = playfield.beatmap.metadata.name
+            self.main_frame.center_frame.mid_frame.add_tab(playfield, map_name)
 
 
     def get_osu_files(self, file_type):
@@ -87,9 +89,24 @@ class MainWindow(QMainWindow):
 
 
     def playfield_change_event(self, playfield):
-        print('Playfield changed!')
-        print('\tTODO: update timeline')
+        min_time, max_time = playfield.beatmap.get_time_range()
+        self.main_frame.bottom_frame.timeline.setRange(xRange=(min_time - 100, max_time + 100))
+        print('\tTODO: save timeline marker position')
         print('\tTODO: update statistics on the right side')
+
+
+    def time_changed_event(self, time):
+        playfield = self.get_current_playfield()
+        if not playfield: return
+
+        playfield.set_time(time)
+
+
+    def get_current_playfield(self):
+        idx = self.main_frame.center_frame.mid_frame.tabs_area.currentIndex()
+        if idx == -1: return None
+
+        return self.main_frame.center_frame.mid_frame.tabs[idx]
 
 
     def close_application(self):

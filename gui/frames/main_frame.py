@@ -32,4 +32,4 @@ class MainFrame(QWidget):
 
 
     def update_gui(self):
-        self.splitter.setSizes([ self.height()/3, self.height()/32 ])
+        self.splitter.setSizes([ self.height(), self.height()/8 ])
