@@ -28,6 +28,10 @@ class Beatmap(QObject, BeatmapIO):
         QObject.__init__(self)
         BeatmapIO.__init__(self, filepath)
 
+
+    def get_time_range(self):
+        return (self.hitobjects[0].time, list(self.end_times.keys())[-1])
+
     
     def set_rate_mult(self, rate):
         # TODO
