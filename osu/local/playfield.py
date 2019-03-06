@@ -27,7 +27,6 @@ class Playfield(QGraphicsView):
 
         self.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         self.scene = QGraphicsScene(self)
-        #self.setMaximumSize(512, 384)
         self.setScene(self.scene)
 
         self.set_time.connect(self.update_hitobject_visiblity)

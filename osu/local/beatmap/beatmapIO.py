@@ -189,7 +189,6 @@ class BeatmapIO():
                 self.end_times[self.hitobjects[i].time] = i
 
         self.end_times = OrderedDict(sorted(self.end_times.items(), key=lambda x: x[0]))
-        self.hitobjects_end_times = self.hitobjects[:].sort(key=lambda hitobject: hitobject.get_end_time())
 
 
     # Validates beatmap data
