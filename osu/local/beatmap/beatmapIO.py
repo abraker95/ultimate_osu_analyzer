@@ -200,6 +200,8 @@ class BeatmapIO():
         self.__parse_beatmap_file_format(beatmap_file)
         self.__parse_beatmap_file_data(beatmap_file)
 
+        self.metadata.name = self.metadata.artist + ' - ' + self.metadata.title + ' (' + self.metadata.creator + ') ' + '[' + self.metadata.version + ']'
+
 
     def __parse_beatmap_file_format(self, beatmap_file):
         line  = beatmap_file.readline()
