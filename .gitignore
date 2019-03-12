@@ -38,3 +38,8 @@ osu/local/hitobject/__pycache__/circle_hitobject.cpython-36.pyc
 osu/local/hitobject/__pycache__/slider_hitobject.cpython-36.pyc
 gui/objects/__pycache__/hitcircle.cpython-36.pyc
 osu/local/hitobject/__pycache__/spinner_hitobject.cpython-36.pyc
+osu/local/hitobject/mania/__pycache__/mania_holdnote_hitobject.cpython-36.pyc
+osu/local/hitobject/std/__pycache__/std_holdnote_hitobject.cpython-36.pyc
+osu/local/hitobject/std/__pycache__/std_spinner_hitobject.cpython-36.pyc
+analysis/__pycache__/graphs.cpython-36.pyc
+osu/local/hitobject/std/__pycache__/std_spinner_hitobject.cpython-36.pyc
