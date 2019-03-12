@@ -32,6 +32,57 @@ class Beatmap(QObject, BeatmapIO):
     def get_time_range(self):
         return (self.hitobjects[0].time, list(self.end_times.keys())[-1])
 
+
+    """
+    Returns:
+        The number of hitobjects the beatmap has
+    """
+    def get_num_hitobjects(self):
+        return len(self.hitobjects)
+
+
+    """
+    Args:
+        index: (int) index of the hitobject to get
+    
+    Returns:
+        The hitobject at the specified index
+    """
+    def get_hitobject_at_index(self, index):
+        return self.hitobjects[index]
+
+    
+    """
+    Searches for the earliest hitobject that is closest to the time specified.
+
+    Args:
+        time: (int/float) time of the closest hitobject to get
+        end_time: (bool) whether to search the hitobject by its ending time or starting time
+    
+    Returns:
+        The hitobject found at the specified time
+    """
+    def get_hitobject_at_time(self, time, end_time=False):
+        if end_time:
+            index = find(self.end_times.values(), time)
+            return self.hitobjects[self.end_times[index]] if index != -1 else None
+        else:
+            index = find(self.hitobjects, time, lambda hitobject: hitobject.time)
+            return self.hitobjects[index] if index != -1 else None
+
+    
+    """
+    Searches for the earliest timingpoint that is closest to the time specified.
+
+    Args:
+        time: (int/float) time of the closest timingpoint to get
+    
+    Returns:
+        The timingpoint found at the specified time
+    """
+    def get_timingpoint_at_time(self, time):
+        pass
+
     
     def set_rate_mult(self, rate):
         # TODO
