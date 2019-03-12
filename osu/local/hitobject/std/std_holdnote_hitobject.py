@@ -29,9 +29,15 @@ class StdHoldNoteHitobject(QGraphicsItem, Hitobject):
     BEZIER        = 'B'
     CIRCUMSCRIBED = 'P'
 
-    def __init__(self, beatmap_data):
+    def __init__(self, beatmap_data=None):
         QGraphicsItem.__init__(self)
         Hitobject.__init__(self, beatmap_data)
+
+        if not beatmap_data:
+            self.end_time     = None    # Initialized by beatmapIO.__process_slider_timings after timing data is read
+            self.pixel_length = None
+            self.repeat       = None
+            self.gen_points   = []
 
         self.__process_slider_data(beatmap_data)
         self.__process_curve_points()
