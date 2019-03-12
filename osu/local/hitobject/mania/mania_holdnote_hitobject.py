@@ -13,7 +13,7 @@ class ManiaHoldNoteHitobject(QGraphicsItem, Hitobject):
         QGraphicsItem.__init__(self)
         Hitobject.__init__(self, hitobject_data)
 
-        self.__process_slider_data(hitobject_data)
+        self.__process_holdnote_data(hitobject_data)
 
 
     def paint(self, painter, option, widget):
