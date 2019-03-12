@@ -101,11 +101,15 @@ class StdHoldNoteHitobject(QGraphicsItem, Hitobject):
         pos_y = (self.slider_point_pos.y - 0.5*slider_point_radius)*self.ratio_y
         painter.drawEllipse(pos_x, pos_y, slider_point_radius, slider_point_radius)
 
+        painter.setPen(QColor(255, 0, 255, self.opacity*255))
+        slider_tick_radius = 6
 
-    # TODO: make sure this is correct
-    # TODO: test a slider 200px across with various repeat times and tick spacings
-    def get_velocity(self):
-        return self.pixel_length / (self.end_time - self.time)
+        for tick_time in self.tick_times:
+            tick_pos = self.time_to_pos(tick_time)
+
+            pos_x = (tick_pos.x - 0.5*slider_point_radius)*self.ratio_x
+            pos_y = (tick_pos.y - 0.5*slider_point_radius)*self.ratio_y
+            painter.drawEllipse(pos_x, pos_y, slider_tick_radius, slider_tick_radius)
 
 
     def __process_slider_data(self, beatmap_data):

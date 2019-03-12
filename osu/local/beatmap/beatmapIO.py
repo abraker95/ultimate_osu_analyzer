@@ -106,6 +106,7 @@ class BeatmapIO():
             self.__process_timing_points()
             self.__process_slider_timings()
             self.__process_hitobject_end_times()
+            self.__process_slider_tick_times()
             self.__validate()
 
 
@@ -462,3 +463,19 @@ class BeatmapIO():
             # TODO: slider.record_repeat_times() ???
 
             # TODO: slider.record_tick_intervals() ???
+    def __process_slider_tick_times(self):
+        self.slider_tick_times = []
+        for hitobject in self.hitobjects:
+            if not hitobject.is_hitobject_type(Hitobject.SLIDER):
+                continue
+
+            try: idx_timing_point = find(self.timing_points, hitobject.time, lambda timing_point: timing_point.offset)
+            except:
+                print(self.timing_points)
+                raise
+
+            ms_per_beat = (100.0 * self.sm)/(hitobject.get_velocity() * self.st)
+            hitobject.tick_times = []
+
+            for beat_time in range(hitobject.time, hitobject.end_time, int(ms_per_beat)):
+                hitobject.tick_times.append(beat_time)
