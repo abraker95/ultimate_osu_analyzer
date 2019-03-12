@@ -22,7 +22,7 @@ Input:
 Output: 
     Visual display of an osu!std slider
 """
-class SliderHitobject(QGraphicsItem, Hitobject):
+class StdHoldNoteHitobject(QGraphicsItem, Hitobject):
 
     LINEAR1       = 'L'
     LINEAR2       = 'C'
@@ -136,18 +136,12 @@ class SliderHitobject(QGraphicsItem, Hitobject):
     def __process_curve_points(self):
         self.gen_points  = []
 
-        if self.is_hitobject_type(Hitobject.MANIALONG):
-            return
-
-        if self.is_hitobject_type(Hitobject.SPINNER):
-            return
-
-        if self.curve_type == SliderHitobject.BEZIER:
+        if self.curve_type == StdHoldNoteHitobject.BEZIER:
             self.__make_bezier()
             self.slider_point_pos = self.gen_points[0]
             return
 
-        if self.curve_type == SliderHitobject.CIRCUMSCRIBED:
+        if self.curve_type == StdHoldNoteHitobject.CIRCUMSCRIBED:
             if len(self.curve_points) == 3:
                 if not self.__make_circumscribed():
                     self.__make_bezier()
@@ -157,12 +151,12 @@ class SliderHitobject(QGraphicsItem, Hitobject):
             self.slider_point_pos = self.gen_points[0]
             return
 
-        if self.curve_type == SliderHitobject.LINEAR1:
+        if self.curve_type == StdHoldNoteHitobject.LINEAR1:
             self.__make_linear()
             self.slider_point_pos = self.gen_points[0]
             return
 
-        if self.curve_type == SliderHitobject.LINEAR2:
+        if self.curve_type == StdHoldNoteHitobject.LINEAR2:
             self.__make_linear()
             self.slider_point_pos = self.gen_points[0]
             return

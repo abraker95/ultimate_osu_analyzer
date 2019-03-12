@@ -16,7 +16,7 @@ Input:
 Output: 
     Visual display of an osu!std hitcircle
 """
-class CircleHitobject(QGraphicsItem, Hitobject):
+class StdSingleNoteHitobject(QGraphicsItem, Hitobject):
 
     def __init__(self, data):
         QGraphicsItem.__init__(self)

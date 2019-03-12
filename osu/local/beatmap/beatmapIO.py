@@ -3,9 +3,21 @@ from collections import OrderedDict
 from misc.math_utils import find
 from osu.local.beatmap.beatmap_utility import BeatmapUtil
 from osu.local.hitobject.hitobject import Hitobject
-from osu.local.hitobject.slider_hitobject import SliderHitobject
-from osu.local.hitobject.circle_hitobject import CircleHitobject
-from osu.local.hitobject.spinner_hitobject import SpinnerHitobject
+
+from osu.local.hitobject.std.std_singlenote_hitobject import StdSingleNoteHitobject
+from osu.local.hitobject.std.std_holdnote_hitobject import StdHoldNoteHitobject
+from osu.local.hitobject.std.std_spinner_hitobject import StdSpinnerHitobject
+
+from osu.local.hitobject.taiko.taiko_singlenote_hitobject import TaikoSingleNoteHitobject
+from osu.local.hitobject.taiko.taiko_holdnote_hitobject import TaikoHoldNoteHitobject
+from osu.local.hitobject.taiko.taiko_spinner_hitobject import TaikoSpinnerHitobject
+
+from osu.local.hitobject.catch.catch_singlenote_hitobject import CatchSingleNoteHitobject
+from osu.local.hitobject.catch.catch_holdnote_hitobject import CatchHoldNoteHitobject
+from osu.local.hitobject.catch.catch_spinner_hitobject import CatchSpinnerHitobject
+
+from osu.local.hitobject.mania.mania_singlenote_hitobject import ManiaSingleNoteHitobject
+from osu.local.hitobject.mania.mania_holdnote_hitobject import ManiaHoldNoteHitobject
 
 
 '''
@@ -20,6 +32,11 @@ Output:
     timingpoints - list of timing points present in the map
 '''
 class BeatmapIO():
+
+    GAMEMODE_OSU   = 0
+    GAMEMODE_TAIKO = 1
+    GAMEMODE_CATCH = 2
+    GAMEMODE_MANIA = 3
 
     class Metadata():
 
@@ -348,21 +365,53 @@ class BeatmapIO():
         
         self.hitobject_type = int(data[3])
 
-        if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.CIRCLE):
-            self.hitobjects.append(CircleHitobject(data))
-            return
+        if self.gamemode == BeatmapIO.GAMEMODE_OSU:
+            if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.CIRCLE):
+                self.hitobjects.append(StdSingleNoteHitobject(data))
+                return
 
-        if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.SLIDER):
-            self.hitobjects.append(SliderHitobject(data))
-            return
+            if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.SLIDER):
+                self.hitobjects.append(StdHoldNoteHitobject(data))
+                return
 
-        if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.SPINNER):
-            self.hitobjects.append(SpinnerHitobject(data))
-            return
+            if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.SPINNER):
+                self.hitobjects.append(StdSpinnerHitobject(data))
+                return
 
-        if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.MANIALONG):
-            self.hitobjects.append(SliderHitobject(data))
-            return
+        if self.gamemode == BeatmapIO.GAMEMODE_TAIKO:
+            if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.CIRCLE):
+                self.hitobjects.append(TaikoSingleNoteHitobject(data))
+                return
+
+            if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.SLIDER):
+                self.hitobjects.append(TaikoHoldNoteHitobject(data))
+                return
+
+            if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.SPINNER):
+                self.hitobjects.append(TaikoSpinnerHitobject(data))
+                return
+
+        if self.gamemode == BeatmapIO.GAMEMODE_CATCH:
+            if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.CIRCLE):
+                self.hitobjects.append(CatchSingleNoteHitobject(data))
+                return
+
+            if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.SLIDER):
+                self.hitobjects.append(CatchHoldNoteHitobject(data))
+                return
+
+            if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.SPINNER):
+                self.hitobjects.append(CatchSpinnerHitobject(data))
+                return
+
+        if self.gamemode == BeatmapIO.GAMEMODE_MANIA:
+            if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.CIRCLE):
+                self.hitobjects.append(ManiaSingleNoteHitobject(data))
+                return
+
+            if BeatmapUtil.is_hitobject_type(self.hitobject_type, Hitobject.MANIALONG):
+                self.hitobjects.append(ManiaHoldNoteHitobject(data))
+                return
 
 
     def __process_timing_points(self):

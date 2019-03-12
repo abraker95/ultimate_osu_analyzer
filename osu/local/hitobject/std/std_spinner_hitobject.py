@@ -17,7 +17,7 @@ Input:
 Output: 
     Visual display of an osu!std hitcircle
 """
-class SpinnerHitobject(QGraphicsItem, Hitobject):
+class StdSpinnerHitobject(QGraphicsItem, Hitobject):
 
     def __init__(self, data):
         QGraphicsItem.__init__(self)
