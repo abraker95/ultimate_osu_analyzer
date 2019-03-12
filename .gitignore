@@ -43,3 +43,5 @@ osu/local/hitobject/std/__pycache__/std_holdnote_hitobject.cpython-36.pyc
 osu/local/hitobject/std/__pycache__/std_spinner_hitobject.cpython-36.pyc
 analysis/__pycache__/graphs.cpython-36.pyc
 osu/local/hitobject/std/__pycache__/std_spinner_hitobject.cpython-36.pyc
+gui/widgets/__pycache__/analysis_controls.cpython-36.pyc
+gui/widgets/__pycache__/layer_controls.cpython-36.pyc

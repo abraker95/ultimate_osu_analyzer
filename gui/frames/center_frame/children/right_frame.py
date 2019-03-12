@@ -2,6 +2,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
+from gui.widgets.layer_controls import LayerControls
+from gui.widgets.analysis_controls import AnalysisControls
 
 
 class RightFrame(QFrame):
@@ -15,18 +17,20 @@ class RightFrame(QFrame):
 
 
     def init_gui_elements(self):
-        self.layout = QHBoxLayout()
-        self.label  = QLabel("RightFrame", self)
+        self.layout    = QHBoxLayout()
+        self.tabs_area = QTabWidget()
 
-        # TODO: Vertical layout
-        # TODO: List of dockable widgets
+        self.layer_controls    = LayerControls()
+        self.analysis_controls = AnalysisControls()
 
 
     def construct_gui(self):
         self.setLayout(self.layout)
-        self.layout.addWidget(self.label)
+
+        self.tabs_area.addTab(self.layer_controls, 'Layers')
+        self.tabs_area.addTab(self.analysis_controls, 'Analysis')
+        self.layout.addWidget(self.tabs_area)
 
 
     def update_gui(self):
         self.setFrameShape(QFrame.StyledPanel)
-        self.label.setAlignment(Qt.AlignCenter)
