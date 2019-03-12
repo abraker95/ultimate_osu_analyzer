@@ -35,12 +35,12 @@ class BeatmapUtil():
 
     @staticmethod
     def od300_to_ms(od):
-        return 79.5 - 6.0*od
+        return 159 - 12.0*od
 
 
     @staticmethod
     def ms_to_od300(ms):
-        return (79.5 - ms)/6.0
+        return (159 - ms)/12.0
 
 
     @staticmethod
