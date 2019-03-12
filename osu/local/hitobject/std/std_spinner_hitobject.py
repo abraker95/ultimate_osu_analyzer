@@ -24,7 +24,6 @@ class StdSpinnerHitobject(QGraphicsItem, Hitobject):
         Hitobject.__init__(self, data)
 
         self.__process_spinner_data(data)
-        print(self.time)
         self.radius = 512
 
     

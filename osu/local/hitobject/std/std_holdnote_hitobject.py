@@ -84,6 +84,12 @@ class StdHoldNoteHitobject(QGraphicsItem, Hitobject):
         pass
 
 
+    # TODO: make sure this is correct
+    # TODO: test a slider 200px across with various repeat times and tick spacings
+    def get_velocity(self):
+        return self.pixel_length / (self.end_time - self.time)
+
+
     def time_changed(self, time):
         self.slider_point_pos = self.time_to_pos(time)
 
@@ -100,7 +106,6 @@ class StdHoldNoteHitobject(QGraphicsItem, Hitobject):
                 painter.drawLine(self.gen_points[i].x*self.ratio_x, self.gen_points[i].y*self.ratio_y, self.gen_points[i + 1].x*self.ratio_x, self.gen_points[i + 1].y*self.ratio_y)
         except:
             print('Error drawing slider: ', self.gen_points)
-
 
         slider_point_radius = 3
         pos_x = (self.slider_point_pos.x - 0.5*slider_point_radius)*self.ratio_x
@@ -128,15 +133,6 @@ class StdHoldNoteHitobject(QGraphicsItem, Hitobject):
         for data in slider_data[1:]:
             curve_data = data.split(':')
             self.curve_points.append(Pos(int(curve_data[0]), int(curve_data[1])))
-
-        if self.is_hitobject_type(Hitobject.SPINNER):
-            self.end_time = int(beatmap_data[5])
-            return
-
-        if self.is_hitobject_type(Hitobject.MANIALONG):
-            slider_data = beatmap_data[5].split(':')
-            self.end_time = int(slider_data[0])
-            return
 
         # otherwise this is a osu!std slider and we should get additional data
         self.repeat       = int(beatmap_data[6])
@@ -186,7 +182,6 @@ class StdHoldNoteHitobject(QGraphicsItem, Hitobject):
     def __make_bezier(self):
         # Beziers: splits points into different Beziers if has the same points (red points)
         # a b c - c d - d e f g
-        
         point_section = []
 
         for i in range(len(self.curve_points)):
@@ -198,7 +193,7 @@ class StdHoldNoteHitobject(QGraphicsItem, Hitobject):
             # If we reached a red point or the end of the point list, then segment the bezier
             if segment_bezier:
                 self.gen_points += Bezier(point_section).curve_points
-                point_section = [ ]
+                point_section = []
 
 
     def __make_circumscribed(self):

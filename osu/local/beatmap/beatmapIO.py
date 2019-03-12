@@ -73,7 +73,7 @@ class BeatmapIO():
 
 
     def __init__(self, filepath=None):
-        self.__is_valid = False
+        self.__is_valid    = False
         self.metadata      = BeatmapIO.Metadata()
         self.timing_points = []
         self.hitobjects    = []
@@ -455,14 +455,13 @@ class BeatmapIO():
             except:
                 print(self.timing_points)
                 raise
+
             timing_point = self.timing_points[idx_timing_point]
-            bpm = timing_point.bpm
 
-            hitobject.to_repeat_time = round(((-600.0/bpm) * hitobject.pixel_length * timing_point.slider_multiplier) / (100.0 * self.sm))
+            hitobject.to_repeat_time = round(((-600.0/timing_point.bpm) * hitobject.pixel_length * timing_point.slider_multiplier) / (100.0 * self.sm))
             hitobject.end_time = hitobject.time + hitobject.to_repeat_time*hitobject.repeat
-            # TODO: slider.record_repeat_times() ???
 
-            # TODO: slider.record_tick_intervals() ???
+
     def __process_slider_tick_times(self):
         self.slider_tick_times = []
         for hitobject in self.hitobjects:
