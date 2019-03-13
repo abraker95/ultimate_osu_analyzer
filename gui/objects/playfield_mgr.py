@@ -14,12 +14,21 @@ class PlayfieldManager(QTabWidget):
 
 
     def playfield_layer_changed(self):
-        self.get_current_playfield().layer_changed()
+        playfield = self.get_current_playfield()
+        if not playfield: return
+
+        playfield.layer_changed()
 
 
     def playfield_remove_layer(self, layer_name):
-        self.get_current_playfield().remove_layer(layer_name)
+        playfield = self.get_current_playfield()
+        if not playfield: return
+
+        playfield.remove_layer(layer_name)
         
 
     def playfield_set_time(self, time):
-        self.get_current_playfield().set_time(time)
+        playfield = self.get_current_playfield()
+        if not playfield: return
+
+        playfield.set_time(time)
