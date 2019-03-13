@@ -50,3 +50,4 @@ gui/objects/layers/__pycache__/hitobject_outline_layer.cpython-36.pyc
 gui/objects/layers/__pycache__/hitobject_outlines_layer.cpython-36.pyc
 gui/objects/__pycache__/layer.cpython-36.pyc
 gui/widgets/__pycache__/layer_controller.cpython-36.pyc
+gui/objects/__pycache__/playfield_mgr.cpython-36.pyc

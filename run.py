@@ -52,14 +52,15 @@ class MainWindow(QMainWindow):
         self.close_action.setShortcut('Ctrl+Q')
         self.close_action.triggered.connect(self.close_application)
 
-        self.main_frame.bottom_frame.timeline.time_changed.connect(self.time_changed_event)
+        self.main_frame.center_frame.mid_frame.tab_changed.connect(self.change_playfield)
 
-        tab_manager = self.main_frame.center_frame.mid_frame
-        tab_manager.tab_changed.connect(self.playfield_change_event)
-
-        layer_controls = self.main_frame.center_frame.right_frame.layer_controls
-        layer_controls.layer_change_event.connect(lambda: tab_manager.get_current_playfield().layer_changed())
-        layer_controls.remove_layer_event.connect(lambda layer_name: tab_manager.get_current_playfield().remove_layer(layer_name))
+        timeline          = self.main_frame.bottom_frame.timeline
+        playfield_manager = self.main_frame.center_frame.mid_frame.playfield_manager
+        layer_controls    = self.main_frame.center_frame.right_frame.layer_controls
+        
+        timeline.time_changed.connect(lambda time: playfield_manager.playfield_set_time(time))
+        layer_controls.layer_change_event.connect(lambda: playfield_manager.playfield_layer_changed())
+        layer_controls.remove_layer_event.connect(lambda layer_name: playfield_manager.playfield_remove_layer(layer_name))
 
 
     def update_gui(self):
@@ -96,24 +97,12 @@ class MainWindow(QMainWindow):
             return file_dialog.selectedFiles()
 
 
-    def playfield_change_event(self, playfield):
+    def change_playfield(self, playfield):
         min_time, max_time = playfield.beatmap.get_time_range()
         self.main_frame.bottom_frame.timeline.setRange(xRange=(min_time - 100, max_time + 100))
         self.main_frame.center_frame.right_frame.layer_controls.create_layer_ctrls_from_layers(playfield.get_layers())
         print('\tTODO: save timeline marker position')
         print('\tTODO: update statistics on the right side')
-
-
-    def time_changed_event(self, time):
-        playfield = self.get_current_playfield()
-        if not playfield: return
-
-        playfield.set_time(time)
-
-
-    def get_current_playfield(self):
-        idx = self.main_frame.center_frame.mid_frame.tabs_area.currentIndex()
-        return self.main_frame.center_frame.mid_frame.tabs_area.widget(idx)
 
 
     def close_application(self):
