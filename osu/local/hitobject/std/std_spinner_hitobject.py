@@ -17,10 +17,9 @@ Input:
 Output: 
     Visual display of an osu!std hitcircle
 """
-class StdSpinnerHitobject(QGraphicsItem, Hitobject):
+class StdSpinnerHitobject(Hitobject):
 
     def __init__(self, data):
-        QGraphicsItem.__init__(self)
         Hitobject.__init__(self, data)
 
         self.__process_spinner_data(data)
@@ -36,17 +35,17 @@ class StdSpinnerHitobject(QGraphicsItem, Hitobject):
         print(self.radius)
 
 
-    def paint(self, painter, option, widget):
+    def render_hitobject_outline(self, painter, ratio_x, ratio_y):
         painter.setPen(QPen(QColor(0, 255, 255, 255), 5))
 
-        pos_x = (self.pos.x - self.radius/2)*self.ratio_x
-        pos_y = (self.pos.y - self.radius/2)*self.ratio_y
-        painter.drawEllipse(pos_x, pos_y, self.radius*self.ratio_x, self.radius*self.ratio_y)
+        pos_x = (self.pos.x - self.radius/2)*ratio_x
+        pos_y = (self.pos.y - self.radius/2)*ratio_y
+        painter.drawEllipse(pos_x, pos_y, self.radius*self.ratio_x, self.radius*ratio_y)
 
         center_radius = 3
-        pos_x = (self.pos.x - center_radius/2)*self.ratio_x
-        pos_y = (self.pos.y - center_radius/2)*self.ratio_y
-        painter.drawEllipse(pos_x, pos_y, center_radius*self.ratio_x, center_radius*self.ratio_y)
+        pos_x = (self.pos.x - center_radius/2)*ratio_x
+        pos_y = (self.pos.y - center_radius/2)*ratio_y
+        painter.drawEllipse(pos_x, pos_y, center_radius*ratio_x, center_radius*ratio_y)
 
 
     def resizeEvent(self, event):

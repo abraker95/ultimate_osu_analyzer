@@ -45,3 +45,8 @@ analysis/__pycache__/graphs.cpython-36.pyc
 osu/local/hitobject/std/__pycache__/std_spinner_hitobject.cpython-36.pyc
 gui/widgets/__pycache__/analysis_controls.cpython-36.pyc
 gui/widgets/__pycache__/layer_controls.cpython-36.pyc
+gui/objects/layers/__pycache__/hitobject_aimpoint_layer.cpython-36.pyc
+gui/objects/layers/__pycache__/hitobject_outline_layer.cpython-36.pyc
+gui/objects/layers/__pycache__/hitobject_outlines_layer.cpython-36.pyc
+gui/objects/__pycache__/layer.cpython-36.pyc
+gui/widgets/__pycache__/layer_controller.cpython-36.pyc

@@ -16,19 +16,28 @@ Input:
 Output: 
     Visual display of an osu!std hitcircle
 """
-class StdSingleNoteHitobject(QGraphicsItem, Hitobject):
+class StdSingleNoteHitobject(Hitobject):
 
     def __init__(self, data):
-        QGraphicsItem.__init__(self)
         Hitobject.__init__(self, data)
 
 
-    def paint(self, painter, option, widget):
+    def render_hitobject_outline(self, painter, ratio_x, ratio_y):
         painter.setPen(QColor(255, 0, 0, self.opacity*255))
 
-        pos_x = (self.pos.x - self.radius)*self.ratio_x
-        pos_y = (self.pos.y - self.radius)*self.ratio_y
-        painter.drawEllipse(pos_x, pos_y, 2*self.radius*self.ratio_x, 2*self.radius*self.ratio_y)
+        pos_x = (self.pos.x - self.radius)*ratio_x
+        pos_y = (self.pos.y - self.radius)*ratio_y
+        painter.drawEllipse(pos_x, pos_y, 2*self.radius*ratio_x, 2*self.radius*ratio_y)
+
+
+    def render_hitobject_aimpoints(self, painter, ratio_x, ratio_y):
+        painter.setPen(QColor(255, 0, 255, self.opacity*255))
+        aimpoint_radius = 6
+
+        pos_x = (self.pos.x - 0.5*aimpoint_radius)*ratio_x
+        pos_y = (self.pos.y - 0.5*aimpoint_radius)*ratio_y
+        painter.drawEllipse(pos_x, pos_y, aimpoint_radius, aimpoint_radius)
+
 
 
     def resizeEvent(self, event):

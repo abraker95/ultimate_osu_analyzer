@@ -22,7 +22,7 @@ Input:
 Output: 
     Visual display of an osu!std slider
 """
-class StdHoldNoteHitobject(QGraphicsItem, Hitobject):
+class StdHoldNoteHitobject(Hitobject):
 
     LINEAR1       = 'L'
     LINEAR2       = 'C'
@@ -30,7 +30,6 @@ class StdHoldNoteHitobject(QGraphicsItem, Hitobject):
     CIRCUMSCRIBED = 'P'
 
     def __init__(self, beatmap_data=None):
-        QGraphicsItem.__init__(self)
         Hitobject.__init__(self, beatmap_data)
 
         if not beatmap_data:
@@ -94,32 +93,41 @@ class StdHoldNoteHitobject(QGraphicsItem, Hitobject):
         self.slider_point_pos = self.time_to_pos(time)
 
 
-    def paint(self, painter, option, widget):
+    def render_hitobject_outline(self, painter, ratio_x, ratio_y):
         painter.setPen(QColor(0, 0, 255, self.opacity*255))
 
-        pos_x = (self.pos.x - self.radius)*self.ratio_x
-        pos_y = (self.pos.y - self.radius)*self.ratio_y
-        painter.drawEllipse(pos_x, pos_y, 2*self.radius*self.ratio_x, 2*self.radius*self.ratio_y)
+        pos_x = (self.pos.x - self.radius)*ratio_x
+        pos_y = (self.pos.y - self.radius)*ratio_y
+        painter.drawEllipse(pos_x, pos_y, 2*self.radius*ratio_x, 2*self.radius*ratio_y)
 
         try:
             for i in range(len(self.gen_points) - 1):
-                painter.drawLine(self.gen_points[i].x*self.ratio_x, self.gen_points[i].y*self.ratio_y, self.gen_points[i + 1].x*self.ratio_x, self.gen_points[i + 1].y*self.ratio_y)
+                painter.drawLine(self.gen_points[i].x*ratio_x, self.gen_points[i].y*ratio_y, self.gen_points[i + 1].x*ratio_x, self.gen_points[i + 1].y*ratio_y)
         except:
             print('Error drawing slider: ', self.gen_points)
 
+        # Let it be part of hitobject outline
+        self.render_sliderpoint(painter, ratio_x, ratio_y)
+
+
+    def render_sliderpoint(self, painter, ratio_x, ratio_y):
+        painter.setPen(QColor(0, 0, 255, self.opacity*255))
         slider_point_radius = 3
-        pos_x = (self.slider_point_pos.x - 0.5*slider_point_radius)*self.ratio_x
-        pos_y = (self.slider_point_pos.y - 0.5*slider_point_radius)*self.ratio_y
+
+        pos_x = (self.slider_point_pos.x - 0.5*slider_point_radius)*ratio_x
+        pos_y = (self.slider_point_pos.y - 0.5*slider_point_radius)*ratio_y
         painter.drawEllipse(pos_x, pos_y, slider_point_radius, slider_point_radius)
 
+
+    def render_hitobject_aimpoints(self, painter, ratio_x, ratio_y):
         painter.setPen(QColor(255, 0, 255, self.opacity*255))
         slider_tick_radius = 6
 
         for tick_time in self.tick_times:
             tick_pos = self.time_to_pos(tick_time)
 
-            pos_x = (tick_pos.x - 0.5*slider_point_radius)*self.ratio_x
-            pos_y = (tick_pos.y - 0.5*slider_point_radius)*self.ratio_y
+            pos_x = (tick_pos.x - 0.5*slider_tick_radius)*ratio_x
+            pos_y = (tick_pos.y - 0.5*slider_tick_radius)*ratio_y
             painter.drawEllipse(pos_x, pos_y, slider_tick_radius, slider_tick_radius)
 
 
