@@ -32,8 +32,6 @@ class Hitobject():
 
         self.opacity = 1.0
         self.radius  = None
-        self.ratio_x = 1.0
-        self.ratio_y = 1.0
 
 
     def get_copy(self):
