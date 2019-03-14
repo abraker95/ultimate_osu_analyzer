@@ -49,26 +49,3 @@ class LayerManager(QWidget):
 
         self.layer_controllers[layer.name].layer_change_event.connect(self.layer_change_event)
         self.layer_controllers[layer.name].layer_destroy_event.connect(self.remove_layer_event)
-
-
-    '''
-    def clear_layer_controls(self):
-        print('clear_layer_controls')
-        #for layer_ctrl in self.layer_ctrls.values():
-        #    self.layout.removeWidget(layer_controllers)
-        for i in reversed(range(self.layout.count())): 
-            widget = self.layout.itemAt(i).widget()
-            widget.setParent(None)
-            widget.deleteLater()
-
-        self.layer_controllers = {}
-    '''
-
-
-    # TODO: FIX This; it's bugged as hell
-    def create_layer_ctrls_from_layers(self, layers):
-        self.clear_layer_controls()
-
-        # Add in new controls
-        for layer in layers:
-            self.add_layer(layer)
