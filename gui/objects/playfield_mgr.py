@@ -25,7 +25,7 @@ class PlayfieldManager(QTabWidget):
         if not playfield: return
 
         playfield.remove_layer(layer_name)
-        
+    
 
     def playfield_set_time(self, time):
         playfield = self.get_current_playfield()

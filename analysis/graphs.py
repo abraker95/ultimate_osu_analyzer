@@ -20,10 +20,10 @@ class Timeline(pyqtgraph.PlotWidget):
         self.timeline_marker.setBounds((Timeline.MIN_TIME + 100, None))
         
         self.addItem(self.timeline_marker, ignoreBounds=True)        
-        self.timeline_marker.sigPositionChanged.connect(self.time_changed)
+        self.timeline_marker.sigPositionChanged.connect(self.time_changed_event)
 
 
     @callback
-    def time_changed(self, marker):
-        self.time_changed.emit(marker.value())
+    def time_changed_event(self, marker):
+        self.time_changed_event.emit(marker.value())
         

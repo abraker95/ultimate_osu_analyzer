@@ -46,8 +46,6 @@ class Playfield(QGraphicsView):
             #self.resizeEvent.connect(hitobject.set_ratios)
     
         beatmap.set_cs_val(beatmap.cs)
-
-        self.create_basic_map_layers()
         
 
     def layer_changed(self):
@@ -88,12 +86,12 @@ class Playfield(QGraphicsView):
 
 
     @callback
-    def add_layer(self, layer):
+    def add_layer_event(self, layer):
         self.layers[layer.name] = layer
         self.scene.addItem(layer)
         self.scene.update()
 
-        self.add_layer.emit(layer)
+        self.add_layer_event.emit(layer)
 
 
     def remove_layer(self, layer_name):
@@ -103,6 +101,6 @@ class Playfield(QGraphicsView):
 
 
     def create_basic_map_layers(self):
-        self.add_layer(HitobjectOutlineLayer(self))
-        self.add_layer(HitobjectAimpointLayer(self))
+        self.add_layer_event(HitobjectOutlineLayer(self))
+        self.add_layer_event(HitobjectAimpointLayer(self))
         

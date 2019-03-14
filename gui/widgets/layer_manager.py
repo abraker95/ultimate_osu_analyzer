@@ -6,19 +6,21 @@ from gui.widgets.layer_controller import LayerController
 from misc.callback import callback
 
 
-class LayerControls(QWidget):
+class LayerManager(QWidget):
 
-    def __init__(self):
+    def __init__(self, name):
         super().__init__()
 
         self.init_gui_elements()
         self.construct_gui()
         self.update_gui()
 
+        self.name = name
+
 
     def init_gui_elements(self):
-        self.layout      = QVBoxLayout()
-        self.layer_ctrls = {}
+        self.layout            = QVBoxLayout()
+        self.layer_controllers = {}
 
 
     def construct_gui(self):
@@ -40,18 +42,27 @@ class LayerControls(QWidget):
 
 
     def add_layer(self, layer):
-        self.layer_ctrls[layer.name] = LayerController(layer)
-        self.layout.addWidget(self.layer_ctrls[layer.name])
+        if layer.name in self.layer_controllers: return
 
-        self.layer_ctrls[layer.name].layer_change_event.connect(self.layer_change_event)
-        self.layer_ctrls[layer.name].layer_destroy_event.connect(self.remove_layer_event)
+        self.layer_controllers[layer.name] = LayerController(layer)
+        self.layout.addWidget(self.layer_controllers[layer.name])
+
+        self.layer_controllers[layer.name].layer_change_event.connect(self.layer_change_event)
+        self.layer_controllers[layer.name].layer_destroy_event.connect(self.remove_layer_event)
 
 
+    '''
     def clear_layer_controls(self):
         print('clear_layer_controls')
-        for layer_ctrl in self.layer_ctrls.values():
-            self.layout.removeWidget(layer_ctrl)
-        self.layer_ctrls = {}
+        #for layer_ctrl in self.layer_ctrls.values():
+        #    self.layout.removeWidget(layer_controllers)
+        for i in reversed(range(self.layout.count())): 
+            widget = self.layout.itemAt(i).widget()
+            widget.setParent(None)
+            widget.deleteLater()
+
+        self.layer_controllers = {}
+    '''
 
 
     # TODO: FIX This; it's bugged as hell

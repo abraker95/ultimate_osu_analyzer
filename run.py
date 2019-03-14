@@ -52,15 +52,7 @@ class MainWindow(QMainWindow):
         self.close_action.setShortcut('Ctrl+Q')
         self.close_action.triggered.connect(self.close_application)
 
-        self.main_frame.center_frame.mid_frame.tab_changed.connect(self.change_playfield)
-
-        timeline          = self.main_frame.bottom_frame.timeline
-        playfield_manager = self.main_frame.center_frame.mid_frame.playfield_manager
-        layer_controls    = self.main_frame.center_frame.right_frame.layer_controls
-        
-        timeline.time_changed.connect(lambda time: playfield_manager.playfield_set_time(time))
-        layer_controls.layer_change_event.connect(lambda: playfield_manager.playfield_layer_changed())
-        layer_controls.remove_layer_event.connect(lambda layer_name: playfield_manager.playfield_remove_layer(layer_name))
+        self.main_frame.center_frame.mid_frame.tab_changed_event.connect(self.change_playfield)    
 
 
     def update_gui(self):
@@ -77,14 +69,38 @@ class MainWindow(QMainWindow):
         for beatmap_filename in beatmap_filenames:
             print(beatmap_filename)
 
+            # Create a new playfield and load the beatmap into it
             playfield = Playfield()
             playfield.setFocusPolicy(Qt.NoFocus)
             playfield.load_beatmap(Beatmap(beatmap_filename))
 
-            playfield.add_layer.connect(self.main_frame.center_frame.right_frame.layer_controls.add_layer)
-
+            # TODO: Currently the lables are based off map's full name
+            #       That's fine, but if the same map is opened multiple times, especially after being edited,
+            #       the layers refer to each other under the same map's name and will apply to all maps named with same name
+            #       Use an MD5 hash instead
             map_name = playfield.beatmap.metadata.name
+
+            # Establish connection between the timeline and playfield's time setting
+            timeline = self.main_frame.bottom_frame.timeline
+            timeline.time_changed_event.connect(playfield.set_time)
+            
+            # Add new layer controls area for controlling displayed map layers
+            layer_manager_stack = self.main_frame.center_frame.right_frame.layer_manager_stack
+            layer_manager_stack.add_layer_manager(map_name)
+
+            # Establish a connection between the created layer manager and playfield's add layer and layer manager's remove layer events
+            layer_manager = layer_manager_stack.get_layer_manager(map_name)
+            playfield.add_layer_event.connect(layer_manager.add_layer)
+            
+            layer_manager.remove_layer_event.connect(playfield.remove_layer)
+            layer_manager.layer_change_event.connect(playfield.layer_changed)
+
+            # Add new tab to display playfield; 
+            # Note: this has to go last to be able to switch to created layer manager
             self.main_frame.center_frame.mid_frame.add_tab(playfield, map_name)
+
+            # Populate layer manager with plafield layers
+            playfield.create_basic_map_layers()
 
 
     def get_osu_files(self, file_type):
@@ -98,9 +114,15 @@ class MainWindow(QMainWindow):
 
 
     def change_playfield(self, playfield):
+        # Update timeline range
         min_time, max_time = playfield.beatmap.get_time_range()
         self.main_frame.bottom_frame.timeline.setRange(xRange=(min_time - 100, max_time + 100))
-        self.main_frame.center_frame.right_frame.layer_controls.create_layer_ctrls_from_layers(playfield.get_layers())
+
+        # Change to the layer manager responsible for the playfield now displayed
+        map_name = playfield.beatmap.metadata.name
+        layer_manager_stack = self.main_frame.center_frame.right_frame.layer_manager_stack
+        layer_manager_stack.set_layer_manager_active(map_name)
+
         print('\tTODO: save timeline marker position')
         print('\tTODO: update statistics on the right side')
 

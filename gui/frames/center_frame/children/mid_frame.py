@@ -25,11 +25,10 @@ class MidFrame(QFrame):
     def construct_gui(self):
         self.setLayout(self.layout)
         
-        self.playfield_manager.currentChanged.connect(self.tab_changed)
+        self.playfield_manager.currentChanged.connect(self.tab_changed_event)
         self.playfield_manager.tabCloseRequested.connect(self.tab_closing)
         self.layout.addWidget(self.playfield_manager)
 
-        # TODO: play area
         # TODO: label showing cursor pos
         # TODO: label showing pos of selected object
 
@@ -39,16 +38,16 @@ class MidFrame(QFrame):
         self.playfield_manager.setMovable(True)
         self.playfield_manager.setTabsClosable(True)
 
-
+    
     def add_tab(self, playfield, name):
         self.playfield_manager.addTab(playfield, name)
         self.playfield_manager.setCurrentIndex(self.playfield_manager.indexOf(playfield))
 
 
     @callback
-    def tab_changed(self, idx):
+    def tab_changed_event(self, idx):
         print('Tab changed to index ', idx)
-        self.tab_changed.emit(self.playfield_manager.widget(idx))
+        self.tab_changed_event.emit(self.playfield_manager.widget(idx))
 
 
     @callback

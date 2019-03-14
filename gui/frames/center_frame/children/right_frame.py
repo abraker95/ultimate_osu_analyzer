@@ -2,7 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from gui.widgets.layer_controls import LayerControls
+from gui.widgets.layer_manager_stack import LayerManagerStack
 from gui.widgets.analysis_controls import AnalysisControls
 
 
@@ -20,14 +20,14 @@ class RightFrame(QFrame):
         self.layout    = QHBoxLayout()
         self.tabs_area = QTabWidget()
 
-        self.layer_controls    = LayerControls()
-        self.analysis_controls = AnalysisControls()
+        self.layer_manager_stack = LayerManagerStack()
+        self.analysis_controls   = AnalysisControls()
 
 
     def construct_gui(self):
         self.setLayout(self.layout)
 
-        self.tabs_area.addTab(self.layer_controls, 'Layers')
+        self.tabs_area.addTab(self.layer_manager_stack, 'Layers')
         self.tabs_area.addTab(self.analysis_controls, 'Analysis')
         self.layout.addWidget(self.tabs_area)
 
