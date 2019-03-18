@@ -39,6 +39,13 @@ class StdSingleNoteHitobject(Hitobject):
         painter.drawEllipse(pos_x, pos_y, aimpoint_radius, aimpoint_radius)
 
 
+    def time_to_pos(self, time):
+        return self.pos
+        
+
+    def get_aimpoints(self):
+        return [ self.time ]
+
 
     def resizeEvent(self, event):
         print('owh')

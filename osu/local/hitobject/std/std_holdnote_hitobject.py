@@ -36,7 +36,9 @@ class StdHoldNoteHitobject(Hitobject):
             self.end_time     = None    # Initialized by beatmapIO.__process_slider_timings after timing data is read
             self.pixel_length = None
             self.repeat       = None
+
             self.gen_points   = []
+            self.tick_times   = []
 
         self.__process_slider_data(beatmap_data)
         self.__process_curve_points()
@@ -79,8 +81,16 @@ class StdHoldNoteHitobject(Hitobject):
         return self.end_time
 
 
+    def get_generated_curve_points(self):
+        return self.gen_points
+
+
     def get_last_tick_time(self):
-        pass
+        return self.tick_times[-1]
+
+
+    def get_aimpoints(self):
+        return self.tick_times
 
 
     # TODO: make sure this is correct
