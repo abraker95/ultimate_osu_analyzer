@@ -7,6 +7,7 @@ from misc.callback import callback
 
 from gui.objects.layers.hitobject_outline_layer import HitobjectOutlineLayer
 from gui.objects.layers.hitobject_aimpoint_layer import HitobjectAimpointLayer
+from gui.objects.layers.aimpoint_paths_layer import AimpointPathsLayer
 
 
 '''
@@ -103,4 +104,6 @@ class Playfield(QGraphicsView):
     def create_basic_map_layers(self):
         self.add_layer_event(HitobjectOutlineLayer(self))
         self.add_layer_event(HitobjectAimpointLayer(self))
+        self.add_layer_event(AimpointPathsLayer(self))
+        
         
