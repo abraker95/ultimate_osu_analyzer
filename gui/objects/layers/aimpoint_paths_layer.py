@@ -10,7 +10,7 @@ from osu.local.beatmap.beatmap_utility import *
 class AimpointPathsLayer(Layer):
 
     def __init__(self, playfield):
-        Layer.__init__(self, 'Hitobject aimpoints')
+        Layer.__init__(self, 'Aimpoint Paths')
         self.playfield = playfield
 
 
