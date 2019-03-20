@@ -51,3 +51,9 @@ gui/objects/layers/__pycache__/hitobject_outlines_layer.cpython-36.pyc
 gui/objects/__pycache__/layer.cpython-36.pyc
 gui/widgets/__pycache__/layer_controller.cpython-36.pyc
 gui/objects/__pycache__/playfield_mgr.cpython-36.pyc
+gui/widgets/__pycache__/layer_manager.cpython-36.pyc
+gui/widgets/__pycache__/layer_manager_stack.cpython-36.pyc
+gui/objects/layers/__pycache__/aimpoint_paths_layer.cpython-36.pyc
+gui/objects/graphs/__pycache__/tapping_intervals_graph.cpython-36.pyc
+analysis/__pycache__/map_metrics.cpython-36.pyc
+analysis/__pycache__/timeline.cpython-36.pyc

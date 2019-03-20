@@ -52,7 +52,14 @@ class MainWindow(QMainWindow):
         self.close_action.setShortcut('Ctrl+Q')
         self.close_action.triggered.connect(self.close_application)
 
-        self.main_frame.center_frame.mid_frame.tab_changed_event.connect(self.change_playfield)    
+        self.main_frame.center_frame.mid_frame.tab_changed_event.connect(self.change_playfield)
+
+        timeline          = self.main_frame.bottom_frame.timeline
+        analysis_controls = self.main_frame.center_frame.right_frame.analysis_controls
+
+        for graph in analysis_controls.graphs:
+            graph.time_changed_event.connect(timeline.timeline_marker.setValue)
+            timeline.time_changed_event.connect(graph.timeline_marker.setValue)
 
 
     def update_gui(self):
@@ -116,12 +123,18 @@ class MainWindow(QMainWindow):
     def change_playfield(self, playfield):
         # Update timeline range
         min_time, max_time = playfield.beatmap.get_time_range()
-        self.main_frame.bottom_frame.timeline.setRange(xRange=(min_time - 100, max_time + 100))
+        timeline = self.main_frame.bottom_frame.timeline
+        timeline.setRange(xRange=(min_time - 100, max_time + 100))
 
         # Change to the layer manager responsible for the playfield now displayed
         map_name = playfield.beatmap.metadata.name
         layer_manager_stack = self.main_frame.center_frame.right_frame.layer_manager_stack
         layer_manager_stack.set_layer_manager_active(map_name)
+
+        analysis_controls = self.main_frame.center_frame.right_frame.analysis_controls
+
+        for graph in analysis_controls.graphs:
+            graph.plot(playfield.beatmap.hitobjects)
 
         print('\tTODO: save timeline marker position')
         print('\tTODO: update statistics on the right side')
