@@ -70,7 +70,21 @@ class Beatmap(QObject, BeatmapIO):
             index = find(self.hitobjects, time, lambda hitobject: hitobject.time)
             return self.hitobjects[index] if index != -1 else None
 
-    
+
+    def get_previous_hitobject(self, hitobject):
+        idx = self.hitobjects.index(hitobject)
+        if idx < 1: return None
+
+        return self.hitobjects[idx - 1]
+
+
+    def get_next_hitobject(self, hitobject):
+        idx = self.hitobjects.index(hitobject)
+        if idx > len(self.hitobjects) - 2: return None
+
+        return self.hitobjects[idx + 1]
+
+
     """
     Searches for the earliest timingpoint that is closest to the time specified.
 
