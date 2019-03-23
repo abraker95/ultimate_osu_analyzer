@@ -10,7 +10,7 @@ from osu.local.beatmap.beatmap import Beatmap
 
 class MainWindow(QMainWindow):
 
-    title = 'osu! replay analyzer v2.0'
+    title = 'Ultimate osu! Analyzer'
     left   = 100
     top    = 100
     width  = 1080
