@@ -134,7 +134,7 @@ class MainWindow(QMainWindow):
         analysis_controls = self.main_frame.center_frame.right_frame.analysis_controls
 
         for graph in analysis_controls.graphs:
-            graph.plot(playfield.beatmap.hitobjects)
+            graph.update_data(playfield.beatmap.hitobjects)
 
         print('\tTODO: save timeline marker position')
         print('\tTODO: update statistics on the right side')
