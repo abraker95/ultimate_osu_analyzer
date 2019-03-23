@@ -1,11 +1,11 @@
-from gui.objects.layer import Layer
+from gui.objects.layer.layer import Layer
 from osu.local.beatmap.beatmap_utility import *
 
 
-class HitobjectAimpointLayer(Layer):
+class HitobjectOutlineLayer(Layer):
 
     def __init__(self, playfield):
-        Layer.__init__(self, 'Hitobject aimpoints')
+        Layer.__init__(self, 'Hitobject outlines')
         self.playfield = playfield
 
 
@@ -16,5 +16,5 @@ class HitobjectAimpointLayer(Layer):
 
     def paint(self, painter, option, widget):
         for visible_hitobject in self.playfield.visible_hitobjects:
-            try: visible_hitobject.render_hitobject_aimpoints(painter, self.ratio_x, self.ratio_y)
+            try: visible_hitobject.render_hitobject_outline(painter, self.ratio_x, self.ratio_y)
             except AttributeError: pass

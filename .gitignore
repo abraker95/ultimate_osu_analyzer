@@ -57,3 +57,10 @@ gui/objects/layers/__pycache__/aimpoint_paths_layer.cpython-36.pyc
 gui/objects/graphs/__pycache__/tapping_intervals_graph.cpython-36.pyc
 analysis/__pycache__/map_metrics.cpython-36.pyc
 analysis/__pycache__/timeline.cpython-36.pyc
+gui/objects/graph/__pycache__/tapping_intervals_graph.cpython-36.pyc
+gui/objects/graph/graphs/__pycache__/tapping_intervals_graph.cpython-36.pyc
+gui/objects/layer/__pycache__/layer.cpython-36.pyc
+gui/objects/layer/layers/__pycache__/aimpoint_paths_layer.cpython-36.pyc
+gui/objects/layer/layers/__pycache__/hitobject_aimpoint_layer.cpython-36.pyc
+gui/objects/layer/layers/__pycache__/hitobject_outline_layer.cpython-36.pyc
+gui/objects/layer/layers/__pycache__/hitobject_outlines_layer.cpython-36.pyc

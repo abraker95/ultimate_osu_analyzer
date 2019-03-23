@@ -5,9 +5,9 @@ from PyQt5.QtGui import *
 from osu.local.beatmap.beatmap_utility import BeatmapUtil
 from misc.callback import callback
 
-from gui.objects.layers.hitobject_outline_layer import HitobjectOutlineLayer
-from gui.objects.layers.hitobject_aimpoint_layer import HitobjectAimpointLayer
-from gui.objects.layers.aimpoint_paths_layer import AimpointPathsLayer
+from gui.objects.layer.layers.hitobject_outline_layer import HitobjectOutlineLayer
+from gui.objects.layer.layers.hitobject_aimpoint_layer import HitobjectAimpointLayer
+from gui.objects.layer.layers.aimpoint_paths_layer import AimpointPathsLayer
 
 
 '''

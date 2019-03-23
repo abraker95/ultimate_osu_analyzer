@@ -2,7 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from gui.objects.layer import Layer
+from gui.objects.layer.layer import Layer
 from osu.local.beatmap.beatmap_utility import *
 
 

@@ -2,7 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from gui.objects.graphs.tapping_intervals_graph import TappingIntervalsGraph
+from gui.objects.graph.graphs.tapping_intervals_graph import TappingIntervalsGraph
 
 
 
