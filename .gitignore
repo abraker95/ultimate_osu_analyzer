@@ -65,3 +65,4 @@ gui/objects/layer/layers/__pycache__/hitobject_aimpoint_layer.cpython-36.pyc
 gui/objects/layer/layers/__pycache__/hitobject_outline_layer.cpython-36.pyc
 gui/objects/layer/layers/__pycache__/hitobject_outlines_layer.cpython-36.pyc
 gui/objects/graph/__pycache__/line_graph.cpython-36.pyc
+gui/objects/graph/__pycache__/scatter_graph.cpython-36.pyc
