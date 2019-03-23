@@ -13,6 +13,7 @@ class TappingIntervalsGraph(LineGraph):
 
     def __init__(self, hitobjects=None):
         super().__init__()
+        self.update_graph_info(title='Tapping Intervals Graph', x_axis_label='Time (ms)', y_axis_label='Intervals (ms)')
 
 
     def get_data(self, hitobjects=None):
