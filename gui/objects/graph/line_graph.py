@@ -18,20 +18,20 @@ class LineGraph(pyqtgraph.PlotWidget):
 
         self.getViewBox().setMouseEnabled(x=False, y=False)
 
+        self.plot_data_item = pyqtgraph.PlotCurveItem()
+        self.addItem(self.plot_data_item)
+
         self.timeline_marker = pyqtgraph.InfiniteLine(angle=90, movable=True)
         self.timeline_marker.setBounds((LineGraph.MIN_TIME + 100, None))
         self.timeline_marker.sigPositionChanged.connect(self.time_changed_event)
         self.addItem(self.timeline_marker, ignoreBounds=True)
 
-        self.plot = None
         self.update_data()
 
 
     def update_data(self, data=None):
         data_x, data_y = self.get_data(data)
-
-        if not self.plot: self.plot = self.getPlotItem().plot(x=data_x, y=data_y, clear=False)
-        else:             self.plot.setData(x=data_x, y=data_y)
+        self.plot_data_item.setData(x=data_x, y=data_y)
         
         if len(data_x) > 0: self.setRange(xRange=(data_x[0] - 100, data_x[-1] + 100))
         if len(data_y) > 0: self.setRange(yRange=(min(data_y), max(data_y)))
