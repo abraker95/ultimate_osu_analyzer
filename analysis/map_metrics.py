@@ -2,16 +2,16 @@
 
 class MapMetrics():
 
-    @staticmethod
-    def hitobject_start_times(hitobjects):
-        return [ hitobjects[i].time for i in range(1, len(hitobjects)) ]
 
     '''
     Raw metrics
     '''
     @staticmethod
-    def calc_tapping_intervals(hitobjects):
-        return [ hitobjects[i].time - hitobjects[i - 1].time for i in range(1, len(hitobjects)) ]
+    def calc_tapping_intervals(time_list):
+        intervals = [ time_list[i] - time_list[i - 1] for i in range(1, len(time_list)) ]
+        time      = [ time_list[i] for i in range(1, len(time_list)) ]
+
+        return time, intervals
 
 
     @staticmethod
