@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 from gui.objects.graph.graphs.tapping_intervals_graph import TappingIntervalsGraph
+from gui.objects.graph.graphs.velocity_graph import VelocityGraph
 
 
 
@@ -21,7 +22,10 @@ class AnalysisControls(QWidget):
         self.label  = QLabel('Analysis Controls', self)
         
         # TODO: List of dockable widgets
-        self.graphs = [ TappingIntervalsGraph() ]
+        self.graphs = [ 
+            TappingIntervalsGraph(), 
+            VelocityGraph()
+        ]
 
 
     def construct_gui(self):

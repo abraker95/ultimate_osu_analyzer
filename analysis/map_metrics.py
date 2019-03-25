@@ -15,8 +15,13 @@ class MapMetrics():
 
 
     @staticmethod
-    def calc_velocity(hitobjects):
-        pass
+    def calc_velocity(time_pos_list):
+        time, pos = zip(*time_pos_list)
+
+        vel  = [ pos[i].distance_to(pos[i - 1])/(time[i] - time[i - 1]) for i in range(1, len(time_pos_list))  ]
+        time = [ time[i] for i in range(1, len(time_pos_list)) ]
+
+        return time, vel
 
 
     @staticmethod
