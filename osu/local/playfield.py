@@ -8,6 +8,7 @@ from misc.callback import callback
 from gui.objects.layer.layers.hitobject_outline_layer import HitobjectOutlineLayer
 from gui.objects.layer.layers.hitobject_aimpoint_layer import HitobjectAimpointLayer
 from gui.objects.layer.layers.aimpoint_paths_layer import AimpointPathsLayer
+from gui.objects.layer.layers.aimpoint_velocity_text_layer import AimpointVelocityTextLayer
 
 
 '''
@@ -105,5 +106,6 @@ class Playfield(QGraphicsView):
         self.add_layer_event(HitobjectOutlineLayer(self))
         self.add_layer_event(HitobjectAimpointLayer(self))
         self.add_layer_event(AimpointPathsLayer(self))
+        self.add_layer_event(AimpointVelocityTextLayer(self))
         
         
