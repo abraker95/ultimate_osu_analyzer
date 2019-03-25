@@ -20,31 +20,6 @@ class AimpointVelocityTextLayer(Layer):
         self.ratio_y = height/BeatmapUtil.PLAYFIELD_HEIGHT
 
 
-    def visible_aimpoints(self):
-        if len(self.playfield.visible_hitobjects) < 1: return
-
-        hitobject_before_visible = self.playfield.beatmap.get_previous_hitobject(self.playfield.visible_hitobjects[0])
-        if hitobject_before_visible: 
-            try:
-                time = hitobject_before_visible.get_aimpoints()[-1]
-                yield (time, hitobject_before_visible.time_to_pos(time))
-            except AttributeError: pass
-
-        for visible_hitobject in self.playfield.visible_hitobjects:
-            try: 
-                for aimpoint in visible_hitobject.get_aimpoints():
-                    time = aimpoint
-                    yield (time, visible_hitobject.time_to_pos(time))
-            except AttributeError: pass
-
-        hitobject_after_visible = self.playfield.beatmap.get_next_hitobject(self.playfield.visible_hitobjects[-1])
-        if hitobject_after_visible: 
-            try:
-                time = hitobject_after_visible.get_aimpoints()[0]
-                yield (time, hitobject_after_visible.time_to_pos(time))
-            except AttributeError: pass 
-
-
     def get_aimpoints(self, hitobjects):
         aimpoints = []
         for hitobject in hitobjects:
@@ -59,7 +34,9 @@ class AimpointVelocityTextLayer(Layer):
     def paint(self, painter, option, widget):
         painter.setPen(QColor(255, 0, 0, 255))
 
-        aimpoints = list(self.visible_aimpoints())
+        aimpoints = BeatmapUtil.get_aimpoints_from_hitobjects(self.playfield.beatmap, self.playfield.visible_hitobjects)
+        aimpoints = list(aimpoints)
+
         if len(aimpoints) < 1: return
 
         time, vel = MapMetrics.calc_velocity(aimpoints)

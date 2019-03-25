@@ -169,3 +169,29 @@ class BeatmapUtil():
     @staticmethod
     def get_circle_overlap_percentage(beatmap, hitobject, time):
         pass
+
+
+    @staticmethod
+    def get_aimpoints_from_hitobjects(beatmap, hitobjects):
+        if len(hitobjects) < 1: return
+
+        hitobject_before_first = beatmap.get_previous_hitobject(hitobjects[0])
+        if hitobject_before_first: 
+            try:
+                time = hitobject_before_first.get_aimpoints()[-1]
+                yield (time, hitobject_before_first.time_to_pos(time))
+            except AttributeError: pass
+
+        for hitobject in hitobjects:
+            try: 
+                for aimpoint in hitobject.get_aimpoints():
+                    time = aimpoint
+                    yield (time, hitobject.time_to_pos(time))
+            except AttributeError: pass
+
+        hitobject_after_last = beatmap.get_next_hitobject(hitobjects[-1])
+        if hitobject_after_last: 
+            try:
+                time = hitobject_after_last.get_aimpoints()[0]
+                yield (time, hitobject_after_last.time_to_pos(time))
+            except AttributeError: pass 
