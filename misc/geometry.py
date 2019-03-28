@@ -52,7 +52,16 @@ def get_angle(pos_a, pos_b, pos_c):
     ab = pos_b - pos_a
     cb = pos_b - pos_c
 
-    return math.acos(ab.dot(cb)/(pos_a.distance_to(pos_b)*pos_b.distance_to(pos_c)))
+    mag = pos_a.distance_to(pos_b)*pos_b.distance_to(pos_c)
+    if mag == 0: return float('nan')       # Happens when notes are directly stacked on top of each other
+
+    dot = ab.dot(cb)
+    if abs(dot/mag) > 1: mag = round(mag)  # Precision calc errors may make it a very fractional amount smaller
+
+    try: return math.acos(dot/mag)
+    except:
+        print('mag = ', mag, '\nab.dot(cb) = ', dot, '\npos_a = ', pos_a, '\npos_b = ', pos_b, '\npos_c = ', pos_c)
+        raise
 
 
 def get_absolute_angle(pos_a, pos_b):
