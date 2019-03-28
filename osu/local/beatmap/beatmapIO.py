@@ -342,7 +342,7 @@ class BeatmapIO():
 
         timing_point = BeatmapIO.TimingPoint()
         
-        timing_point.offset        = int(data[0])
+        timing_point.offset        = float(data[0])
         timing_point.beat_interval = float(data[1])
 
         # Old maps don't have meteres
