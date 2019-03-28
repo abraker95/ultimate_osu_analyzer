@@ -1,3 +1,5 @@
+from misc.geometry import *
+
 
 
 class MapMetrics():
@@ -18,21 +20,26 @@ class MapMetrics():
     def calc_velocity(time_pos_list):
         time, pos = zip(*time_pos_list)
 
-        vel  = [ pos[i].distance_to(pos[i - 1])/(time[i] - time[i - 1]) for i in range(1, len(time_pos_list))  ]
+        vel  = [ pos[i].distance_to(pos[i - 1])/(time[i] - time[i - 1]) for i in range(1, len(time_pos_list)) ]
         time = [ time[i] for i in range(1, len(time_pos_list)) ]
 
         return time, vel
 
 
     @staticmethod
-    def calc_acceleration(hitobjects):
-        pass
+    def calc_angles(time_pos_list):
+        time, pos = zip(*time_pos_list)
+
+        angle  = [ get_angle(pos[i - 1], pos[i], pos[i + 1]) for i in range(1, len(time_pos_list) - 1) ]
+        time   = [ time[i] for i in range(1, len(time_pos_list) - 1) ]
+
+        return time, angle
 
 
     @staticmethod
-    def calc_angles(hitobjects):
+    def calc_acceleration(hitobjects):
         pass
-
+        
 
     '''
     Advanced metrics
