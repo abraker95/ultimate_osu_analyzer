@@ -33,4 +33,4 @@ class AimpointAngleTextLayer(Layer):
 
         painter.setPen(QColor(0, 0, 255, 255))
         for i in range(len(angles)):
-            painter.drawText(pos[i + 1].x, pos[i + 1].y, str(round(angles[i]*180/math.pi, 2)))
+            painter.drawText(pos[i + 1].x*self.ratio_x, pos[i + 1].y*self.ratio_y, str(round(angles[i]*180/math.pi, 2)))

@@ -35,4 +35,4 @@ class AimpointVelocityTextLayer(Layer):
             prev_pos, curr_pos = pos[i - 1], pos[i]
             midpoint = prev_pos.midpoint(curr_pos)
 
-            painter.drawText(midpoint.x, midpoint.y, str(round(vel[i - 1], 2)))
+            painter.drawText(midpoint.x*self.ratio_x, midpoint.y*self.ratio_y, str(round(vel[i - 1], 2)))
