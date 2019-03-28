@@ -2,6 +2,14 @@ import math
 
 
 
+def sign(val):
+    return abs(val)/val
+
+
+def parity(val):
+    return (sign(val) - 1)/2
+
+
 def bound(min_val, max_val, value):
     return min(max(value, min_val), max_val)
 

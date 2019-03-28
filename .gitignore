@@ -68,3 +68,4 @@ gui/objects/graph/__pycache__/line_graph.cpython-36.pyc
 gui/objects/graph/__pycache__/scatter_graph.cpython-36.pyc
 gui/objects/graph/graphs/__pycache__/velocity_graph.cpython-36.pyc
 gui/objects/layer/layers/__pycache__/aimpoint_velocity_text_layer.cpython-36.pyc
+misc/__pycache__/geometry.cpython-36.pyc

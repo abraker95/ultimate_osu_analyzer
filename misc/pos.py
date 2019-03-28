@@ -19,12 +19,20 @@ class Pos():
         return self.x == other.x and self.y == other.y
 
 
+    def __ne__(self, other):
+        return not (self == other)
+
+
     def __add__(self, other):
         return Pos(self.x + other.x, self.y + other.y)
 
 
     def __sub__(self, other):
         return Pos(self.x - other.x, self.y - other.y)
+
+
+    def __mul__(self, other):
+        return Pos(self.x * other.x, self.y * other.y)
 
 
     def __truediv__(self, other):
@@ -45,6 +53,11 @@ class Pos():
         return (other + self)/Pos(2.0, 2.0)
 
 
+    def slope(self, other):
+        if self.x - other.x == 0: return float('inf')
+        else:                     return (self.y - other.y) / (self.x - other.x) 
+
+
     def nor(self):
         return Pos(-self.y, self.x)
 
@@ -57,3 +70,15 @@ class Pos():
     def flip(self, axis_radians):
         # TODO
         pass
+
+
+    def abs(self):
+        return Pos(abs(self.x), abs(self.y))
+
+    
+    def dot(self, other):
+        return self.x*other.x + self.y*other.y
+
+
+    def cross(self, other):
+        return self.y*other.y - self.y*other.x
