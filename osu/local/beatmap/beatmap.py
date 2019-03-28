@@ -84,6 +84,18 @@ class Beatmap(QObject, BeatmapIO):
 
         return self.hitobjects[idx + 1]
 
+    
+    def get_aimpoints(self, hitobjects):
+        aimpoints = []
+        for hitobject in hitobjects:
+            try:
+                for aimpoint in hitobject.get_aimpoints():
+                    aimpoints.append( (aimpoint, hitobject.time_to_pos(aimpoint)) )
+            except AttributeError: pass
+
+        return sorted(aimpoints, key=lambda aimpoint: aimpoint[0])
+
+
 
     """
     Searches for the earliest timingpoint that is closest to the time specified.

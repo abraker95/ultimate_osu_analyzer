@@ -20,17 +20,6 @@ class AimpointVelocityTextLayer(Layer):
         self.ratio_y = height/BeatmapUtil.PLAYFIELD_HEIGHT
 
 
-    def get_aimpoints(self, hitobjects):
-        aimpoints = []
-        for hitobject in hitobjects:
-            try:
-                for aimpoint in hitobject.get_aimpoints():
-                    aimpoints.append( (aimpoint, hitobject.time_to_pos(aimpoint)) )
-            except AttributeError: pass
-
-        return sorted(aimpoints, key=lambda aimpoint: aimpoint[0])
-
-
     def paint(self, painter, option, widget):
         painter.setPen(QColor(255, 0, 0, 255))
 
