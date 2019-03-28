@@ -31,7 +31,7 @@ class AimpointVelocityTextLayer(Layer):
         time, vel = MapMetrics.calc_velocity(aimpoints)
         time, pos = zip(*aimpoints)
 
-        for i in range(1, len(aimpoints)):
+        for i in range(1, len(vel)):
             prev_pos, curr_pos = pos[i - 1], pos[i]
             midpoint = prev_pos.midpoint(curr_pos)
 
