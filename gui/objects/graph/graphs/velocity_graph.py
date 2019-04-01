@@ -31,4 +31,6 @@ class VelocityGraph(LineGraph):
         if not hitobjects: return super().get_data()
 
         aimpoints = self.get_aimpoints(hitobjects)
+        if len(aimpoints) < 1: return ( [], [] )
+
         return MapMetrics.calc_velocity(aimpoints)
