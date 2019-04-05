@@ -129,7 +129,7 @@ class MainWindow(QMainWindow):
         min_time, max_time = playfield.beatmap.get_time_range()
         timeline = self.main_frame.bottom_frame.timeline
         timeline.setRange(xRange=(min_time - 100, max_time + 100))
-        timeline.set_hitobject_data(playfield.beatmap.hitobjects)
+        timeline.set_hitobject_data(full_hitobject_data)
 
         # Change to the layer manager responsible for the playfield now displayed
         map_name = playfield.beatmap.metadata.name

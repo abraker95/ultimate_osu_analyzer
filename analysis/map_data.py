@@ -104,12 +104,19 @@ class MapData():
         return np.array([ note[-1][MapData.POS] for note in self.hitobject_data ])
 
     
-    def all_positions(self):
-        return np.array([ data[-1] for note in self.hitobject_data for data in note ])
+    def all_positions(self, flat=True):
+        if flat: return np.array([ data[MapData.POS] for note in self.hitobject_data for data in note ])
+        else:    return [[data[MapData.POS] for data in note] for note in self.hitobject_data]
 
 
-    def all_times(self):
-        return np.array([ data[0] for note in self.hitobject_data for data in note ])
+    def all_times(self, flat=True):
+        if flat: return np.array([ data[MapData.TIME] for note in self.hitobject_data for data in note ])
+        else:    return [[data[MapData.TIME] for data in note] for note in self.hitobject_data]
+
+
+    def start_end_times(self):
+        all_times = self.all_times(flat=False)
+        return [ (hitobject_times[0], hitobject_times[-1]) for hitobject_times in all_times ]
 
 
     def get_idx_start_time(self, time):

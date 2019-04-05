@@ -5,6 +5,8 @@ from gui.objects.graph.hitobject_plot import HitobjectPlot
 from gui.objects.graph.line_plot import LinePlot
 from misc.callback import callback
 
+from analysis.map_metrics import MapMetrics
+
 
 class Timeline(pyqtgraph.PlotWidget):
 
@@ -35,9 +37,8 @@ class Timeline(pyqtgraph.PlotWidget):
         self.set_misc_data(None, None)
 
 
-    def set_hitobject_data(self, hitobjects):
-        data = [ (hitobject.time, hitobject.get_end_time()) for hitobject in hitobjects ]
-        self.hitobjects_plot.update_data(data)
+    def set_hitobject_data(self, hitobject_data):
+        self.hitobjects_plot.update_data(hitobject_data.start_end_times(), self.y_mid_pos)
 
 
     def set_misc_data(self, data, mode):
