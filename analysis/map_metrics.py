@@ -1,5 +1,6 @@
 from misc.geometry import *
-
+from misc.numpy_utils import NumpyUtils
+from analysis.map_data import full_hitobject_data
 
 
 class MapMetrics():
@@ -9,31 +10,38 @@ class MapMetrics():
     Raw metrics
     '''
     @staticmethod
-    def calc_tapping_intervals(time_list):
-        intervals = [ time_list[i] - time_list[i - 1] for i in range(1, len(time_list)) ]
-        time      = [ time_list[i] for i in range(1, len(time_list)) ]
+    def calc_tapping_intervals(hitobject_data=full_hitobject_data):
+        start_times = hitobject_data.start_times()
 
-        return time, intervals
+        if len(start_times) < 2: return [], []
+        intervals = start_times[1:] - start_times[:-1]
+    
+        return start_times[1:], intervals
+
+    
+    @staticmethod
+    def calc_velocity(hitobject_data=full_hitobject_data):
+        all_times     = hitobject_data.all_times()
+        all_positions = hitobject_data.all_positions()
+
+        if len(all_positions) < 2: return [], []
+        intervals = NumpyUtils.deltas(all_times)
+        
+        vel = NumpyUtils.dists(all_positions[1:], all_positions[:-1])/intervals
+        return all_times[1:], vel
+
 
 
     @staticmethod
-    def calc_velocity(time_pos_list):
-        time, pos = zip(*time_pos_list)
+    def calc_angles(hitobject_data=full_hitobject_data):
+        all_times     = hitobject_data.all_times()
+        all_positions = hitobject_data.all_positions()
+        if len(all_positions) < 3: return [], []
+        
+        positions = [ Pos(*pos) for pos in all_positions ]
+        angles    = [ get_angle(*param) for param in zip(positions[:-2], positions[1:-1], positions[2:]) ]
 
-        vel  = [ pos[i].distance_to(pos[i - 1])/(time[i] - time[i - 1]) for i in range(1, len(time_pos_list)) ]
-        time = [ time[i] for i in range(1, len(time_pos_list)) ]
-
-        return time, vel
-
-
-    @staticmethod
-    def calc_angles(time_pos_list):
-        time, pos = zip(*time_pos_list)
-
-        angle  = [ get_angle(pos[i - 1], pos[i], pos[i + 1]) for i in range(1, len(time_pos_list) - 1) ]
-        time   = [ time[i] for i in range(1, len(time_pos_list) - 1) ]
-
-        return time, angle
+        return all_times[1:-1], angles
 
 
     @staticmethod

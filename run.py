@@ -7,6 +7,8 @@ from gui.frames.main_frame import MainFrame
 from osu.local.playfield import Playfield
 from osu.local.beatmap.beatmap import Beatmap
 
+from analysis.map_data import full_hitobject_data
+
 
 class MainWindow(QMainWindow):
 
@@ -121,6 +123,8 @@ class MainWindow(QMainWindow):
 
 
     def change_playfield(self, playfield):
+        full_hitobject_data.set_data_hitobjects(playfield.beatmap.hitobjects)
+
         # Update timeline range
         min_time, max_time = playfield.beatmap.get_time_range()
         timeline = self.main_frame.bottom_frame.timeline
@@ -135,7 +139,7 @@ class MainWindow(QMainWindow):
         analysis_controls = self.main_frame.center_frame.right_frame.analysis_controls
 
         for graph in analysis_controls.graphs:
-            graph.update_data(playfield.beatmap.hitobjects)
+            graph.update_data()
 
         print('\tTODO: save timeline marker position')
         print('\tTODO: update statistics on the right side')

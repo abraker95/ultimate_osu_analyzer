@@ -41,6 +41,10 @@ class Hitobject():
     def get_end_time(self):
         return self.time
 
+ 
+    def raw_data(self):
+        return [ [ self.time, (self.pos.x, self.pos.y) ] ]
+
 
     def is_hitobject_type(self, hitobject_type):
         return self.hitobject_type & hitobject_type > 0

@@ -93,6 +93,10 @@ class StdHoldNoteHitobject(Hitobject):
         return self.tick_times
 
 
+    def raw_data(self):
+        return [ [ tick_time, (self.time_to_pos(tick_time).x, self.time_to_pos(tick_time).y) ] for tick_time in self.tick_times ]
+
+
     # TODO: make sure this is correct
     # TODO: test a slider 200px across with various repeat times and tick spacings
     def get_velocity(self):

@@ -47,6 +47,10 @@ class StdSingleNoteHitobject(Hitobject):
         return [ self.time ]
 
 
+    def raw_data(self):
+        return [ [ self.time, (self.pos.x, self.pos.y) ] ]
+
+
     def resizeEvent(self, event):
         print('owh')
 

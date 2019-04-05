@@ -5,6 +5,10 @@ from PyQt5.QtGui import *
 from gui.objects.layer.layer import Layer
 from osu.local.beatmap.beatmap_utility import *
 
+from analysis.map_data import MapData, full_hitobject_data
+from misc.pos import Pos
+from misc.numpy_utils import NumpyUtils
+
 
 
 class AimpointPathsLayer(Layer):
@@ -22,12 +26,12 @@ class AimpointPathsLayer(Layer):
     def paint(self, painter, option, widget):
         painter.setPen(QColor(255, 0, 0, 255))
 
-        aimpoints = BeatmapUtil.get_aimpoints_from_hitobjects(self.playfield.beatmap, self.playfield.visible_hitobjects)
-        aimpoints = list(aimpoints)
-
-        if len(aimpoints) < 1: return
-        aimpoint_times, aimpoints_positions = zip(*aimpoints)
+        aimpoints = MapData().set_data_hitobjects(self.playfield.visible_hitobjects)
+        aimpoints.append_to_start(MapData.get_data_before(full_hitobject_data, NumpyUtils.first(aimpoints.start_times())))
+        aimpoints.append_to_end(MapData.get_data_after(full_hitobject_data, NumpyUtils.last(aimpoints.end_times())))
+        
+        aimpoints_positions = aimpoints.all_positions()
 
         for i in range(1, len(aimpoints_positions)):
-            prev_pos, curr_pos = aimpoints_positions[i - 1], aimpoints_positions[i]
+            prev_pos, curr_pos = Pos(*aimpoints_positions[i - 1]), Pos(*aimpoints_positions[i])
             painter.drawLine(prev_pos.x*self.ratio_x, prev_pos.y*self.ratio_y, curr_pos.x*self.ratio_x, curr_pos.y*self.ratio_y)

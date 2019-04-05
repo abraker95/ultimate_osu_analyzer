@@ -71,3 +71,8 @@ gui/objects/layer/layers/__pycache__/aimpoint_velocity_text_layer.cpython-36.pyc
 gui/objects/layer/layers/__pycache__/aimpoint_angle_text_layer.cpython-36.pyc
 misc/__pycache__/geometry.cpython-36.pyc
 gui/objects/graph/__pycache__/hitobject_graph.cpython-36.pyc
+analysis/__pycache__/map_data.cpython-36.pyc
+misc/__pycache__/numpy_utils.cpython-36.pyc
+gui/objects/graph/__pycache__/hitobject_plot.cpython-36.pyc
+gui/objects/graph/__pycache__/line_plot.cpython-36.pyc
+gui/widgets/__pycache__/temporal_hitobject_graph.cpython-36.pyc

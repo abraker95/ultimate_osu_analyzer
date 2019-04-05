@@ -3,7 +3,7 @@ import numpy as np
 from pyqtgraph import QtCore, QtGui
 
 
-class HitobjectGraph(pyqtgraph.GraphItem):
+class HitobjectPlot(pyqtgraph.GraphItem):
 
     HITOBJECT_RADIUS = 40
 
@@ -11,12 +11,9 @@ class HitobjectGraph(pyqtgraph.GraphItem):
         pyqtgraph.GraphItem.__init__(self)
         pyqtgraph.setConfigOptions(antialias=True)
 
-        self.pen = pyqtgraph.mkPen(width=HitobjectGraph.HITOBJECT_RADIUS)
+        self.pen = pyqtgraph.mkPen(width=HitobjectPlot.HITOBJECT_RADIUS)
         self.pen.setCapStyle(QtCore.Qt.RoundCap)
         self.setPen(self.pen)
-
-        if data:
-            self.update_data(data)
     
 
     def update_data(self, data):
@@ -28,7 +25,7 @@ class HitobjectGraph(pyqtgraph.GraphItem):
 
         for (time_start, time_end) in data:
             pos.append([ time_start, 0 ])
-            size.append(HitobjectGraph.HITOBJECT_RADIUS)
+            size.append(HitobjectPlot.HITOBJECT_RADIUS)
             obj_num += 1
 
             # Slider end

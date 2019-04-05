@@ -32,7 +32,10 @@ class StdSpinnerHitobject(Hitobject):
 
     def time_changed(self, time):
         self.radius = BeatmapUtil.PLAYFIELD_HEIGHT*(1 - value_to_percent(self.time, self.end_time, time))
-        print(self.radius)
+
+
+    def raw_data(self):
+        return [ [ self.time, (self.pos.x, self.pos.y) ], [ self.end_time, (self.pos.x, self.pos.y) ] ]
 
 
     def render_hitobject_outline(self, painter, ratio_x, ratio_y):
