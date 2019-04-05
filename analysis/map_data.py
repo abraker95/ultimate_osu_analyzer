@@ -7,6 +7,9 @@ from misc.numpy_utils import NumpyUtils
 
 class MapData():
 
+    TIME = 0
+    POS  = 1
+
 
     @staticmethod
     def get_data_before(hitobject_data, time):
@@ -86,19 +89,19 @@ class MapData():
 
 
     def start_times(self):
-        return np.array([ note[0][0] for note in self.hitobject_data ])
+        return np.array([ note[0][MapData.TIME] for note in self.hitobject_data ])
 
 
     def end_times(self):
-        return np.array([ note[-1][0] for note in self.hitobject_data ])
+        return np.array([ note[-1][MapData.TIME] for note in self.hitobject_data ])
 
 
     def start_positions(self):
-        return np.array([ note[0][-1] for note in self.hitobject_data ])
+        return np.array([ note[0][MapData.POS] for note in self.hitobject_data ])
 
     
     def end_positions(self):
-        return np.array([ note[-1][-1] for note in self.hitobject_data ])
+        return np.array([ note[-1][MapData.POS] for note in self.hitobject_data ])
 
     
     def all_positions(self):
