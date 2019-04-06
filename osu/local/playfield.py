@@ -44,11 +44,9 @@ class Playfield(QGraphicsView):
         self.beatmap = beatmap
         
         for hitobject in beatmap.hitobjects:
-            #hitobject.setVisible(False)
-
             beatmap.set_cs_val.connect(hitobject.set_radius)
-            #self.resizeEvent.connect(hitobject.set_ratios)
-    
+        
+        # To set the now connected hitobject radii
         beatmap.set_cs_val(beatmap.cs)
         
 
@@ -56,7 +54,6 @@ class Playfield(QGraphicsView):
         self.scene.update()
 
 
-    #@callback
     def resizeEvent(self, event):
         for layer in self.layers.values():
             layer.area_resize_event(self.width(), self.height())
