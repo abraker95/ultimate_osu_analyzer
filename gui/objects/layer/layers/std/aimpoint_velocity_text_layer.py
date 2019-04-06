@@ -2,8 +2,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from analysis.map_metrics import MapMetrics
-from analysis.map_data import MapData, full_hitobject_data
+from analysis.std.map_metrics import MapMetrics
+from analysis.std.map_data import MapData
 
 from misc.pos import Pos
 from misc.numpy_utils import NumpyUtils
@@ -29,8 +29,8 @@ class AimpointVelocityTextLayer(Layer):
         painter.setPen(QColor(255, 0, 0, 255))
 
         aimpoints = MapData().set_data_hitobjects(self.playfield.visible_hitobjects)
-        aimpoints.append_to_start(MapData.get_data_before(full_hitobject_data, NumpyUtils.first(aimpoints.start_times())))
-        aimpoints.append_to_end(MapData.get_data_after(full_hitobject_data, NumpyUtils.last(aimpoints.end_times())))
+        aimpoints.append_to_start(MapData.get_data_before(MapData.full_hitobject_data, NumpyUtils.first(aimpoints.start_times())))
+        aimpoints.append_to_end(MapData.get_data_after(MapData.full_hitobject_data, NumpyUtils.last(aimpoints.end_times())))
         
         time, vel = MapMetrics.calc_velocity(aimpoints)
         pos = aimpoints.all_positions()

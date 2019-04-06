@@ -8,8 +8,7 @@ from misc.numpy_utils import NumpyUtils
 class MapData():
 
     TIME = 0
-    POS  = 1
-
+    TYPE = 1
 
     @staticmethod
     def get_data_before(hitobject_data, time):
@@ -42,16 +41,16 @@ class MapData():
     '''
     [
         [ 
-            [ time, pos ],
-            [ time, pos ],
-            ... 
+            [ time, type ],
+            [ time, type ],
+            ... N score points
         ],
         [ 
-            [ time, pos ],
-            [ time, pos ],
-            ... 
+            [ time, type ],
+            [ time, type ],
+            ... N score points
         ],
-        ...
+        ...  N hitobjects
     ]
     '''
     def __init__(self):
@@ -133,4 +132,4 @@ class MapData():
         return min(max(0, np.searchsorted(times, [time], side='right')[0] - 1), len(times))
 
 
-full_hitobject_data = MapData()
+MapData.full_hitobject_data = MapData()

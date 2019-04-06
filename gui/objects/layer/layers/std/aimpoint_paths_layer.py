@@ -4,8 +4,8 @@ from PyQt5.QtGui import *
 
 from gui.objects.layer.layer import Layer
 from osu.local.beatmap.beatmap_utility import *
+from analysis.std.map_data import MapData
 
-from analysis.map_data import MapData, full_hitobject_data
 from misc.pos import Pos
 from misc.numpy_utils import NumpyUtils
 
@@ -27,8 +27,8 @@ class AimpointPathsLayer(Layer):
         painter.setPen(QColor(255, 0, 0, 255))
 
         aimpoints = MapData().set_data_hitobjects(self.playfield.visible_hitobjects)
-        aimpoints.append_to_start(MapData.get_data_before(full_hitobject_data, NumpyUtils.first(aimpoints.start_times())))
-        aimpoints.append_to_end(MapData.get_data_after(full_hitobject_data, NumpyUtils.last(aimpoints.end_times())))
+        aimpoints.append_to_start(MapData.get_data_before(MapData.full_hitobject_data, NumpyUtils.first(aimpoints.start_times())))
+        aimpoints.append_to_end(MapData.get_data_after(MapData.full_hitobject_data, NumpyUtils.last(aimpoints.end_times())))
         
         aimpoints_positions = aimpoints.all_positions()
 

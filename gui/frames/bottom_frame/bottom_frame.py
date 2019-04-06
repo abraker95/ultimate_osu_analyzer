@@ -2,7 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from analysis.timeline import Timeline
+from analysis.std.timeline import Timeline
 
 
 class BottomFrame(QFrame):

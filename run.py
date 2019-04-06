@@ -7,7 +7,7 @@ from gui.frames.main_frame import MainFrame
 from osu.local.playfield import Playfield
 from osu.local.beatmap.beatmap import Beatmap
 
-from analysis.map_data import full_hitobject_data
+from analysis.map_data_proxy import MapDataProxy
 
 
 class MainWindow(QMainWindow):
@@ -123,13 +123,14 @@ class MainWindow(QMainWindow):
 
 
     def change_playfield(self, playfield):
-        full_hitobject_data.set_data_hitobjects(playfield.beatmap.hitobjects)
+        self.switch_gamode(playfield.beatmap.gamemode)
+        MapDataProxy.full_hitobject_data.set_data_hitobjects(playfield.beatmap.hitobjects)
 
         # Update timeline range
         min_time, max_time = playfield.beatmap.get_time_range()
         timeline = self.main_frame.bottom_frame.timeline
         timeline.setRange(xRange=(min_time - 100, max_time + 100))
-        timeline.set_hitobject_data(full_hitobject_data)
+        timeline.set_hitobject_data(MapDataProxy.full_hitobject_data)
 
         # Change to the layer manager responsible for the playfield now displayed
         map_name = playfield.beatmap.metadata.name
@@ -143,6 +144,16 @@ class MainWindow(QMainWindow):
 
         print('\tTODO: save timeline marker position')
         print('\tTODO: update statistics on the right side')
+
+
+    def switch_gamode(self, gamemode):
+        MapDataProxy.set_gamemode(gamemode)
+        '''
+        # TODO:
+            reset layers to gamemode
+            reset analysis to gamemode
+        '''
+        pass
 
 
     def close_application(self):

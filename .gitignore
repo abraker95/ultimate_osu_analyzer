@@ -76,3 +76,14 @@ misc/__pycache__/numpy_utils.cpython-36.pyc
 gui/objects/graph/__pycache__/hitobject_plot.cpython-36.pyc
 gui/objects/graph/__pycache__/line_plot.cpython-36.pyc
 gui/widgets/__pycache__/temporal_hitobject_graph.cpython-36.pyc
+analysis/__pycache__/map_data_proxy.cpython-36.pyc
+analysis/mania/__pycache__/map_data.cpython-36.pyc
+analysis/std/__pycache__/map_data.cpython-36.pyc
+analysis/std/__pycache__/map_metrics.cpython-36.pyc
+analysis/std/__pycache__/timeline.cpython-36.pyc
+gui/objects/layer/layers/std/__pycache__/aimpoint_angle_text_layer.cpython-36.pyc
+gui/objects/layer/layers/std/__pycache__/aimpoint_paths_layer.cpython-36.pyc
+gui/objects/layer/layers/std/__pycache__/aimpoint_velocity_text_layer.cpython-36.pyc
+gui/objects/layer/layers/std/__pycache__/hitobject_aimpoint_layer.cpython-36.pyc
+gui/objects/layer/layers/std/__pycache__/hitobject_outline_layer.cpython-36.pyc
+gui/objects/layer/layers/std/__pycache__/hitobject_outlines_layer.cpython-36.pyc

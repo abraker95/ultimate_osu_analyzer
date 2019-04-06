@@ -2,14 +2,15 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
+from osu.local.beatmap.beatmap import Beatmap
 from osu.local.beatmap.beatmap_utility import BeatmapUtil
 from misc.callback import callback
 
-from gui.objects.layer.layers.hitobject_outline_layer import HitobjectOutlineLayer
-from gui.objects.layer.layers.hitobject_aimpoint_layer import HitobjectAimpointLayer
-from gui.objects.layer.layers.aimpoint_paths_layer import AimpointPathsLayer
-from gui.objects.layer.layers.aimpoint_velocity_text_layer import AimpointVelocityTextLayer
-from gui.objects.layer.layers.aimpoint_angle_text_layer import AimpointAngleTextLayer
+from gui.objects.layer.layers.std.hitobject_outline_layer import HitobjectOutlineLayer
+from gui.objects.layer.layers.std.hitobject_aimpoint_layer import HitobjectAimpointLayer
+from gui.objects.layer.layers.std.aimpoint_paths_layer import AimpointPathsLayer
+from gui.objects.layer.layers.std.aimpoint_velocity_text_layer import AimpointVelocityTextLayer
+from gui.objects.layer.layers.std.aimpoint_angle_text_layer import AimpointAngleTextLayer
 
 
 '''
@@ -104,10 +105,22 @@ class Playfield(QGraphicsView):
 
 
     def create_basic_map_layers(self):
-        self.add_layer_event(HitobjectOutlineLayer(self))
-        self.add_layer_event(HitobjectAimpointLayer(self))
-        self.add_layer_event(AimpointPathsLayer(self))
-        self.add_layer_event(AimpointVelocityTextLayer(self))
-        self.add_layer_event(AimpointAngleTextLayer(self))
-        
-        
+        if self.beatmap.gamemode == Beatmap.GAMEMODE_OSU:
+            self.add_layer_event(HitobjectOutlineLayer(self))
+            self.add_layer_event(HitobjectAimpointLayer(self))
+            self.add_layer_event(AimpointPathsLayer(self))
+            self.add_layer_event(AimpointVelocityTextLayer(self))
+            self.add_layer_event(AimpointAngleTextLayer(self))
+            return
+
+        if self.beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
+            # TODO
+            return
+
+        if self.beatmap.gamemode == Beatmap.GAMEMODE_TAIKO:
+            # TODO
+            return
+
+        if self.beatmap.gamemode == Beatmap.GAMEMODE_CATCH:
+            # TODO
+            return

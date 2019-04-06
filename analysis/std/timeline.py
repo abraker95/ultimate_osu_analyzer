@@ -5,7 +5,7 @@ from gui.objects.graph.hitobject_plot import HitobjectPlot
 from gui.objects.graph.line_plot import LinePlot
 from misc.callback import callback
 
-from analysis.map_metrics import MapMetrics
+from analysis.std.map_metrics import MapMetrics
 
 
 class Timeline(pyqtgraph.PlotWidget):
@@ -16,7 +16,7 @@ class Timeline(pyqtgraph.PlotWidget):
         super().__init__()
         pyqtgraph.setConfigOptions(antialias=True)
 
-        self.showAxis('left', show=False)
+        #self.showAxis('left', show=False)
         self.setLimits(xMin=Timeline.MIN_TIME)
         self.setRange(xRange=(-100, 10000))
         self.setRange(yRange=(-1, 1))

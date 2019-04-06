@@ -7,7 +7,7 @@ from pyqtgraph.dockarea import *
 from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
 from gui.objects.graph.line_plot import LinePlot
 
-from analysis.map_metrics import MapMetrics
+from analysis.std.map_metrics import MapMetrics
 
 
 class AnalysisControls(QWidget):
