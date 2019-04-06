@@ -10,7 +10,7 @@ class MapDataProxy():
     def set_gamemode(gamemode):
         if gamemode == Beatmap.GAMEMODE_OSU:   from analysis.std.map_data import MapData
         if gamemode == Beatmap.GAMEMODE_MANIA: from analysis.mania.map_data import MapData
-        if gamemode == Beatmap.GAMEMODE_OSU:   from analysis.std.map_data import MapData
-        if gamemode == Beatmap.GAMEMODE_OSU:   from analysis.std.map_data import MapData
+        if gamemode == Beatmap.GAMEMODE_TAIKO: from analysis.taiko.map_data import MapData
+        if gamemode == Beatmap.GAMEMODE_CATCH: from analysis.catch.map_data import MapData
 
         MapDataProxy.full_hitobject_data = MapData.full_hitobject_data
