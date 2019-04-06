@@ -20,6 +20,8 @@ class HitobjectPlot(pyqtgraph.GraphItem):
 
     def update_data(self, data, y_pos=0):
         if data == None: return
+        if len(data) == 0: return
+            
         self.data = data
 
         pos  = []
