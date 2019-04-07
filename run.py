@@ -56,10 +56,10 @@ class MainWindow(QMainWindow):
 
         self.main_frame.center_frame.mid_frame.tab_changed_event.connect(self.change_playfield)
 
-        timeline          = self.main_frame.bottom_frame.timeline
-        analysis_controls = self.main_frame.center_frame.right_frame.analysis_controls
+        timeline      = self.main_frame.bottom_frame.timeline
+        graph_manager = self.main_frame.center_frame.right_frame.graph_manager
 
-        for graph in analysis_controls.graphs:
+        for graph in graph_manager.graphs:
             graph.time_changed_event.connect(timeline.timeline_marker.setValue)
             timeline.time_changed_event.connect(graph.timeline_marker.setValue)
 
@@ -137,9 +137,8 @@ class MainWindow(QMainWindow):
         layer_manager_stack = self.main_frame.center_frame.right_frame.layer_manager_stack
         layer_manager_stack.set_layer_manager_active(map_name)
 
-        analysis_controls = self.main_frame.center_frame.right_frame.analysis_controls
-
-        for graph in analysis_controls.graphs:
+        graph_manager = self.main_frame.center_frame.right_frame.graph_manager
+        for graph in graph_manager.graphs:
             graph.update_data()
 
         print('\tTODO: save timeline marker position')
