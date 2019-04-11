@@ -4,10 +4,18 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 from gui.frames.main_frame import MainFrame
+
+from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
+from gui.objects.graph.line_plot import LinePlot
+
 from osu.local.playfield import Playfield
 from osu.local.beatmap.beatmap import Beatmap
 
 from analysis.map_data_proxy import MapDataProxy
+from analysis.metrics.metric_library_proxy import MetricLibraryProxy
+from analysis.metrics.metric import Metric
+from analysis.osu.std.map_metrics import MapMetrics
+
 
 
 class MainWindow(QMainWindow):
@@ -40,6 +48,7 @@ class MainWindow(QMainWindow):
 
         self.timeline            = self.main_frame.bottom_frame.timeline
         self.graph_manager       = self.main_frame.center_frame.right_frame.graph_manager
+        self.analysis_controls   = self.main_frame.center_frame.right_frame.analysis_controls
         self.layer_manager_stack = self.main_frame.center_frame.right_frame.layer_manager_stack
 
 
@@ -58,8 +67,9 @@ class MainWindow(QMainWindow):
         self.close_action.setShortcut('Ctrl+Q')
         self.close_action.triggered.connect(self.close_application)
 
-        self.main_frame.center_frame.mid_frame.tab_changed_event.connect(self.change_playfield)
 
+        self.analysis_controls.create_graph_event.connect(self.graph_manager.add_graph)
+        self.main_frame.center_frame.mid_frame.tab_changed_event.connect(self.change_playfield)
 
         # Allows to forward signals from any temporal graph without having means to get the instance
         TemporalHitobjectGraph.__init__.connect(self.temporal_graph_creation_event)
@@ -156,12 +166,47 @@ class MainWindow(QMainWindow):
 
     def switch_gamemode(self, gamemode):
         MapDataProxy.set_gamemode(gamemode)
+        MetricLibraryProxy.proxy.set_gamemode(gamemode)
+        
         '''
         # TODO:
             reset layers to gamemode
             reset analysis to gamemode
         '''
-        pass
+
+        metric_library = MetricLibraryProxy.proxy.get_active_lib()
+        print('Available metrics: ' + str(metric_library.get_names()))
+
+        analysis_controls = self.main_frame.center_frame.right_frame.analysis_controls
+        analysis_controls.refresh_metrics()
+
+        if gamemode == Beatmap.GAMEMODE_OSU:
+            print('Gamemode is now osu')
+            
+
+            graph_manager = self.main_frame.center_frame.right_frame.graph_manager
+            self.graph_manager.clear()
+
+            self.graph_manager.add_graph(TemporalHitobjectGraph(LinePlot(), 'Tapping Intervals',   MapMetrics.calc_tapping_intervals))
+            self.graph_manager.add_graph(TemporalHitobjectGraph(LinePlot(), 'Velocity',            MapMetrics.calc_velocity))
+            self.graph_manager.add_graph(TemporalHitobjectGraph(LinePlot(), 'Rhythmic Complexity', MapMetrics.calc_rhythmic_complexity))
+
+            # TODO: Enable velocity
+            # TODO: Enable acceleration
+            pass
+
+        if gamemode == Beatmap.GAMEMODE_MANIA:
+            print('Gamemode is now mania')
+            self.graph_manager.clear()
+
+
+        if gamemode == Beatmap.GAMEMODE_TAIKO:
+            print('Gamemode is now taiko')
+            self.graph_manager.clear()
+
+        if gamemode == Beatmap.GAMEMODE_CATCH:
+            print('Gamemode is now catch')
+            self.graph_manager.clear()
 
 
     def close_application(self):
@@ -169,7 +214,19 @@ class MainWindow(QMainWindow):
 
 
 
+
+
+def init_metrics():
+    osu_metric_library = MetricLibraryProxy.proxy.get_metric_lib(Beatmap.GAMEMODE_OSU)
+    osu_metric_library.add('tapping_intervals', MapMetrics.calc_tapping_intervals)
+    osu_metric_library.add('velocity', MapMetrics.calc_velocity)
+    osu_metric_library.add('angles', MapMetrics.calc_angles)
+
+
+
 if __name__ == '__main__':
+    init_metrics()
+
     app = QApplication(sys.argv)
     ex  = MainWindow()
     sys.exit(app.exec_())

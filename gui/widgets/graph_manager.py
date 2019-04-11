@@ -29,10 +29,6 @@ class GraphManager(QWidget):
 
 
 
-        for graph in self.graphs:
-            dock = Dock(graph.getPlotItem().titleLabel.text, size=(1, 1))    # TODO: , closable=True
-            dock.addWidget(graph)
-            self.dock_area.addDock(dock, 'bottom')
 
 
     def construct_gui(self):
