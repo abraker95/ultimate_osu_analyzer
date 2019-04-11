@@ -148,9 +148,7 @@ class MainWindow(QMainWindow):
         layer_manager_stack = self.main_frame.center_frame.right_frame.layer_manager_stack
         layer_manager_stack.set_layer_manager_active(map_name)
 
-        graph_manager = self.main_frame.center_frame.right_frame.graph_manager
-        for graph in graph_manager.graphs:
-            graph.update_data()
+        self.graph_manager.update_data()
 
         print('\tTODO: save timeline marker position')
         print('\tTODO: update statistics on the right side')
