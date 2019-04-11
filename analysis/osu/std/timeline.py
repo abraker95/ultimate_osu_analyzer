@@ -5,7 +5,7 @@ from gui.objects.graph.hitobject_plot import HitobjectPlot
 from gui.objects.graph.line_plot import LinePlot
 from misc.callback import callback
 
-from analysis.std.map_metrics import MapMetrics
+from analysis.osu.std.map_metrics import MapMetrics
 
 
 class Timeline(pyqtgraph.PlotWidget):

@@ -6,8 +6,9 @@ from pyqtgraph.dockarea import *
 
 from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
 from gui.objects.graph.line_plot import LinePlot
+from gui.objects.abstract_state_manager import AbstractStateManager
 
-from analysis.std.map_metrics import MapMetrics
+from analysis.osu.std.map_metrics import MapMetrics
 
 
 class GraphManager(QWidget):

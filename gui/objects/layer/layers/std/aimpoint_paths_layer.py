@@ -4,7 +4,7 @@ from PyQt5.QtGui import *
 
 from gui.objects.layer.layer import Layer
 from osu.local.beatmap.beatmap_utility import *
-from analysis.std.map_data import MapData
+from analysis.osu.std.map_data import MapData
 
 from misc.pos import Pos
 from misc.numpy_utils import NumpyUtils

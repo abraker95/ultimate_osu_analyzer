@@ -1,6 +1,12 @@
 from misc.geometry import *
 from misc.numpy_utils import NumpyUtils
-from analysis.std.map_data import MapData
+
+from osu.local.beatmap.beatmap import Beatmap
+
+from analysis.osu.std.map_data import MapData
+from analysis.metrics.metric_library_proxy import MetricLibraryProxy
+from analysis.metrics.metric import Metric
+
 
 
 class MapMetrics():
@@ -73,15 +79,15 @@ class MapMetrics():
         def speed(interval, speed_factor):
             return speed_factor/interval
 
-        def calc_note(time, curr_interval, prev_interval, speed_factor, v_scale):
-            return decay(curr_interval, speed_factor) * calc_harmonic(prev_interval, curr_interval, time, v_scale)
+        def calc_note(time, curr_interval, prev_interval, decay_factor, v_scale):
+            return decay(curr_interval, decay_factor) * calc_harmonic(prev_interval, curr_interval, time, v_scale)
 
         speed_factor = 600.0
         v_factor     = 10.0
-        speed_factor = 0.005
+        decay_factor = 0.005
 
         time, intervals = MapMetrics.calc_tapping_intervals(hitobject_data)
-        harmonics = [ calc_note(time[i], intervals[i], intervals[i - 1], speed_factor, v_factor) for i in range(1, len(intervals)) ]
+        harmonics = [ calc_note(time[i], intervals[i], intervals[i - 1], decay_factor, v_factor) for i in range(1, len(intervals)) ]
 
         return time, [ sum(harmonics[:i])*speed(intervals[i], speed_factor) for i in range(0, len(intervals)) ]
 
