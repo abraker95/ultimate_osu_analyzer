@@ -23,17 +23,11 @@ class GraphManager(QWidget):
 
     def init_gui_elements(self):
         self.layout    = QVBoxLayout()
-        self.dock_area = DockArea()
+        self.dock_area = QMainWindow()
         
-        self.graphs = [ 
-            TemporalHitobjectGraph(LinePlot(), 'Tapping Intervals',   MapMetrics.calc_tapping_intervals),
-            TemporalHitobjectGraph(LinePlot(), 'Velocity',            MapMetrics.calc_velocity),
-            TemporalHitobjectGraph(LinePlot(), 'Rhythmic Complexity', MapMetrics.calc_rhythmic_complexity),
-        ]
+        self.graphs = {}
 
 
-    def construct_gui(self):
-        self.setLayout(self.layout)
 
         for graph in self.graphs:
             dock = Dock(graph.getPlotItem().titleLabel.text, size=(1, 1))    # TODO: , closable=True
@@ -41,9 +35,51 @@ class GraphManager(QWidget):
             self.dock_area.addDock(dock, 'bottom')
 
 
+    def construct_gui(self):
+        self.setLayout(self.layout)
         self.layout.addWidget(self.dock_area)
 
 
     def update_gui(self):
-        pass
+        self.dock_area.setCentralWidget(None)
+        self.dock_area.setTabPosition(Qt.AllDockWidgetAreas, QTabWidget.North)
+        self.dock_area.setDockNestingEnabled(True)
+
+
+    def update_data(self):
+        for graph in self.graphs.values():
+            graph[0].update_data()
+
+
+    def is_graph_exist(self, graph_name):
+        return graph_name in self.graphs
+
+
+    def get_num_graphs(self):
+        return len(self.dock_area.findAll()[1])
+
+
+    def add_graph(self, graph):
+        print('Adding graph for ' + str(graph.getPlotItem().titleLabel.text))
+
+        # TODO: Handle closing of floating docks
+        dock = QDockWidget(graph.getPlotItem().titleLabel.text, self)
+        dock.setAllowedAreas(Qt.AllDockWidgetAreas)
+        dock.setWidget(graph)
+
+        self.dock_area.addDockWidget(Qt.LeftDockWidgetArea, dock)           # I have no idea why Left/Right is reversed
+        self.graphs[graph.getPlotItem().titleLabel.text] = [ graph, dock ]
+
+
+    def remove_graph(self, graph_name):
+        # TODO: Remove connections
+        self.graphs[graph_name][1].close()
+        del self.graphs[graph_name]
+
+    
+    def clear(self):
+        for dock in self.graphs.values():
+            dock[1].setParent(None)
+        self.graphs = {}
+
 
