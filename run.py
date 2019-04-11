@@ -123,7 +123,7 @@ class MainWindow(QMainWindow):
 
 
     def change_playfield(self, playfield):
-        self.switch_gamode(playfield.beatmap.gamemode)
+        self.switch_gamemode(playfield.beatmap.gamemode)
         MapDataProxy.full_hitobject_data.set_data_hitobjects(playfield.beatmap.hitobjects)
 
         # Update timeline range
@@ -145,7 +145,7 @@ class MainWindow(QMainWindow):
         print('\tTODO: update statistics on the right side')
 
 
-    def switch_gamode(self, gamemode):
+    def switch_gamemode(self, gamemode):
         MapDataProxy.set_gamemode(gamemode)
         '''
         # TODO:
