@@ -38,6 +38,10 @@ class MainWindow(QMainWindow):
         self.toolbar    = self.addToolBar('Exit')
         self.status_bar = self.statusBar()
 
+        self.timeline            = self.main_frame.bottom_frame.timeline
+        self.graph_manager       = self.main_frame.center_frame.right_frame.graph_manager
+        self.layer_manager_stack = self.main_frame.center_frame.right_frame.layer_manager_stack
+
 
     def construct_gui(self):
         self.setCentralWidget(self.main_frame)
@@ -56,8 +60,6 @@ class MainWindow(QMainWindow):
 
         self.main_frame.center_frame.mid_frame.tab_changed_event.connect(self.change_playfield)
 
-        timeline      = self.main_frame.bottom_frame.timeline
-        graph_manager = self.main_frame.center_frame.right_frame.graph_manager
 
         # Allows to forward signals from any temporal graph without having means to get the instance
         TemporalHitobjectGraph.__init__.connect(self.temporal_graph_creation_event)
@@ -102,15 +104,13 @@ class MainWindow(QMainWindow):
             map_name = playfield.beatmap.metadata.name
 
             # Establish connection between the timeline and playfield's time setting
-            timeline = self.main_frame.bottom_frame.timeline
-            timeline.time_changed_event.connect(playfield.set_time)
+            self.timeline.time_changed_event.connect(playfield.set_time)
             
             # Add new layer controls area for controlling displayed map layers
-            layer_manager_stack = self.main_frame.center_frame.right_frame.layer_manager_stack
-            layer_manager_stack.add_layer_manager(map_name)
+            self.layer_manager_stack.add_layer_manager(map_name)
 
             # Establish a connection between the created layer manager and playfield's add layer and layer manager's remove layer events
-            layer_manager = layer_manager_stack.get_layer_manager(map_name)
+            layer_manager = self.layer_manager_stack.get_layer_manager(map_name)
             playfield.add_layer_event.connect(layer_manager.add_layer)
             
             layer_manager.remove_layer_event.connect(playfield.remove_layer)
@@ -140,9 +140,8 @@ class MainWindow(QMainWindow):
 
         # Update timeline range
         min_time, max_time = playfield.beatmap.get_time_range()
-        timeline = self.main_frame.bottom_frame.timeline
-        timeline.setRange(xRange=(min_time - 100, max_time + 100))
-        timeline.set_hitobject_data(MapDataProxy.full_hitobject_data)
+        self.timeline.setRange(xRange=(min_time - 100, max_time + 100))
+        self.timeline.set_hitobject_data(MapDataProxy.full_hitobject_data)
 
         # Change to the layer manager responsible for the playfield now displayed
         map_name = playfield.beatmap.metadata.name
