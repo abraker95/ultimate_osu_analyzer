@@ -31,7 +31,7 @@ class MainWindow(QMainWindow):
         self.main_frame = MainFrame() 
         self.menubar    = self.menuBar()
 
-        self.fileMenu   = self.menubar.addMenu('&File')
+        self.file_menu           = self.menubar.addMenu('&File')
         self.open_beatmap_action = QAction("&Open beatmap", self)
         self.close_action        = QAction("&Quit w", self)
         
@@ -43,8 +43,8 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.main_frame)
         self.toolbar.addAction(QAction(QIcon('new.bmp'), 'test menubar button', self))
 
-        self.fileMenu.addAction(self.open_beatmap_action)
-        self.fileMenu.addAction(self.close_action)
+        self.file_menu.addAction(self.open_beatmap_action)
+        self.file_menu.addAction(self.close_action)
         
         self.open_beatmap_action.setStatusTip('Open *.osu beatmap for analysis')
         self.open_beatmap_action.setShortcut('Ctrl+N')
