@@ -59,9 +59,9 @@ class MainWindow(QMainWindow):
         timeline      = self.main_frame.bottom_frame.timeline
         graph_manager = self.main_frame.center_frame.right_frame.graph_manager
 
-        for graph in graph_manager.graphs:
-            graph.time_changed_event.connect(timeline.timeline_marker.setValue)
-            timeline.time_changed_event.connect(graph.timeline_marker.setValue)
+        # Allows to forward signals from any temporal graph without having means to get the instance
+        TemporalHitobjectGraph.__init__.connect(self.temporal_graph_creation_event)
+        TemporalHitobjectGraph.__del__.connect(self.temporal_graph_deletion_event)
 
 
     def update_gui(self):
@@ -69,6 +69,18 @@ class MainWindow(QMainWindow):
         self.setGeometry(MainWindow.left, MainWindow.top, MainWindow.width, MainWindow.height)
         self.status_bar.showMessage('Statusbar test message')
         self.show()
+
+
+    def temporal_graph_creation_event(self, graph):
+        # Since everything connects to the timeline, and the timeline is always existing,
+        # it acts as a central updater for every other temporal graph
+        self.timeline.time_changed_event.connect(graph.timeline_marker.setValue)
+        graph.time_changed_event.connect(self.timeline.timeline_marker.setValue)
+
+
+    def temporal_graph_deletion_event(self, graph):
+        self.timeline.time_changed_event.disconnect(graph.timeline_marker.setValue)
+        graph.time_changed_event.disconnect(self.timeline.timeline_marker.setValue)
 
 
     def open_beatmap(self):

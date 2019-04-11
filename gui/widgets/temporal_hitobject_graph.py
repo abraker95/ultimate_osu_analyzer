@@ -8,8 +8,10 @@ class TemporalHitobjectGraph(pyqtgraph.PlotWidget):
 
     MIN_TIME = -5000
 
+    @callback
     def __init__(self, plot_item, name, data_func):
         super().__init__()
+
         pyqtgraph.setConfigOptions(antialias=True)
 
         self.showAxis('left', show=False)
@@ -28,6 +30,12 @@ class TemporalHitobjectGraph(pyqtgraph.PlotWidget):
         self.addItem(self.timeline_marker, ignoreBounds=True)
 
         self.data_func = data_func
+        self.__init__.emit(self)
+
+
+    @callback
+    def __del__(self):
+        self.__del__.emit(self)
 
 
     def update_data(self):
@@ -58,8 +66,11 @@ class TemporalHitobjectGraph(pyqtgraph.PlotWidget):
     def mouseDragEvent(self, event):
         event.ignore()
 
+    
+    def get_name(self):
+        return self.getPlotItem().titleLabel
+
 
     @callback
     def time_changed_event(self, marker):
         self.time_changed_event.emit(marker.value())
-        
