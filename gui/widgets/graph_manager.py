@@ -68,8 +68,7 @@ class GraphManager(QWidget):
 
 
     def remove_graph(self, graph_name):
-        # TODO: Remove connections
-        self.graphs[graph_name][1].close()
+        self.dock_area.removeDockWidget(self.graphs[graph_name][1])
         del self.graphs[graph_name]
 
     
