@@ -70,7 +70,7 @@ class TemporalHitobjectGraph(pyqtgraph.PlotWidget):
 
     
     def get_name(self):
-        return self.getPlotItem().titleLabel
+        return self.getPlotItem().titleLabel.text
 
 
     @callback
