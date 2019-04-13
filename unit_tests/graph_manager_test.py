@@ -216,8 +216,7 @@ class GraphManagerTest(QMainWindow):
                 time.sleep(0.01)
                 app.processEvents()
 
-        # TODO Remove a few graphs
-        #      Move the marker of each graph and makes sure no exception is thrown
+        # Remove a few graphs
         remove_graphs = [ 'test1', 'test4' ]
         for name in remove_graphs:
             TemporalHitobjectGraph.time_changed_event.disconnect(graphs[name].timeline_marker.setValue)
