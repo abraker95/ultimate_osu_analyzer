@@ -52,7 +52,7 @@ class GraphManager(QWidget):
 
 
     def get_num_graphs(self):
-        return len(self.dock_area.findAll()[1])
+        return len(self.dock_area.findChildren(QDockWidget))
 
 
     def add_graph(self, graph):
