@@ -5,6 +5,8 @@
 # Basically this is used as a decorator and adds a list of functions to the function.
 # When emit is called, all the functions in the list are run. Their returns are collected
 #     into Func.returns as the function execute
+# NOTE: The when a function is connected to another function, the connection applies to all
+#     instances of the class the function is defined in
 def callback(func):
 
     def Func(*args, **kwargs):
