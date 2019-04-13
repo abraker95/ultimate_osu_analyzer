@@ -123,3 +123,4 @@ unit_tests/__pycache__/temporal_graph_test.cpython-36.pyc
 gui/objects/__pycache__/abstract_state_manager.cpython-36.pyc
 gui/widgets/__pycache__/dockable_graph.cpython-36.pyc
 gui/widgets/__pycache__/QContainer.cpython-36.pyc
+unit_tests/__pycache__/callback_test.cpython-36.pyc

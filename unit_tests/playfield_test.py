@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -8,7 +10,7 @@ from osu.local.beatmap.beatmap import Beatmap
 
 class PlayFieldTest(QMainWindow):
 
-    title = 'Ultimate osu! analyzer widget test'
+    title = 'PlayField Test'
     left   = 100
     top    = 100
     width  = 1080
@@ -22,6 +24,7 @@ class PlayFieldTest(QMainWindow):
 
         self.beatmap = Beatmap(beatmap_filepath)
         self.playfield.load_beatmap(self.beatmap)
+        self.playfield.create_basic_map_layers()
 
         self.setCentralWidget(self.playfield)
 
@@ -38,3 +41,16 @@ class PlayFieldTest(QMainWindow):
 
         if key == Qt.Key_Right:
             self.playfield.set_time(self.playfield.time + 50)
+
+
+    def time_browse_test(self, app):
+        print('time_browse_test')
+        for t in range(0, 5000, 100):
+            self.playfield.set_time(t)
+            app.processEvents() 
+            time.sleep(.1)
+
+
+    def layer_toggle_test(self):
+        print('layer_toggle_test')
+        # TODO: toggle layers
