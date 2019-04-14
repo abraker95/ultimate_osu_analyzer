@@ -216,17 +216,8 @@ class MainWindow(QMainWindow):
 
 
 
-def init_metrics():
-    osu_metric_library = MetricLibraryProxy.proxy.get_metric_lib(Beatmap.GAMEMODE_OSU)
-    osu_metric_library.add('tapping_intervals', MapMetrics.calc_tapping_intervals)
-    osu_metric_library.add('velocity', MapMetrics.calc_velocity)
-    osu_metric_library.add('angles', MapMetrics.calc_angles)
-
-
 
 if __name__ == '__main__':
-    init_metrics()
-
     app = QApplication(sys.argv)
     ex  = MainWindow()
     sys.exit(app.exec_())
