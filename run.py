@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
     title = 'Ultimate osu! Analyzer'
     left   = 100
     top    = 100
-    width  = 1080
+    width  = 1500
     height = 720
 
     def __init__(self, parent=None):
