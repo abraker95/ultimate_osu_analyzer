@@ -124,3 +124,8 @@ gui/objects/__pycache__/abstract_state_manager.cpython-36.pyc
 gui/widgets/__pycache__/dockable_graph.cpython-36.pyc
 gui/widgets/__pycache__/QContainer.cpython-36.pyc
 unit_tests/__pycache__/callback_test.cpython-36.pyc
+gui/widgets/__pycache__/collections_browser.cpython-36.pyc
+gui/widgets/__pycache__/file_browser.cpython-36.pyc
+gui/widgets/__pycache__/metric_manager.cpython-36.pyc
+gui/widgets/__pycache__/online_browser.cpython-36.pyc
+gui/widgets/__pycache__/replay_manager.cpython-36.pyc
