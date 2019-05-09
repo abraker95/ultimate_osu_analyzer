@@ -4,7 +4,10 @@ from PyQt5.QtGui import *
 
 from osu.local.hitobject.hitobject import Hitobject
 from osu.local.beatmap.beatmap_utility import BeatmapUtil
+
+from misc.frozen_cls import FrozenCls
 from misc.math_utils import value_to_percent
+
 
 
 """
@@ -17,13 +20,14 @@ Input:
 Output: 
     Visual display of an osu!std hitcircle
 """
+@FrozenCls
 class StdSpinnerHitobject(Hitobject):
 
-    def __init__(self, data):
-        Hitobject.__init__(self, data)
+    def __init__(self):
+        self.radius   = 512
+        self.end_time = None
 
-        self.__process_spinner_data(data)
-        self.radius = 512
+        Hitobject.__init__(self)
 
     
     def get_end_time(self):
@@ -62,6 +66,3 @@ class StdSpinnerHitobject(Hitobject):
     def boundingRect(self):
         return QRectF(0, 0, self.radius, self.radius)
 
-
-    def __process_spinner_data(self, beatmap_data):
-        self.end_time = int(beatmap_data[5])

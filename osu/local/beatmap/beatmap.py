@@ -1,8 +1,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 from .beatmap_utility import BeatmapUtil
-from .beatmapIO import BeatmapIO
 from misc.callback import callback
-
+from misc.frozen_cls import FrozenCls
 
 
 '''
@@ -15,18 +14,71 @@ Output:
     hitobjects - list of hitobjects present in the map
     timingpoints - list of timing points present in the map
 '''
-class Beatmap(QObject, BeatmapIO):
+@FrozenCls
+class Beatmap():
 
+    GAMEMODE_OSU   = 0
+    GAMEMODE_TAIKO = 1
+    GAMEMODE_CATCH = 2
+    GAMEMODE_MANIA = 3
+
+    '''
     cs_changed        = pyqtSignal(float)
     ar_changed        = pyqtSignal()
     od_changed        = pyqtSignal()
     timings_changed   = pyqtSignal()
     positions_changed = pyqtSignal()
+    '''
+
+    @FrozenCls
+    class Metadata():
+
+        def __init__(self):
+            self.beatmap_format = -1    # *.osu format
+            self.artist         = ''
+            self.title          = ''
+            self.version        = ''    # difficulty name
+            self.creator        = ''
+            self.name           = ''    # Artist - Title (Creator) [Difficulty]
+            self.beatmap_md5    = None  # generatedilepath:
+
+    
+    @FrozenCls
+    class TimingPoint():
+
+        def __init__(self):
+            self.offset        = None
+            self.beat_interval = None
+            self.inherited     = None
+            self.meter         = None
+
+            self.beat_length       = None
+            self.bpm               = None
+            self.slider_multiplier = None
 
 
-    def __init__(self, filepath):
-        QObject.__init__(self)
-        BeatmapIO.__init__(self, filepath)
+    def __init__(self):
+        #QObject.__init__(self)
+        #BeatmapIO.__init__(self, filepath)
+
+        self.metadata = Beatmap.Metadata()
+        self.gamemode = None
+        
+        self.timing_points     = []
+        self.hitobjects        = []
+        self.end_times         = []
+        self.slider_tick_times = []
+
+        self.hp = None
+        self.cs = None
+        self.od = None
+        self.ar = None
+        self.sm = None
+        self.st = None
+
+        #self.slider_tick_times = []
+        self.bpm_min = float('inf')
+        self.bpm_max = float('-inf')
 
 
     def get_time_range(self):

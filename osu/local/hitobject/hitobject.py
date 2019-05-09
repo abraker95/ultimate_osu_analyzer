@@ -1,7 +1,8 @@
 from PyQt5 import QtCore
 from misc.pos import Pos
-from misc.callback import callback
 
+from misc.callback import callback
+from misc.frozen_cls import FrozenCls
 
 
 """
@@ -10,6 +11,7 @@ Abstract object that holds common hitoobject data
 Input: 
     beatmap_data - hitobject data read from the beatmap file
 """
+@FrozenCls
 class Hitobject():
 
     CIRCLE  = 1 << 0
@@ -19,16 +21,12 @@ class Hitobject():
     # ???
     MANIALONG = 1 << 7
 
-    def __init__(self, beatmap_data=None):
+    def __init__(self):
 
-        if beatmap_data is None:
-            self.hitobject_type = None
-            self.time  = None
-            self.index = None
-            self.pos   = None
-
-        if beatmap_data:
-            self.__process_hitobject_data(beatmap_data)
+        self.hitobject_type = None
+        self.time  = None
+        self.index = None
+        self.pos   = None
 
         self.opacity = 1.0
         self.radius  = None
@@ -83,9 +81,3 @@ class Hitobject():
     def set_ratios(self, ratio_x, ratio_y):
         self.ratio_x = ratio_x
         self.ratio_y = ratio_y
-
-
-    def __process_hitobject_data(self, data):
-        self.pos            = Pos(int(data[0]), int(data[1]))
-        self.time           = int(data[2])
-        self.hitobject_type = int(data[3])

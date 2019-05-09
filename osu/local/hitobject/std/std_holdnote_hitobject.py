@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 
 from misc.pos import Pos
 from misc.bezier import Bezier
+from misc.frozen_cls import FrozenCls
 from misc.math_utils import triangle, lerp, value_to_percent
 from osu.local.hitobject.hitobject import Hitobject
 from osu.local.beatmap.beatmap_utility import BeatmapUtil
@@ -22,6 +23,7 @@ Input:
 Output: 
     Visual display of an osu!std slider
 """
+@FrozenCls
 class StdHoldNoteHitobject(Hitobject):
 
     LINEAR1       = 'L'
@@ -29,19 +31,21 @@ class StdHoldNoteHitobject(Hitobject):
     BEZIER        = 'B'
     CIRCUMSCRIBED = 'P'
 
-    def __init__(self, beatmap_data=None):
-        Hitobject.__init__(self, beatmap_data)
+    def __init__(self):
+        self.end_time     = None    # Initialized by beatmapIO.__process_slider_timings after timing data is read
+        self.pixel_length = None
+        self.repeat       = None
+        self.curve_type   = None
 
-        if not beatmap_data:
-            self.end_time     = None    # Initialized by beatmapIO.__process_slider_timings after timing data is read
-            self.pixel_length = None
-            self.repeat       = None
+        self.slider_point_pos = None
+        self.to_repeat_time   = None
 
-            self.gen_points   = []
-            self.tick_times   = []
+        self.curve_points = []
+        self.gen_points   = []
+        self.tick_times   = []
+        self.ncurve       = []
 
-        self.__process_slider_data(beatmap_data)
-        self.__process_curve_points()
+        Hitobject.__init__(self)
         
 
     def time_to_percent(self, time):
@@ -143,144 +147,6 @@ class StdHoldNoteHitobject(Hitobject):
             pos_x = (tick_pos.x - 0.5*slider_tick_radius)*ratio_x
             pos_y = (tick_pos.y - 0.5*slider_tick_radius)*ratio_y
             painter.drawEllipse(pos_x, pos_y, slider_tick_radius, slider_tick_radius)
-
-
-    def __process_slider_data(self, beatmap_data):
-        slider_data = beatmap_data[5].split('|')
-        self.curve_type = slider_data[0].strip()
-
-        # The first actual point is the slider's starting position, followed by all other read points
-        self.curve_points = [ self.pos ]
-
-        for data in slider_data[1:]:
-            curve_data = data.split(':')
-            self.curve_points.append(Pos(int(curve_data[0]), int(curve_data[1])))
-
-        # otherwise this is a osu!std slider and we should get additional data
-        self.repeat       = int(beatmap_data[6])
-        self.pixel_length = float(beatmap_data[7])
-
-    
-    def __process_curve_points(self):
-        self.gen_points  = []
-
-        if self.curve_type == StdHoldNoteHitobject.BEZIER:
-            self.__make_bezier()
-            self.slider_point_pos = self.gen_points[0]
-            return
-
-        if self.curve_type == StdHoldNoteHitobject.CIRCUMSCRIBED:
-            if len(self.curve_points) == 3:
-                if not self.__make_circumscribed():
-                    self.__make_bezier()
-            else:
-                self.__make_bezier()
-
-            self.slider_point_pos = self.gen_points[0]
-            return
-
-        if self.curve_type == StdHoldNoteHitobject.LINEAR1:
-            self.__make_linear()
-            self.slider_point_pos = self.gen_points[0]
-            return
-
-        if self.curve_type == StdHoldNoteHitobject.LINEAR2:
-            self.__make_linear()
-            self.slider_point_pos = self.gen_points[0]
-            return
-        
-        self.end_point = self.curve_points[-1] if (self.repeat % 2 == 0) else self.curve_points[-1]
-
-
-    def __make_linear(self):
-        # Lines: generate a new curve for each sequential pair
-        # ab  bc  cd  de  ef  fg
-
-        for i in range(len(self.curve_points) - 1):
-            bezier = Bezier([ self.curve_points[i], self.curve_points[i + 1] ])
-            self.gen_points += bezier.curve_points
-
-
-    def __make_bezier(self):
-        # Beziers: splits points into different Beziers if has the same points (red points)
-        # a b c - c d - d e f g
-        point_section = []
-
-        for i in range(len(self.curve_points)):
-            point_section.append(self.curve_points[i])
-
-            not_end_of_list = (i < len(self.curve_points) - 1)
-            segment_bezier  = (self.curve_points[i] == self.curve_points[i + 1]) if not_end_of_list else True
-
-            # If we reached a red point or the end of the point list, then segment the bezier
-            if segment_bezier:
-                self.gen_points += Bezier(point_section).curve_points
-                point_section = []
-
-
-    def __make_circumscribed(self):
-        # construct the three points
-        start = self.curve_points[0]
-        mid   = self.curve_points[1]
-        end   = self.curve_points[2]
-
-        # find the circle center
-        mida = start.midpoint(mid)
-        midb = end.midpoint(mid)
-        nora = (mid - start).nor()
-        norb = (mid - end).nor()
-
-        circle_center = self.intersect(mida, nora, midb, norb)
-        if not circle_center: return False
-
-        start_angle_point = start - circle_center
-        mid_angle_point   = mid - circle_center
-        end_angle_point   = end - circle_center
-
-        start_angle = math.atan2(start_angle_point.y, start_angle_point.x)
-        mid_angle   = math.atan2(mid_angle_point.y, mid_angle_point.x)
-        end_angle   = math.atan2(end_angle_point.y, end_angle_point.x)
-
-        if not start_angle < mid_angle < end_angle:
-            if abs(start_angle + 2*math.pi - end_angle) < 2*math.pi and (start_angle + 2*math.pi < mid_angle < end_angle):
-                start_angle += 2*math.pi
-            elif abs(start_angle - (end_angle + 2*math.pi)) < 2*math.pi and (start_angle < mid_angle < end_angle + 2*math.pi):
-                end_angle += 2*math.pi
-            elif abs(start_angle - 2*math.pi - end_angle) < 2*math.pi and (start_angle - 2*math.pi < mid_angle < end_angle):
-                start_angle -= 2*math.pi
-            elif abs(start_angle - (end_angle - 2*math.pi)) < 2*math.pi and (start_angle < mid_angle < end_angle - 2*math.pi):
-                end_angle -= 2*math.pi   
-            else:
-                print('Cannot find angles between mid_angle')
-                return False
-
-        # find an angle with an arc length of pixelLength along this circle
-        radius = start_angle_point.distance_to(Pos(0, 0))
-        arc_angle = self.pixel_length / radius                                                       # len = theta * r / theta = len / r
-        end_angle = start_angle + arc_angle if end_angle > start_angle else start_angle - arc_angle  #  now use it for our new end angle
-
-        # Calculate points
-        step = self.pixel_length / 5  # 5 = CURVE_POINTS_SEPERATION
-        self.ncurve = step
-        len = int(step) + 1
-
-        for i in range(len):
-            ang = lerp(start_angle, end_angle, i/step)
-            xy  = Pos(math.cos(ang)*radius + circle_center.x, math.sin(ang)*radius + circle_center.y)
-            self.gen_points.append(Pos(xy.x, xy.y))
-        
-        return True
-
-    
-    def intersect(self, a, ta, b, tb):
-        des = tb.x*ta.y - tb.y*ta.x
-        if abs(des) < 0.00001: return None
-
-        u = ((b.y - a.y)*ta.x + (a.x - b.x)*ta.y) / des
-        b.x += tb.x*u
-        b.y += tb.y*u
-
-        return b
 
 
     def boundingRect(self):

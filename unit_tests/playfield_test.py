@@ -22,7 +22,7 @@ class PlayFieldTest(QMainWindow):
         self.playfield = Playfield()
         self.playfield.setFocusPolicy(Qt.NoFocus)
 
-        self.beatmap = Beatmap(beatmap_filepath)
+        self.beatmap = BeatmapIO.load_beatmap(beatmap_filepath)
         self.playfield.load_beatmap(self.beatmap)
         self.playfield.create_basic_map_layers()
 

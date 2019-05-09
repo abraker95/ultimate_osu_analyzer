@@ -68,3 +68,14 @@ def get_absolute_angle(pos_a, pos_b):
     theta = math.atan(pos_a.slope(pos_b))
     a = math.pi * parity(pos_b.x - pos_a.x)
     return theta - a - 2*math.pi*parity(theta - a/2)
+
+    
+def intersect(a, ta, b, tb):
+    des = tb.x*ta.y - tb.y*ta.x
+    if abs(des) < 0.00001: return None
+
+    u = ((b.y - a.y)*ta.x + (a.x - b.x)*ta.y) / des
+    b.x += tb.x*u
+    b.y += tb.y*u
+
+    return b

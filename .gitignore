@@ -129,4 +129,12 @@ gui/widgets/__pycache__/file_browser.cpython-36.pyc
 gui/widgets/__pycache__/metric_manager.cpython-36.pyc
 gui/widgets/__pycache__/online_browser.cpython-36.pyc
 gui/widgets/__pycache__/replay_manager.cpython-36.pyc
+osu/local/hitobject/mania/__pycache__/mania_holdnote_io.cpython-36.pyc
+osu/local/hitobject/mania/__pycache__/mania_singlenote_hitobject.cpython-36.pyc
+osu/local/hitobject/mania/__pycache__/mania_singlenote_io.cpython-36.pyc
+osu/local/hitobject/mania/__pycache__/mania_singlenote_hitobject.cpython-36.pyc
+osu/local/hitobject/mania/__pycache__/mania_singlenote_hitobject.cpython-36.pyc
+osu/local/hitobject/std/__pycache__/std_holdnote_io.cpython-36.pyc
+osu/local/hitobject/std/__pycache__/std_singlenote_io.cpython-36.pyc
+osu/local/hitobject/std/__pycache__/std_spinner_io.cpython-36.pyc
 misc/__pycache__/frozen_cls.cpython-36.pyc

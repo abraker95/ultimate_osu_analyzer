@@ -5,15 +5,18 @@ from PyQt5.QtGui import *
 from osu.local.hitobject.hitobject import Hitobject
 from osu.local.beatmap.beatmap_utility import BeatmapUtil
 
+from misc.frozen_cls import FrozenCls
 
 
+
+@FrozenCls
 class ManiaHoldNoteHitobject(QGraphicsItem, Hitobject):
 
-    def __init__(self, hitobject_data):
-        QGraphicsItem.__init__(self)
-        Hitobject.__init__(self, hitobject_data)
+    def __init__(self):
+        self.end_time   = None
 
-        self.__process_holdnote_data(hitobject_data)
+        QGraphicsItem.__init__(self)
+        Hitobject.__init__(self)
 
 
     def paint(self, painter, option, widget):
@@ -27,9 +30,3 @@ class ManiaHoldNoteHitobject(QGraphicsItem, Hitobject):
 
     def boundingRect(self):
         return QRectF(0, 0, self.radius, self.radius)
-
-
-    def __process_holdnote_data(self, hitobject_data):
-        slider_data = hitobject_data[5].split(':')
-        self.end_time = int(slider_data[0])
-        return

@@ -5,6 +5,9 @@ from PyQt5.QtGui import *
 from osu.local.hitobject.hitobject import Hitobject
 from osu.local.beatmap.beatmap_utility import BeatmapUtil
 
+from misc.frozen_cls import FrozenCls
+
+
 
 """
 Visualizes the osu!std hitcircle
@@ -16,10 +19,11 @@ Input:
 Output: 
     Visual display of an osu!std hitcircle
 """
+@FrozenCls
 class StdSingleNoteHitobject(Hitobject):
 
-    def __init__(self, data):
-        Hitobject.__init__(self, data)
+    def __init__(self):
+        Hitobject.__init__(self)
 
 
     def render_hitobject_outline(self, painter, ratio_x, ratio_y):
