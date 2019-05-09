@@ -9,6 +9,7 @@ from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
 from gui.objects.graph.line_plot import LinePlot
 
 from osu.local.playfield import Playfield
+from osu.local.beatmap.beatmapIO import BeatmapIO
 from osu.local.beatmap.beatmap import Beatmap
 
 from analysis.map_data_proxy import MapDataProxy
@@ -105,7 +106,7 @@ class MainWindow(QMainWindow):
             # Create a new playfield and load the beatmap into it
             playfield = Playfield()
             playfield.setFocusPolicy(Qt.NoFocus)
-            playfield.load_beatmap(Beatmap(beatmap_filename))
+            playfield.load_beatmap(BeatmapIO.load_beatmap(beatmap_filename))
 
             # TODO: Currently the lables are based off map's full name
             #       That's fine, but if the same map is opened multiple times, especially after being edited,
