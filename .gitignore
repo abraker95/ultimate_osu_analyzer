@@ -129,3 +129,4 @@ gui/widgets/__pycache__/file_browser.cpython-36.pyc
 gui/widgets/__pycache__/metric_manager.cpython-36.pyc
 gui/widgets/__pycache__/online_browser.cpython-36.pyc
 gui/widgets/__pycache__/replay_manager.cpython-36.pyc
+misc/__pycache__/frozen_cls.cpython-36.pyc
