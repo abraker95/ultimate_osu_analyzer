@@ -15,26 +15,32 @@ def callback(func):
     class FuncHelper():
 
         @staticmethod
-        def add_callback(callback):
-            Func.callbacks.add(callback)
+        def add_callback(callback, inst=None):
+            if not inst in Func.callbacks:
+                Func.callbacks[inst] = set()
+            
+            Func.callbacks[inst].add(callback)
             return Func
 
         @staticmethod
-        def rmv_callback(callback):
-            try: Func.callbacks.remove(callback)
+        def rmv_callback(callback, inst=None):
+            try: Func.callbacks[inst].remove(callback)
             except KeyError: pass
             return Func
 
         @staticmethod
-        def exec_callbacks(*args, **kwargs):
+        def exec_callbacks(*args, inst=None, **kwargs):
+            if not inst in Func.callbacks: return Func
+
             Func.returns = {}
             # Copy because one of the callbacks can be a disconnect to the refered callbacks
             # This would effectively change the size of Func.callbacks, causing an exception
-            for callback in Func.callbacks.copy():
-                if not Func.anti_recurse:
-                    Func.anti_recurse = True
-                    Func.returns[callback] = callback(*args, **kwargs)
-                    Func.anti_recurse = False
+            for callback in Func.callbacks[inst].copy():
+                if Func.anti_recurse: continue
+                
+                Func.anti_recurse = True
+                Func.returns[callback] = callback(*args, **kwargs)
+                Func.anti_recurse = False
 
             return Func
 
@@ -54,5 +60,5 @@ def callback(func):
     Func.emit         = FuncHelper.exec_callbacks
     Func.ret          = FuncHelper.get_return_for
     
-    Func.callbacks = set()
+    Func.callbacks = {}
     return Func

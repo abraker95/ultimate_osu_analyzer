@@ -1,4 +1,5 @@
 from misc.callback import callback
+from generic.switcher import Switcher
 
 
 class CallbackTest():
@@ -46,6 +47,11 @@ class CallbackTest():
             return data
 
 
+        def return_func_self_data(self, data):
+            return self.data, data
+
+
+
     @staticmethod
     def run_tests():
         CallbackTest.instance_connect_disconnect_test()
@@ -53,6 +59,7 @@ class CallbackTest():
         CallbackTest.static_connect_disconnect_test()
         CallbackTest.interconnect_self_ref_test()
         CallbackTest.multi_instance_emit_test()
+        CallbackTest.instance_to_instance_callback()
 
 
     @staticmethod
@@ -205,3 +212,43 @@ class CallbackTest():
         #       CallbackTest.TestClassEmit.connect(read1.return_self_data_func)
         # Instead of using instances
 
+
+    @staticmethod
+    def instance_to_instance_callback():
+        '''
+        In this tests a 2 switchers are set up to switch between two elements
+        Each element contains a string which indicates which reader instance the
+        switcher is meant to be connect to. This test is successful if the 
+        switchers only invoke the reader they are meant to be connected to. 
+        Since the callbacks are connected from a static instance by default, this 
+        tests the ability to connect from an instatiated instance.
+        '''
+        switcher_1 = Switcher()
+        switcher_2 = Switcher()
+
+        reader_1 = CallbackTest.TestClassRead('reader_1')
+        reader_2 = CallbackTest.TestClassRead('reader_2')
+
+        switcher_1.switch.connect(reader_1.return_func_self_data, inst=switcher_1)
+        switcher_2.switch.connect(reader_2.return_func_self_data, inst=switcher_2)
+
+        switcher_1.add('elem1', 'to_reader_1')
+        switcher_2.add('elem2', 'to_reader_2')
+
+        switcher_1.switch('elem1')
+        
+        data = switcher_1.switch.returns
+        assert len(data) == 1, 'Data is not what expected;  Expected: %s,  Result: %s' % ('Size: 1', 'Size: ' + str(len(data)))
+
+        data = list(data.values())[0]
+        assert data[0] == 'reader_1', 'Data is not what expected;  Expected: %s,  Result: %s' % (str('reader_1'), str(data[0]))
+        assert data[1] == 'to_reader_1', 'Data is not what expected;  Expected: %s,  Result: %s' % (str('to_reader_1'), str(data[1]))
+
+        switcher_2.switch('elem2')
+        
+        data = switcher_2.switch.returns
+        assert len(data) == 1, 'Data is not what expected;  Expected: %s,  Result: %s' % ('Size: 1', 'Size: ' + str(len(data)))
+
+        data = list(data.values())[0]
+        assert data[0] == 'reader_2', 'Data is not what expected;  Expected: %s,  Result: %s' % (str('reader_2'), str(data[0]))
+        assert data[1] == 'to_reader_2', 'Data is not what expected;  Expected: %s,  Result: %s' % (str('to_reader_2'), str(data[1]))
