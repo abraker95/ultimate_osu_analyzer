@@ -7,6 +7,7 @@ from gui.widgets.replay_manager import ReplayManager
 from gui.widgets.graph_manager import GraphManager
 from gui.widgets.analysis_controls import AnalysisControls
 from gui.widgets.metric_manager import MetricManager
+from gui.widgets.ipython_console import IPythonConsole
 
 
 class RightFrame(QFrame):
@@ -28,6 +29,7 @@ class RightFrame(QFrame):
         self.graph_manager        = GraphManager()
         self.analysis_controls    = AnalysisControls()
         self.metric_manager       = MetricManager()
+        self.ipython_console      = IPythonConsole()
 
 
     def construct_gui(self):
@@ -38,6 +40,7 @@ class RightFrame(QFrame):
         self.tabs_area.addTab(self.graph_manager, 'Graphs')
         self.tabs_area.addTab(self.analysis_controls, 'Analysis')
         self.tabs_area.addTab(self.metric_manager, 'Metrics')
+        self.tabs_area.addTab(self.ipython_console, 'Console')
         self.layout.addWidget(self.tabs_area)
 
 
