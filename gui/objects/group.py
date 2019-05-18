@@ -9,6 +9,10 @@ class Group():
         self.data   = {}
 
 
+    def __len__(self):
+        return len(self.data)
+
+
     @callback
     def add_group(self, name):
         if name in self.data: return
