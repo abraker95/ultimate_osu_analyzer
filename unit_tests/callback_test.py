@@ -229,8 +229,8 @@ class CallbackTest():
         reader_1 = CallbackTest.TestClassRead('reader_1')
         reader_2 = CallbackTest.TestClassRead('reader_2')
 
-        switcher_1.switch.connect(reader_1.return_func_self_data, inst=switcher_1)
-        switcher_2.switch.connect(reader_2.return_func_self_data, inst=switcher_2)
+        switcher_1.switch.connect(lambda old, new: reader_1.return_func_self_data(new), inst=switcher_1)
+        switcher_2.switch.connect(lambda old, new: reader_2.return_func_self_data(new), inst=switcher_2)
 
         switcher_1.add('elem1', 'to_reader_1')
         switcher_2.add('elem2', 'to_reader_2')

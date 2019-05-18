@@ -38,9 +38,6 @@ class DisplayTest(QMainWindow):
         self.setGeometry(0, 0, self.display.width(), self.display.height())
         self.show()
 
-        self.switcher_test()
-        self.time_browse_test(app)
-
 
     def switcher_test(self):
         self.layer_manager_1 = LayerManager()
@@ -57,8 +54,8 @@ class DisplayTest(QMainWindow):
 
         self.layer_manager_2.add_layer('aimpoint', HitobjectAimpointLayer(self.beatmap_2, self.time_browse_test))
 
+        self.switcher.switch.connect(lambda old, new: self.display.setScene(new), inst=self.switcher)
         self.switcher.switch('map_1')
-        self.switcher.get().update_layers()
         
     '''
     def keyPressEvent(self, event):
@@ -74,15 +71,18 @@ class DisplayTest(QMainWindow):
     @callback
     def time_browse_test(self, app):
         print('time_browse_test')
-        for t in range(0, 50000, 1000):
+        for t in range(1000, 10000, 10):
             self.time_browse_test.emit(t)
 
-            if t > 25000:
+            if t % 1000 <= 500:
                 self.switcher.switch('map_2')
+                self.switcher.get().update_layers()
+            else:
+                self.switcher.switch('map_1')
                 self.switcher.get().update_layers()
 
             app.processEvents() 
-            time.sleep(.1)
+            time.sleep(.01)
 
 
     def layer_toggle_test(self):

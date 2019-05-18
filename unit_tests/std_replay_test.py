@@ -6,7 +6,6 @@ from misc.callback import callback
 
 from osu.local.replay import Replay
 from osu.local.beatmap.beatmapIO import BeatmapIO
-from osu.local.beatmap.beatmap_utility import BeatmapUtil
 
 from gui.objects.layer.layers.std.hitobject_outline_layer import HitobjectOutlineLayer
 from gui.objects.layer.layers.std.replay_layer import ReplayLayer
@@ -16,7 +15,7 @@ from gui.objects.display import Display
 from gui.objects.layer.layer_manager import LayerManager
 
 
-class ReplayTest(QMainWindow):
+class StdReplayTest(QMainWindow):
 
     title = 'Replay Test'
     left   = 100
@@ -40,7 +39,7 @@ class ReplayTest(QMainWindow):
         self.display.setScene(self.layer_manager)
 
         self.setCentralWidget(self.display)
-        self.setWindowTitle(ReplayTest.title)
+        self.setWindowTitle(StdReplayTest.title)
         self.setGeometry(0, 0, self.display.width(), self.display.height())
         self.show()
 

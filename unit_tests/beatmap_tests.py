@@ -1,5 +1,5 @@
 from osu.local.beatmap.beatmapIO import BeatmapIO
-from osu.local.beatmap.beatmap_utility import BeatmapUtil
+from osu.local.hitobject.std.std import Std
 
 
 class BeatmapTests():
@@ -29,7 +29,8 @@ class BeatmapTests():
         assert beatmap.timing_points[178].inherited == True, 'inherited = (%s)' % str(beatmap.timing_points[178].inherited)
 
         # Test hitobjects
-        assert len(beatmap.hitobjects) == 3004, '# hitobjects = (%s)' % str(len(beatmap.hitobjects))
+        assert len(beatmap.hitobjects) == 4, '# columns = (%s)' % str(len(beatmap.hitobjects))
+        assert sum(len(column) for column in beatmap.hitobjects) == 3004, '# hitobjects = (%s)' % str(len(beatmap.hitobjects))
 
         # TODO: test hitobjects
 
@@ -124,7 +125,7 @@ class BeatmapTests():
         }
 
         for test_time, test_obj_idxs in test_data_ar7.items():
-            result_objs = BeatmapUtil.get_hitobjects_visible_at_time(beatmap, test_time)
+            result_objs = Std.get_hitobjects_visible_at_time(beatmap, test_time)
             assert len(result_objs) == len(test_obj_idxs), 'Wrong number of objects visible at t=%s; Expected: %s,  Result: %s' % (test_time, str(len(test_obj_idxs)), str(len(result_objs)))
 
             result_obj_idxs = [ beatmap.hitobjects.index(result_obj) for result_obj in result_objs ] 
