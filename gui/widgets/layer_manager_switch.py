@@ -29,7 +29,7 @@ class LayerManagerSwitch(QWidget, Switcher):
         self.setLayout(self.layout)
         self.layout.addWidget(self.layer_stack)
 
-        self.switch.connect(self.switch_layer_manager, inst=self)
+        self.switch.connect(self.__switch_layer_manager, inst=self)
 
     
     def update_gui(self):
@@ -40,7 +40,7 @@ class LayerManagerSwitch(QWidget, Switcher):
         self.layer_stack.currentWidget().addWidget(LayerGui(layer))
 
 
-    def add_layer_manager(self, layer_manager):
+    def __add_layer_manager(self, layer_manager):
         layer_manager_gui = QContainer(QVBoxLayout())
         for layer in layer_manager.data.values():
             layer_manager_gui.get().addWidget(LayerGui(layer))
@@ -51,7 +51,7 @@ class LayerManagerSwitch(QWidget, Switcher):
         self.layer_stack.setCurrentIndex(new_idx)
 
 
-    def rmv_layer_manager(self, layer_manager):
+    def __rmv_layer_manager(self, layer_manager):
         old_mgr = self.layer_stack.currentWidget()        
         self.layer_stack.removeWidget(old_mgr)
         
@@ -61,6 +61,6 @@ class LayerManagerSwitch(QWidget, Switcher):
             old_mgr = None
 
 
-    def switch_layer_manager(self, old_layer_manager, new_layer_manager):
-        if old_layer_manager: self.rmv_layer_manager(old_layer_manager)
-        if new_layer_manager: self.add_layer_manager(new_layer_manager)
+    def __switch_layer_manager(self, old_layer_manager, new_layer_manager):
+        if old_layer_manager != None: self.__rmv_layer_manager(old_layer_manager)
+        if new_layer_manager != None: self.__add_layer_manager(new_layer_manager)
