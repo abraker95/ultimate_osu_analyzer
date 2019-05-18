@@ -29,7 +29,7 @@ class LayerManagerSwitch(QWidget, Switcher):
         self.setLayout(self.layout)
         self.layout.addWidget(self.layer_stack)
 
-        self.switch.connect(self.switch_layer_manager)
+        self.switch.connect(self.switch_layer_manager, inst=self)
 
     
     def update_gui(self):

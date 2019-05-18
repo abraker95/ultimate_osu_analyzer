@@ -99,8 +99,6 @@ class MainWindow(QMainWindow):
         TemporalHitobjectGraph.__del__.connect(self.temporal_graph_deletion_event)
 
         self.layer_manager_switch_gui.switch.connect(lambda old, new: self.display.setScene(new), inst=self.layer_manager_switch_gui)
-        self.layer_manager_switch_gui.switch.connect(self.layer_manager_switch_gui.switch_layer_manager, inst=self.layer_manager_switch_gui)
-
         # gamemode_manger.switch.connect(self.)    # puts out MetricManager
 
 
@@ -144,6 +142,7 @@ class MainWindow(QMainWindow):
 
             if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
                 self.layer_manager_switch_gui.get().add_layer('hitobjects', HitobjectRenderLayer(beatmap, self.timeline.time_changed_event))
+
 
     def close_map(self, beatmap):
         self.layer_manager_switch_gui.rmv(beatmap.metadata.name)
