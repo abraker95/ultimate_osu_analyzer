@@ -1,3 +1,5 @@
 numpy
 pyqtgraph
 osrparse
+pyqt5
+qtconsole
