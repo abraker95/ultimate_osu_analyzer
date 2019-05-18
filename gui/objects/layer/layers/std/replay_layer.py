@@ -4,7 +4,7 @@ from PyQt5.QtGui import *
 
 from generic.temporal import Temporal
 from gui.objects.layer.layer import Layer
-from osu.local.beatmap.beatmap_utility import BeatmapUtil
+from osu.local.hitobject.std.std import Std
 
 
 class ReplayLayer(Layer, Temporal):
@@ -19,17 +19,15 @@ class ReplayLayer(Layer, Temporal):
         self.time_changed.connect(lambda time: self.layer_changed())
 
 
-    def area_resize_event(self, width, height):
-        self.ratio_x = width/BeatmapUtil.PLAYFIELD_WIDTH
-        self.ratio_y = height/BeatmapUtil.PLAYFIELD_HEIGHT
-
-
     def paint(self, painter, option, widget):
         if not self.time: return
         painter.setPen(QColor(0, 200, 0, 255))
         
+        ratio_x = widget.width()/Std.PLAYFIELD_WIDTH
+        ratio_y = widget.height()/Std.PLAYFIELD_HEIGHT
+
         data  = self.replay.get_data_at_time(self.time)
-        pos_x = data.x*self.ratio_x
-        pos_y = data.y*self.ratio_y
+        pos_x = data.x*ratio_x
+        pos_y = data.y*ratio_y
 
         painter.drawEllipse(pos_x, pos_y, 3, 3)
