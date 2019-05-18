@@ -1,6 +1,6 @@
 import numpy as np
 
-from osu.local.beatmap.beatmap_utility import BeatmapUtil
+from osu.local.hitobject.std.std import Std
 from misc.numpy_utils import NumpyUtils
 
 
@@ -9,6 +9,26 @@ class MapData():
 
     TIME = 0
     POS  = 1
+
+    '''
+    [
+        [ 
+            [ time, pos ],
+            [ time, pos ],
+            ... N score points
+        ],
+        [ 
+            [ time, pos ],
+            [ time, pos ],
+            ...  N score points
+        ],
+        ... N hitobjects
+    ]
+    '''
+    @staticmethod 
+    def osu_hitobject_to_raw(osu_hitobject):
+        return [ [ tick_time, (osu_hitobject.time_to_pos(tick_time).x, osu_hitobject.time_to_pos(tick_time).y) ] for tick_time in osu_hitobject.tick_times ]
+
 
     @staticmethod
     def get_data_before(hitobject_data, time):
@@ -38,21 +58,7 @@ class MapData():
         return hitobject_data.hitobject_data[start_idx:end_idx]
 
 
-    '''
-    [
-        [ 
-            [ time, pos ],
-            [ time, pos ],
-            ... N score points
-        ],
-        [ 
-            [ time, pos ],
-            [ time, pos ],
-            ...  N score points
-        ],
-        ... N hitobjects
-    ]
-    '''
+
     def __init__(self):
         self.set_data_raw([])
 
@@ -62,7 +68,7 @@ class MapData():
 
 
     def set_data_hitobjects(self, hitobjects):
-        self.hitobject_data = [ hitobject.raw_data() for hitobject in hitobjects ]
+        self.hitobject_data = [ MapData.osu_hitobject_to_raw(hitobject) for hitobject in hitobjects ]
         return self
 
 

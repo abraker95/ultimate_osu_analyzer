@@ -1,4 +1,4 @@
-from analysis.metrics.metric_library_proxy import MetricLibraryProxy
+from core.gamemode_manager import gamemode_manager
 
 
 class Metric(object):
@@ -13,7 +13,7 @@ class Metric(object):
 
 
     def __call__(self, func):
-        MetricLibraryProxy.proxy.get_metric_lib(self.gamemode).add(self.name, func)
+        gamemode_manager.get_metric_lib(self.gamemode).add_metric(self.name, func)
 
         def wrap(*args, **kargs):
             return func(*args, **kargs)

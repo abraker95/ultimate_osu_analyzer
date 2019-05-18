@@ -2,14 +2,11 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from gui.objects.abstract_state_manager import AbstractStateManager
 
-
-class OnlineBrowser(QWidget, AbstractStateManager):
+class OnlineBrowser(QWidget):
 
     def __init__(self):
         QWidget.__init__(self)
-        AbstractStateManager.__init__(self)
 
         self.init_gui_elements()
         self.construct_gui()

@@ -16,5 +16,9 @@ class QContainer(QWidget):
         self.layout.addWidget(widget)
 
 
+    def rmvWidget(self, widget):
+        self.layout.removeWidget(widget)
+
+
     def get(self):
-        return self.container
+        return self.layout

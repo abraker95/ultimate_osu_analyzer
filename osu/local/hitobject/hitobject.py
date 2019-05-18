@@ -1,7 +1,6 @@
 from PyQt5 import QtCore
 from misc.pos import Pos
 
-from misc.callback import callback
 from misc.frozen_cls import FrozenCls
 
 
@@ -28,8 +27,8 @@ class Hitobject():
         self.index = None
         self.pos   = None
 
-        self.opacity = 1.0
-        self.radius  = None
+        self.difficulty = None
+        self.opacity    = 1.0
 
 
     def get_copy(self):
@@ -56,26 +55,16 @@ class Hitobject():
         pass
 
 
-    @callback
-    def set_radius(self, radius):
-        self.radius = radius
-        self.set_radius.emit(radius)
-
-
-    @callback
     def set_timing(self, ms):
         self.time = ms
-        self.set_timing.emit(ms)
 
 
     def set_opacity(self, opacity):
         self.opacity = opacity
 
 
-    @callback
     def set_postition(self, pos):
         self.pos = pos
-        self.set_postition.emit(pos)
 
 
     def set_ratios(self, ratio_x, ratio_y):

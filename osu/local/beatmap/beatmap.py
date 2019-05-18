@@ -1,8 +1,9 @@
 from PyQt5.QtCore import QObject, pyqtSignal
-from .beatmap_utility import BeatmapUtil
 from misc.callback import callback
 from misc.frozen_cls import FrozenCls
 
+from osu.local.hitobject.std.std import Std
+from osu.local.hitobject.mania.mania import Mania
 
 '''
 Description: Provides a manupilation interface for beatmaps
@@ -57,32 +58,38 @@ class Beatmap():
             self.slider_multiplier = None
 
 
-    def __init__(self):
-        #QObject.__init__(self)
-        #BeatmapIO.__init__(self, filepath)
+    @FrozenCls
+    class Difficulty():
 
-        self.metadata = Beatmap.Metadata()
-        self.gamemode = None
+        def __init__(self):
+            self.hp = None
+            self.cs = None
+            self.od = None
+            self.ar = None
+            self.sm = None
+            self.st = None
+
+
+    def __init__(self):
+        self.metadata   = Beatmap.Metadata()
+        self.difficulty = Beatmap.Difficulty()
+        self.gamemode   = None
         
         self.timing_points     = []
         self.hitobjects        = []
         self.end_times         = []
         self.slider_tick_times = []
 
-        self.hp = None
-        self.cs = None
-        self.od = None
-        self.ar = None
-        self.sm = None
-        self.st = None
-
-        #self.slider_tick_times = []
         self.bpm_min = float('inf')
         self.bpm_max = float('-inf')
 
 
     def get_time_range(self):
-        return (self.hitobjects[0].time, list(self.end_times.keys())[-1])
+        print('get_time_range')
+        if self.gamemode == Beatmap.GAMEMODE_OSU:   return Std.get_time_range(self.hitobjects)
+        # TODO: if self.gamemode == Beatmap.GAMEMODE_TAIKO:   return Taiko.get_time_range(self.hitobjects)
+        # TODO: if self.gamemode == Beatmap.GAMEMODE_CATCH:   return Catch.get_time_range(self.hitobjects)
+        if self.gamemode == Beatmap.GAMEMODE_MANIA: return Mania.get_time_range(self.hitobjects)
 
 
     """
@@ -190,15 +197,12 @@ class Beatmap():
         self.positions_changed.emit()
 
 
-    @callback
     def set_cs_val(self, cs):
-        self.cs = cs
-        self.set_cs_val.emit(BeatmapUtil.cs_to_px(cs))
+        self.difficulty.cs = cs
 
     
     def set_cs_px(self, px):
-        self.cs = BeatmapUtil.px_to_cs(px)
-        self.cs_changed.emit(px)
+        self.difficulty.cs = Osu.px_to_cs(px)
 
 
     def get_cs_val(self):
@@ -206,34 +210,34 @@ class Beatmap():
 
 
     def get_cs_px(self):
-        return BeatmapUtil.cs_to_px(self.cs)
+        return Osu.cs_to_px(self.difficulty.cs)
 
 
     def set_ar_val(self, ar):
-        self.ar = ar
-        self.ar_changed.emit()
+        self.difficulty.ar = ar
+        #self.ar_changed.emit()
 
 
     def set_ar_ms(self, ms):
-        self.ar = BeatmapUtil.ms_to_ar(ms)
-        self.ar_changed.emit()
+        self.difficulty.ar = Osu.ms_to_ar(ms)
+        #self.ar_changed.emit()
 
 
     def get_ar_val(self):
-        return self.ar
+        return self.difficulty.ar
 
 
     def get_ar_ms(self):
-        return BeatmapUtil.ar_to_ms(self.ar)
+        return Osu.ar_to_ms(self.difficulty.ar)
 
 
     def set_od_val(self, od):
-        self.od = od
-        self.od_changed.emit()
+        self.difficulty.od = od
+        #self.od_changed.emit()
 
 
     def get_od_val(self):
-        return self.od
+        return self.difficulty.od
 
 
     def apply_mods(self, mods):

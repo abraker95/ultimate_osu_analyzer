@@ -8,8 +8,9 @@ from misc.pos import Pos
 from misc.bezier import Bezier
 from misc.frozen_cls import FrozenCls
 from misc.math_utils import triangle, lerp, value_to_percent
+
 from osu.local.hitobject.hitobject import Hitobject
-from osu.local.beatmap.beatmap_utility import BeatmapUtil
+from osu.local.hitobject.std.std import Std
 
 
 
@@ -37,7 +38,6 @@ class StdHoldNoteHitobject(Hitobject):
         self.repeat       = None
         self.curve_type   = None
 
-        self.slider_point_pos = None
         self.to_repeat_time   = None
 
         self.curve_points = []
@@ -111,12 +111,13 @@ class StdHoldNoteHitobject(Hitobject):
         self.slider_point_pos = self.time_to_pos(time)
 
 
-    def render_hitobject_outline(self, painter, ratio_x, ratio_y):
+    def render_hitobject_outline(self, painter, ratio_x, ratio_y, time):
         painter.setPen(QColor(0, 0, 255, self.opacity*255))
 
-        pos_x = (self.pos.x - self.radius)*ratio_x
-        pos_y = (self.pos.y - self.radius)*ratio_y
-        painter.drawEllipse(pos_x, pos_y, 2*self.radius*ratio_x, 2*self.radius*ratio_y)
+        radius = Std.cs_to_px(self.difficulty.cs)
+        pos_x  = (self.pos.x - radius)*ratio_x
+        pos_y  = (self.pos.y - radius)*ratio_y
+        painter.drawEllipse(pos_x, pos_y, 2*radius*ratio_x, 2*radius*ratio_y)
 
         try:
             for i in range(len(self.gen_points) - 1):
@@ -125,15 +126,17 @@ class StdHoldNoteHitobject(Hitobject):
             print('Error drawing slider: ', self.gen_points)
 
         # Let it be part of hitobject outline
-        self.render_sliderpoint(painter, ratio_x, ratio_y)
+        self.render_sliderpoint(painter, ratio_x, ratio_y, time)
 
 
-    def render_sliderpoint(self, painter, ratio_x, ratio_y):
+    def render_sliderpoint(self, painter, ratio_x, ratio_y, time):
         painter.setPen(QColor(0, 0, 255, self.opacity*255))
+        
         slider_point_radius = 3
+        slider_point_pos = self.time_to_pos(time)
 
-        pos_x = (self.slider_point_pos.x - 0.5*slider_point_radius)*ratio_x
-        pos_y = (self.slider_point_pos.y - 0.5*slider_point_radius)*ratio_y
+        pos_x = (slider_point_pos.x - 0.5*slider_point_radius)*ratio_x
+        pos_y = (slider_point_pos.y - 0.5*slider_point_radius)*ratio_y
         painter.drawEllipse(pos_x, pos_y, slider_point_radius, slider_point_radius)
 
 
@@ -150,4 +153,5 @@ class StdHoldNoteHitobject(Hitobject):
 
 
     def boundingRect(self):
-        return QRectF(0, 0, self.radius, self.radius)
+        radius = BeatmapUtil.cs_to_px(self.difficulty.cs)
+        return QRectF(0, 0, radius, radius)

@@ -1,8 +1,7 @@
 from pyqtgraph.Qt import QtGui, QtCore
 import pyqtgraph
 
-from analysis.graphing.graph_types import graph_types
-from analysis.generic.library_element import LibraryElement
+from core.graph_manager import graph_manager
 from misc.callback import callback
 
 
@@ -78,4 +77,4 @@ class TemporalHitobjectGraph(pyqtgraph.PlotWidget):
         self.time_changed_event.emit(marker.value())
 
 
-graph_types.add('temporal_hitobject_graph', TemporalHitobjectGraph)
+graph_manager.add_graph('temporal_hitobject_graph', TemporalHitobjectGraph)

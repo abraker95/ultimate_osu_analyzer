@@ -2,7 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from gui.widgets.layer_manager_stack import LayerManagerStack
+from gui.widgets.layer_manager_switch import LayerManagerSwitch
 from gui.widgets.replay_manager import ReplayManager
 from gui.widgets.graph_manager import GraphManager
 from gui.widgets.analysis_controls import AnalysisControls
@@ -23,17 +23,17 @@ class RightFrame(QFrame):
         self.layout    = QHBoxLayout()
         self.tabs_area = QTabWidget()
 
-        self.layer_manager_stack = LayerManagerStack()
-        self.replay_manager      = ReplayManager()
-        self.graph_manager       = GraphManager()
-        self.analysis_controls   = AnalysisControls()
-        self.metric_manager      = MetricManager()
+        self.layer_manager_switch = LayerManagerSwitch()
+        self.replay_manager       = ReplayManager()
+        self.graph_manager        = GraphManager()
+        self.analysis_controls    = AnalysisControls()
+        self.metric_manager       = MetricManager()
 
 
     def construct_gui(self):
         self.setLayout(self.layout)
 
-        self.tabs_area.addTab(self.layer_manager_stack, 'Layers')
+        self.tabs_area.addTab(self.layer_manager_switch, 'Layers')
         self.tabs_area.addTab(self.replay_manager, 'Replays')
         self.tabs_area.addTab(self.graph_manager, 'Graphs')
         self.tabs_area.addTab(self.analysis_controls, 'Analysis')

@@ -10,8 +10,9 @@ from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
 
 from gui.objects.graph.line_plot import LinePlot
 
-from analysis.metrics.metric_library_proxy import MetricLibraryProxy
-from analysis.graphing.graph_types import graph_types
+#from analysis.metrics.metric_library_proxy import MetricLibraryProxy
+from core.gamemode_manager import gamemode_manager
+from core.graph_manager import graph_manager
 
 
 class DropdownItem(QWidget):
@@ -65,7 +66,8 @@ class MetricOption(DropdownItem):
         metric_library = MetricLibraryProxy.proxy.get_active_lib()
         if not metric_library: return
 
-        self.dropdown.addItems(metric_library.get_names())
+        # TODO: Fix
+        #self.dropdown.addItems(gamemode_manager.get().get_names())
             
 
 

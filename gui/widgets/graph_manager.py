@@ -6,15 +6,15 @@ from pyqtgraph.dockarea import *
 
 from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
 from gui.objects.graph.line_plot import LinePlot
-from gui.objects.abstract_state_manager import AbstractStateManager
 
 from analysis.osu.std.map_metrics import MapMetrics
+
 
 
 class GraphManager(QWidget):
 
     def __init__(self):
-        super().__init__()
+        QWidget.__init__(self)
 
         self.init_gui_elements()
         self.construct_gui()
@@ -28,7 +28,19 @@ class GraphManager(QWidget):
         self.graphs = {}
 
 
+        '''
+        # TODO: 
+            A scripting text field that allows to create new metrics to graph
+            Default info avaliable:
+                hitobjects ->
+                    time
+                    pos
 
+            Ex:
+                # Interval metrics
+                x = [ hitobjects[i].time for i in range(1, len(hitobjects)) ]
+                y = [ hitobjects[i].time - hitobjects[i - 1].time in range(1, len(hitobjects)) ]
+        '''
 
 
     def construct_gui(self):
@@ -66,7 +78,25 @@ class GraphManager(QWidget):
         self.dock_area.addDockWidget(Qt.LeftDockWidgetArea, dock)           # I have no idea why Left/Right is reversed
         self.graphs[graph.getPlotItem().titleLabel.text] = [ graph, dock ]
 
+        
+    def add_graph_for_metric(self, metric, plot_type=None):
+        number_dimensions = metric.get_metric_dimensions()
 
+        # Validate and/or choose plot type
+        if plot_type != None:
+            if not plot_type.accepts_dim(number_dimensions):
+                raise Exception('Plot type indicated cannot accept ' + str(number_dimensions) + ' dimensions')
+        else:
+            if    number_dimensions == 1: return  # TODO
+            elif  number_dimensions == 2: plot_type = LinePlot()
+            elif  number_dimensions == 3: return  # TODO
+            elif  number_dimensions == 4: return  # TODO
+            else: return  # TODO: Unsupported?
+
+        # TODO: Support for other types of graphs that are not time related
+        self.add_graph(TemporalHitobjectGraph(plot_type, metric.name, metric))
+
+            
     def remove_graph(self, graph_name):
         self.dock_area.removeDockWidget(self.graphs[graph_name][1])
         del self.graphs[graph_name]

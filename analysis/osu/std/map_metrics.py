@@ -38,7 +38,6 @@ class MapMetrics():
         return all_times[1:], vel
 
 
-
     @staticmethod
     @Metric(Beatmap.GAMEMODE_OSU, 'angles', 1, 2)
     def calc_angles(hitobject_data=MapData.full_hitobject_data):

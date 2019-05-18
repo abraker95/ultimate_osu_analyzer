@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 from osu.local.hitobject.hitobject import Hitobject
-from osu.local.beatmap.beatmap_utility import BeatmapUtil
+from osu.local.hitobject.std.std import Std
 
 from misc.frozen_cls import FrozenCls
 from misc.math_utils import value_to_percent
@@ -23,8 +23,8 @@ Output:
 @FrozenCls
 class StdSpinnerHitobject(Hitobject):
 
-    def __init__(self):
-        self.radius   = 512
+    def __init__(self, beatmap=None):
+        self.beatmap  = beatmap
         self.end_time = None
 
         Hitobject.__init__(self)
@@ -34,20 +34,17 @@ class StdSpinnerHitobject(Hitobject):
         return self.end_time
 
 
-    def time_changed(self, time):
-        self.radius = BeatmapUtil.PLAYFIELD_HEIGHT*(1 - value_to_percent(self.time, self.end_time, time))
-
-
     def raw_data(self):
         return [ [ self.time, (self.pos.x, self.pos.y) ], [ self.end_time, (self.pos.x, self.pos.y) ] ]
 
 
-    def render_hitobject_outline(self, painter, ratio_x, ratio_y):
+    def render_hitobject_outline(self, painter, ratio_x, ratio_y, time):
         painter.setPen(QPen(QColor(0, 255, 255, 255), 5))
 
-        pos_x = (self.pos.x - self.radius/2)*ratio_x
-        pos_y = (self.pos.y - self.radius/2)*ratio_y
-        painter.drawEllipse(pos_x, pos_y, self.radius*self.ratio_x, self.radius*ratio_y)
+        outer_radius = Std.PLAYFIELD_HEIGHT*(1 - value_to_percent(self.time, self.end_time, time))
+        pos_x = (self.pos.x - outer_radius/2)*ratio_x
+        pos_y = (self.pos.y - outer_radius/2)*ratio_y
+        painter.drawEllipse(pos_x, pos_y, outer_radius*ratio_x, outer_radius*ratio_y)
 
         center_radius = 3
         pos_x = (self.pos.x - center_radius/2)*ratio_x
@@ -64,5 +61,6 @@ class StdSpinnerHitobject(Hitobject):
 
 
     def boundingRect(self):
-        return QRectF(0, 0, self.radius, self.radius)
+        radius = BeatmapUtil.cs_to_px(self.difficulty.cs)
+        return QRectF(0, 0, radius, radius)
 

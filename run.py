@@ -1,4 +1,5 @@
 import sys
+import time
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -7,15 +8,23 @@ from gui.frames.main_frame import MainFrame
 
 from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
 from gui.objects.graph.line_plot import LinePlot
+from gui.objects.display import Display
 
-from osu.local.playfield import Playfield
 from osu.local.beatmap.beatmapIO import BeatmapIO
 from osu.local.beatmap.beatmap import Beatmap
 
-from analysis.map_data_proxy import MapDataProxy
-from analysis.metrics.metric_library_proxy import MetricLibraryProxy
-from analysis.metrics.metric import Metric
-from analysis.osu.std.map_metrics import MapMetrics
+from core.gamemode_manager import gamemode_manager
+from core.layer_manager import LayerManager
+
+from gui.objects.layer.layers.std.hitobject_outline_layer import HitobjectOutlineLayer
+from gui.objects.layer.layers.std.hitobject_aimpoint_layer import HitobjectAimpointLayer
+
+from gui.objects.layer.layers.mania.hitobject_render_layer import HitobjectRenderLayer
+
+#from analysis.map_data_proxy import MapDataProxy
+#from analysis.metrics.metric_library_proxy import MetricLibraryProxy
+#from analysis.metrics.metric import Metric
+#from analysis.osu.std.map_metrics import MapMetrics
 
 
 
@@ -43,14 +52,21 @@ class MainWindow(QMainWindow):
         self.file_menu           = self.menubar.addMenu('&File')
         self.open_beatmap_action = QAction("&Open beatmap", self)
         self.close_action        = QAction("&Quit w", self)
+
+        self.view_menu              = self.menubar.addMenu('&View')
+        self.graphs_menu            = self.view_menu.addMenu('&Graphs')
+        self.view_velocity          = QAction("&velocity", self)
+        self.view_tapping_intervals = QAction("&tapping intervals", self)
         
         self.toolbar    = self.addToolBar('Exit')
         self.status_bar = self.statusBar()
 
-        self.timeline            = self.main_frame.bottom_frame.timeline
-        self.graph_manager       = self.main_frame.center_frame.right_frame.graph_manager
-        self.analysis_controls   = self.main_frame.center_frame.right_frame.analysis_controls
-        self.layer_manager_stack = self.main_frame.center_frame.right_frame.layer_manager_stack
+        self.timeline                 = self.main_frame.bottom_frame.timeline
+        self.graph_manager            = self.main_frame.center_frame.right_frame.graph_manager
+        self.analysis_controls        = self.main_frame.center_frame.right_frame.analysis_controls
+        self.layer_manager_switch_gui = self.main_frame.center_frame.right_frame.layer_manager_switch
+        self.map_manager              = self.main_frame.center_frame.mid_frame.map_manager
+        self.display                  = self.main_frame.center_frame.mid_frame.display
 
 
     def construct_gui(self):
@@ -68,13 +84,24 @@ class MainWindow(QMainWindow):
         self.close_action.setShortcut('Ctrl+Q')
         self.close_action.triggered.connect(self.close_application)
 
+        self.view_velocity.setCheckable(True)
+        self.view_velocity.triggered.connect(self.view_velocity_action)
+
+        self.view_tapping_intervals.setCheckable(True)
+        self.view_tapping_intervals.triggered.connect(self.view_tapping_intervals_action)
 
         self.analysis_controls.create_graph_event.connect(self.graph_manager.add_graph)
-        self.main_frame.center_frame.mid_frame.tab_changed_event.connect(self.change_playfield)
+        self.map_manager.map_changed_event.connect(self.change_map)
+        self.map_manager.map_close_event.connect(self.close_map)
 
         # Allows to forward signals from any temporal graph without having means to get the instance
         TemporalHitobjectGraph.__init__.connect(self.temporal_graph_creation_event)
         TemporalHitobjectGraph.__del__.connect(self.temporal_graph_deletion_event)
+
+        self.layer_manager_switch_gui.switch.connect(lambda old, new: self.display.setScene(new), inst=self.layer_manager_switch_gui)
+        self.layer_manager_switch_gui.switch.connect(self.layer_manager_switch_gui.switch_layer_manager, inst=self.layer_manager_switch_gui)
+
+        # gamemode_manger.switch.connect(self.)    # puts out MetricManager
 
 
     def update_gui(self):
@@ -104,35 +131,22 @@ class MainWindow(QMainWindow):
             print(beatmap_filename)
 
             # Create a new playfield and load the beatmap into it
-            playfield = Playfield()
-            playfield.setFocusPolicy(Qt.NoFocus)
-            playfield.load_beatmap(BeatmapIO.load_beatmap(beatmap_filename))
+            beatmap = BeatmapIO.load_beatmap(beatmap_filename)
+            self.map_manager.add_map(beatmap, beatmap.metadata.name)
 
-            # TODO: Currently the lables are based off map's full name
-            #       That's fine, but if the same map is opened multiple times, especially after being edited,
-            #       the layers refer to each other under the same map's name and will apply to all maps named with same name
-            #       Use an MD5 hash instead
-            map_name = playfield.beatmap.metadata.name
+            self.layer_manager_switch_gui.add(beatmap.metadata.name, LayerManager())
+            self.layer_manager_switch_gui.switch(beatmap.metadata.name)
 
-            # Establish connection between the timeline and playfield's time setting
-            self.timeline.time_changed_event.connect(playfield.set_time)
-            
-            # Add new layer controls area for controlling displayed map layers
-            self.layer_manager_stack.add_layer_manager(map_name)
+            # TODO: Adding layers will be one of things analysis manager does
+            if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
+                self.layer_manager_switch_gui.get().add_layer('hitobjects', HitobjectOutlineLayer(beatmap, self.timeline.time_changed_event))
+                self.layer_manager_switch_gui.get().add_layer('aimpoints', HitobjectAimpointLayer(beatmap, self.timeline.time_changed_event))
 
-            # Establish a connection between the created layer manager and playfield's add layer and layer manager's remove layer events
-            layer_manager = self.layer_manager_stack.get_layer_manager(map_name)
-            playfield.add_layer_event.connect(layer_manager.add_layer)
-            
-            layer_manager.remove_layer_event.connect(playfield.remove_layer)
-            layer_manager.layer_change_event.connect(playfield.layer_changed)
+            if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
+                self.layer_manager_switch_gui.get().add_layer('hitobjects', HitobjectRenderLayer(beatmap, self.timeline.time_changed_event))
 
-            # Add new tab to display playfield; 
-            # Note: this has to go last to be able to switch to created layer manager
-            self.main_frame.center_frame.mid_frame.add_tab(playfield, map_name)
-
-            # Populate layer manager with plafield layers
-            playfield.create_basic_map_layers()
+    def close_map(self, beatmap):
+        self.layer_manager_switch_gui.rmv(beatmap.metadata.name)
 
 
     def get_osu_files(self, file_type):
@@ -145,24 +159,29 @@ class MainWindow(QMainWindow):
             return file_dialog.selectedFiles()
 
 
-    def change_playfield(self, playfield):
-        self.switch_gamemode(playfield.beatmap.gamemode)
-        MapDataProxy.full_hitobject_data.set_data_hitobjects(playfield.beatmap.hitobjects)
+    def change_map(self, beatmap):
+        if not beatmap: return
 
-        # Update timeline range
-        min_time, max_time = playfield.beatmap.get_time_range()
-        self.timeline.setRange(xRange=(min_time - 100, max_time + 100))
-        self.timeline.set_hitobject_data(MapDataProxy.full_hitobject_data)
+        #MapDataProxy.full_hitobject_data.set_data_hitobjects(beatmap.hitobjects)
 
-        # Change to the layer manager responsible for the playfield now displayed
-        map_name = playfield.beatmap.metadata.name
-        layer_manager_stack = self.main_frame.center_frame.right_frame.layer_manager_stack
-        layer_manager_stack.set_layer_manager_active(map_name)
+        # TODO: Fix bug where changing from a new loaded map first time doesn't safe timeline data
+        try: self.timeline.save()
+        except: pass
 
-        self.graph_manager.update_data()
+        try: self.timeline.load(beatmap.metadata.name)
+        except ValueError:
+            # Get new timeline range
+            min_time, max_time = beatmap.get_time_range()
+            self.timeline.setRange(xRange=(min_time - 100, max_time + 100))
+            self.timeline.timeline_marker.setValue(min_time)
+            self.timeline.save(beatmap.metadata.name)
 
-        print('\tTODO: save timeline marker position')
-        print('\tTODO: update statistics on the right side')
+        #self.timeline.set_hitobject_data(MapDataProxy.full_hitobject_data)
+
+        #self.graph_manager.update_data()
+
+        gamemode_manager.switch(beatmap.gamemode)
+        self.layer_manager_switch_gui.switch(beatmap.metadata.name)
 
 
     def switch_gamemode(self, gamemode):
@@ -175,7 +194,7 @@ class MainWindow(QMainWindow):
             reset analysis to gamemode
         '''
 
-        metric_library = MetricLibraryProxy.proxy.get_active_lib()
+        metric_library = MetricLibraryProxy.proxy.get()
         print('Available metrics: ' + str(metric_library.get_names()))
 
         analysis_controls = self.main_frame.center_frame.right_frame.analysis_controls
@@ -214,8 +233,22 @@ class MainWindow(QMainWindow):
         sys.exit()
 
 
+    def view_velocity_action(self):
+        if self.view_velocity.isChecked():
+            # TODO: display graph
+            pass
+        else:
+            # TODO: remove graph
+            pass
 
 
+    def view_tapping_intervals_action(self):
+        if self.view_tapping_intervals.isChecked():
+            # TODO: display graph
+            pass
+        else:
+            # TODO: remove graph
+            pass
 
 
 if __name__ == '__main__':

@@ -3,10 +3,12 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 from osu.local.hitobject.hitobject import Hitobject
-from osu.local.beatmap.beatmap_utility import BeatmapUtil
+from osu.local.hitobject.taiko.taiko import Taiko
+
+from misc.frozen_cls import FrozenCls
 
 
-
+@FrozenCls
 class TaikoSingleNoteHitobject(QGraphicsItem, Hitobject):
 
     def __init__(self, data):

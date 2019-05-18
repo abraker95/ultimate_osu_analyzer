@@ -2,14 +2,18 @@ from collections import OrderedDict
 
 from misc.math_utils import find
 from osu.local.beatmap.beatmap import Beatmap
-from osu.local.beatmap.beatmap_utility import BeatmapUtil
+
 from osu.local.hitobject.hitobject import Hitobject
+
+from osu.local.hitobject.std.std import Std
+from osu.local.hitobject.taiko.taiko import Taiko
+from osu.local.hitobject.catch.catch import Catch
+from osu.local.hitobject.mania.mania import Mania
 
 from osu.local.hitobject.std.std_singlenote_io import StdSingleNoteIO
 from osu.local.hitobject.std.std_holdnote_io import StdHoldNoteIO
 from osu.local.hitobject.std.std_spinner_io import StdSpinnerIO
 
-''' TODO: Fix
 from osu.local.hitobject.taiko.taiko_singlenote_hitobject import TaikoSingleNoteHitobject
 from osu.local.hitobject.taiko.taiko_holdnote_hitobject import TaikoHoldNoteHitobject
 from osu.local.hitobject.taiko.taiko_spinner_hitobject import TaikoSpinnerHitobject
@@ -17,7 +21,6 @@ from osu.local.hitobject.taiko.taiko_spinner_hitobject import TaikoSpinnerHitobj
 from osu.local.hitobject.catch.catch_singlenote_hitobject import CatchSingleNoteHitobject
 from osu.local.hitobject.catch.catch_holdnote_hitobject import CatchHoldNoteHitobject
 from osu.local.hitobject.catch.catch_spinner_hitobject import CatchSpinnerHitobject
-'''
 
 from osu.local.hitobject.mania.mania_singlenote_io import ManiaSingleNoteIO
 from osu.local.hitobject.mania.mania_holdnote_io import ManiaHoldNoteIO
@@ -77,11 +80,21 @@ class BeatmapIO():
         with open(filepath, 'rt', encoding='utf-8') as beatmap_file:
             BeatmapIO.__parse_beatmap_file(beatmap_file, beatmap)
             BeatmapIO.__process_timing_points(beatmap)
-            BeatmapIO.__process_slider_timings(beatmap)
-            BeatmapIO.__process_hitobject_end_times(beatmap)
-            BeatmapIO.__process_slider_tick_times(beatmap)
+
+            if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
+                BeatmapIO.__process_slider_timings(beatmap)
+                BeatmapIO.__process_hitobject_end_times(beatmap)
+                BeatmapIO.__process_slider_tick_times(beatmap)
+
+            if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
+                BeatmapIO.__process_columns(beatmap)
+
             BeatmapIO.__validate(beatmap)
 
+        beatmap.set_cs_val(beatmap.difficulty.cs)
+        beatmap.set_ar_val(beatmap.difficulty.ar)
+        beatmap.set_od_val(beatmap.difficulty.od)
+        
         return beatmap
 
 
@@ -285,27 +298,27 @@ class BeatmapIO():
         data[0] = data[0].strip()
 
         if data[0] == 'HPDrainRate':
-            beatmap.hp = float(data[1])
+            beatmap.difficulty.hp = float(data[1])
             return
 
         if data[0] == 'CircleSize':
-            beatmap.cs = float(data[1])
+            beatmap.difficulty.cs = float(data[1])
             return
 
         if data[0] == 'OverallDifficulty':
-            beatmap.od = float(data[1])
+            beatmap.difficulty.od = float(data[1])
             return
 
         if data[0] == 'ApproachRate':
-            beatmap.ar = float(data[1])
+            beatmap.difficulty.ar = float(data[1])
             return
 
         if data[0] == 'SliderMultiplier':
-            beatmap.sm = float(data[1])
+            beatmap.difficulty.sm = float(data[1])
             return
 
         if data[0] == 'SliderTickRate':
-            beatmap.st = float(data[1])
+            beatmap.difficulty.st = float(data[1])
             return
 
 
@@ -349,29 +362,29 @@ class BeatmapIO():
         hitobject_type = int(data[3])
 
         if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
-            if BeatmapUtil.is_hitobject_type(hitobject_type, Hitobject.CIRCLE):
-                beatmap.hitobjects.append(StdSingleNoteIO.load_singlenote(data))
+            if Std.is_hitobject_type(hitobject_type, Hitobject.CIRCLE):
+                beatmap.hitobjects.append(StdSingleNoteIO.load_singlenote(data, beatmap.difficulty))
                 return
 
-            if BeatmapUtil.is_hitobject_type(hitobject_type, Hitobject.SLIDER):
-                beatmap.hitobjects.append(StdHoldNoteIO.load_holdnote(data))
+            if Std.is_hitobject_type(hitobject_type, Hitobject.SLIDER):
+                beatmap.hitobjects.append(StdHoldNoteIO.load_holdnote(data, beatmap.difficulty))
                 return
 
-            if BeatmapUtil.is_hitobject_type(hitobject_type, Hitobject.SPINNER):
-                beatmap.hitobjects.append(StdSpinnerIO.load_spinner(data))
+            if Std.is_hitobject_type(hitobject_type, Hitobject.SPINNER):
+                beatmap.hitobjects.append(StdSpinnerIO.load_spinner(data, beatmap.difficulty))
                 return
 
         if beatmap.gamemode == Beatmap.GAMEMODE_TAIKO:
             ''' TODO: Fix
-            if BeatmapUtil.is_hitobject_type(hitobject_type, Hitobject.CIRCLE):
+            if Taiko.is_hitobject_type(hitobject_type, Hitobject.CIRCLE):
                 beatmap.hitobjects.append(TaikoSingleNoteHitobject(data))
                 return
 
-            if BeatmapUtil.is_hitobject_type(hitobject_type, Hitobject.SLIDER):
+            if Taiko.is_hitobject_type(hitobject_type, Hitobject.SLIDER):
                 beatmap.hitobjects.append(TaikoHoldNoteHitobject(data))
                 return
 
-            if BeatmapUtil.is_hitobject_type(hitobject_type, Hitobject.SPINNER):
+            if Taiko.is_hitobject_type(hitobject_type, Hitobject.SPINNER):
                 beatmap.hitobjects.append(TaikoSpinnerHitobject(data))
                 return
             '''
@@ -379,29 +392,27 @@ class BeatmapIO():
 
         if beatmap.gamemode == Beatmap.GAMEMODE_CATCH:
             ''' TODO: Fix
-            if BeatmapUtil.is_hitobject_type(hitobject_type, Hitobject.CIRCLE):
+            if Catch.is_hitobject_type(hitobject_type, Hitobject.CIRCLE):
                 beatmap.hitobjects.append(CatchSingleNoteHitobject(data))
                 return
 
-            if BeatmapUtil.is_hitobject_type(hitobject_type, Hitobject.SLIDER):
+            if Catch.is_hitobject_type(hitobject_type, Hitobject.SLIDER):
                 beatmap.hitobjects.append(CatchHoldNoteHitobject(data))
                 return
 
-            if BeatmapUtil.is_hitobject_type(hitobject_type, Hitobject.SPINNER):
+            if Catch.is_hitobject_type(hitobject_type, Hitobject.SPINNER):
                 beatmap.hitobjects.append(CatchSpinnerHitobject(data))
                 return
             '''
             return
 
         if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
-            if BeatmapUtil.is_hitobject_type(hitobject_type, Hitobject.CIRCLE):
-                test = ManiaSingleNoteIO.load_singlenote(data)
-                #print(test.time)
-                beatmap.hitobjects.append(ManiaSingleNoteIO.load_singlenote(data))
+            if Mania.is_hitobject_type(hitobject_type, Hitobject.CIRCLE):
+                beatmap.hitobjects.append(ManiaSingleNoteIO.load_singlenote(data, beatmap.difficulty))
                 return
 
-            if BeatmapUtil.is_hitobject_type(hitobject_type, Hitobject.MANIALONG):
-                beatmap.hitobjects.append(ManiaHoldNoteIO.load_holdnote(data))
+            if Mania.is_hitobject_type(hitobject_type, Hitobject.MANIALONG):
+                beatmap.hitobjects.append(ManiaHoldNoteIO.load_holdnote(data, beatmap.difficulty))
                 return
 
 
@@ -450,7 +461,7 @@ class BeatmapIO():
 
             timing_point = beatmap.timing_points[idx_timing_point]
 
-            hitobject.to_repeat_time = round(((-600.0/timing_point.bpm) * hitobject.pixel_length * timing_point.slider_multiplier) / (100.0 * beatmap.sm))
+            hitobject.to_repeat_time = round(((-600.0/timing_point.bpm) * hitobject.pixel_length * timing_point.slider_multiplier) / (100.0 * beatmap.difficulty.sm))
             hitobject.end_time = hitobject.time + hitobject.to_repeat_time*hitobject.repeat
 
 
@@ -461,10 +472,29 @@ class BeatmapIO():
             if not hitobject.is_hitobject_type(Hitobject.SLIDER):
                 continue
 
-            ms_per_beat = (100.0 * beatmap.sm)/(hitobject.get_velocity() * beatmap.st)
+            ms_per_beat = (100.0 * beatmap.difficulty.sm)/(hitobject.get_velocity() * beatmap.difficulty.st)
             hitobject.tick_times = []
 
             for beat_time in range(hitobject.time, hitobject.end_time, int(ms_per_beat)):
                 hitobject.tick_times.append(beat_time)
+
+
+    @staticmethod
+    def __process_columns(beatmap):
+        hitobjects = beatmap.hitobjects
+        beatmap.hitobjects = []
+
+        for column in range(int(beatmap.difficulty.cs)):
+            beatmap.hitobjects.append([])
+
+        for hitobject in hitobjects:
+            column = Mania.get_column(hitobject.pos.x, beatmap.difficulty.cs)
+            beatmap.hitobjects[column].append(hitobject)
+
+        '''
+        for column in range(len(beatmap.hitobjects)):
+            beatmap.hitobjects[column] = sorted(beatmap.hitobjects[column], key=lambda hitobject: hitobject.time)
+        '''
+            
 
 BeatmapIO.init()

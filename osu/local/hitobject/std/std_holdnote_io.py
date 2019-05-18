@@ -10,11 +10,11 @@ from osu.local.hitobject.std.std_holdnote_hitobject import StdHoldNoteHitobject
 class StdHoldNoteIO():
 
     @staticmethod
-    def load_holdnote(data):
+    def load_holdnote(data, difficulty):
         holdnote = StdHoldNoteHitobject()
         if not data: return holdnote
 
-        StdHoldNoteIO.__process_hitobject_data(data, holdnote)
+        StdHoldNoteIO.__process_hitobject_data(data, holdnote, difficulty)
         StdHoldNoteIO.__process_slider_data(data, holdnote)
         StdHoldNoteIO.__process_curve_points(holdnote)
 
@@ -28,10 +28,12 @@ class StdHoldNoteIO():
 
 
     @staticmethod
-    def __process_hitobject_data(data, holdnote):
+    def __process_hitobject_data(data, holdnote, difficulty):
         holdnote.pos            = Pos(int(data[0]), int(data[1]))
         holdnote.time           = int(data[2])
         holdnote.hitobject_type = int(data[3])
+
+        holdnote.difficulty     = difficulty
 
 
     @staticmethod
@@ -57,7 +59,6 @@ class StdHoldNoteIO():
 
         if holdnote.curve_type == StdHoldNoteHitobject.BEZIER:
             StdHoldNoteIO.__make_bezier(holdnote)
-            holdnote.slider_point_pos = holdnote.gen_points[0]
             return
 
         if holdnote.curve_type == StdHoldNoteHitobject.CIRCUMSCRIBED:
@@ -67,17 +68,14 @@ class StdHoldNoteIO():
             else:
                 StdHoldNoteIO.__make_bezier(holdnote)
 
-            holdnote.slider_point_pos = holdnote.gen_points[0]
             return
 
         if holdnote.curve_type == StdHoldNoteHitobject.LINEAR1:
             StdHoldNoteIO.__make_linear(holdnote)
-            holdnote.slider_point_pos = holdnote.gen_points[0]
             return
 
         if holdnote.curve_type == StdHoldNoteHitobject.LINEAR2:
             StdHoldNoteIO.__make_linear(holdnote)
-            holdnote.slider_point_pos = holdnote.gen_points[0]
             return
         
         holdnote.end_point = holdnote.curve_points[-1] if (holdnote.repeat % 2 == 0) else holdnote.curve_points[-1]

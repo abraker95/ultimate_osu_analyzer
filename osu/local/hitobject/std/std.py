@@ -1,15 +1,14 @@
+import math
+
 from misc.math_utils import *
-from ..hitobject.hitobject import Hitobject
+from osu.local.hitobject.hitobject import Hitobject
 
 
 
-"""
-Provides utilities for beatmap and hitobject related calculation
-"""
-class BeatmapUtil():
+class Std():
 
-    PLAYFIELD_WIDTH  = 512
-    PLAYFIELD_HEIGHT = 384
+    PLAYFIELD_WIDTH  = 512  # osu!px
+    PLAYFIELD_HEIGHT = 384  # osu!px
 
     @staticmethod
     def cs_to_px(cs):
@@ -50,7 +49,7 @@ class BeatmapUtil():
     
     @staticmethod
     def approch_circle_to_radius(cs, ar, t):
-        return 4*BeatmapUtil.cs_to_px(cs) - 3*BeatmapUtil.cs_to_px(cs) * (t/max(800, BeatmapUtil.ar_to_ms(ar)))
+        return 4*Std.cs_to_px(cs) - 3*Std.cs_to_px(cs) * (t/max(800, Std.ar_to_ms(ar)))
 
 
     @staticmethod
@@ -64,6 +63,14 @@ class BeatmapUtil():
             return 0.4 * ar_ms
         else:
             return min(ar_ms, 400)
+
+
+    @staticmethod
+    def get_time_range(hitobjects):
+        try:    return (hitobjects[0].time, hitobjects[-1].end_time)
+        except: return (hitobjects[0].time, hitobjects[-1].time)
+
+        # return (self.hitobjects[0].time, list(self.end_times.keys())[-1])
 
 
     # TODO: Factor in hidden mod
@@ -82,7 +89,7 @@ class BeatmapUtil():
         idx_end_time_soonest   = find(hitobject_end_times_timings, time)
         idx_begin_time_soonest = beatmap.end_times[hitobject_end_times_timings[idx_end_time_soonest]]
 
-        idx_begin_time_latest = find(beatmap.hitobjects, time, lambda hitobject: hitobject.time - BeatmapUtil.ar_to_ms(beatmap.ar))
+        idx_begin_time_latest = find(beatmap.hitobjects, time, lambda hitobject: hitobject.time - Std.ar_to_ms(beatmap.difficulty.ar))
         idx_end_time_latest   = find(hitobject_end_times_indices, idx_begin_time_latest)
         
         # The list of visible hitobjects

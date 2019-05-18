@@ -1,20 +1,28 @@
+from generic.temporal import Temporal
 from gui.objects.layer.layer import Layer
-from osu.local.beatmap.beatmap_utility import *
+
+from osu.local.hitobject.std.std import Std
 
 
-class HitobjectAimpointLayer(Layer):
+class HitobjectAimpointLayer(Layer, Temporal):
 
-    def __init__(self, playfield):
+    def __init__(self, data, time_updater):
         Layer.__init__(self, 'Hitobject aimpoints')
-        self.playfield = playfield
+        Temporal.__init__(self)
 
-
-    def area_resize_event(self, width, height):
-        self.ratio_x = width/BeatmapUtil.PLAYFIELD_WIDTH
-        self.ratio_y = height/BeatmapUtil.PLAYFIELD_HEIGHT
+        self.beatmap = data
+        
+        time_updater.connect(self.time_changed)
+        self.time_changed.connect(lambda time: self.layer_changed())
 
 
     def paint(self, painter, option, widget):
-        for visible_hitobject in self.playfield.visible_hitobjects:
-            try: visible_hitobject.render_hitobject_aimpoints(painter, self.ratio_x, self.ratio_y)
+        if not self.time: return
+
+        ratio_x = widget.width()/Std.PLAYFIELD_WIDTH
+        ratio_y = widget.height()/Std.PLAYFIELD_HEIGHT
+
+        visible_hitobjects = Std.get_hitobjects_visible_at_time(self.beatmap, self.time)
+        for visible_hitobject in visible_hitobjects:
+            try: visible_hitobject.render_hitobject_aimpoints(painter, ratio_x, ratio_y)
             except AttributeError: pass

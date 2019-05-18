@@ -2,6 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
+from misc.callback import callback
 
 
 class Layer(QGraphicsItem):
@@ -10,18 +11,21 @@ class Layer(QGraphicsItem):
     def __init__(self, name):
         QGraphicsItem.__init__(self)
 
-        self.name    = name
-        self.ratio_x = 1.0
-        self.ratio_y = 1.0
+        self.name = name
 
 
     def area_resize_event(self, width, height):
         raise NotImplementedError()
 
+        # Reminder this needs to be put in the 
+        # implementation of derived class
+        self.layer_changed()
 
-    def set_layer_opacity(self, opacity):
-        self.setOpacity(opacity)
 
+    @callback
+    def layer_changed(self):
+        self.layer_changed.emit()
 
-    def set_layer_enable(self, enable):
-        self.setVisible(enable)
+    
+    def boundingRect(self):
+        return QRectF(0, 0, 0, 0)

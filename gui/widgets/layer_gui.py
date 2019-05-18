@@ -5,7 +5,7 @@ from PyQt5.QtGui import *
 from misc.callback import callback
 
 
-class LayerController(QWidget):
+class LayerGui(QWidget):
 
     def __init__(self, layer):
         super().__init__()
@@ -33,21 +33,17 @@ class LayerController(QWidget):
     
     def update_gui(self):
         self.label.setAlignment(Qt.AlignCenter)
+        self.enable_chkbx.setCheckState(Qt.Checked if self.layer.isVisible() else Qt.Unchecked)
 
     
     def layer_opacity_event(self, opacity):
         self.layer.setOpacity(opacity)
-        self.layer_change_event()
+        self.layer.layer_changed()
 
 
     def layer_enable_event(self, chkbx_state):
         self.layer.setVisible(chkbx_state)
-        self.layer_change_event()
-
-
-    @callback
-    def layer_change_event(self):
-        self.layer_change_event.emit()
+        self.layer.layer_changed()
 
 
     @callback

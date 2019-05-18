@@ -7,11 +7,11 @@ from osu.local.hitobject.mania.mania_singlenote_hitobject import ManiaSingleNote
 class ManiaSingleNoteIO():
 
     @staticmethod
-    def load_singlenote(data):
+    def load_singlenote(data, difficulty):
         singlenote = ManiaSingleNoteHitobject()
         if not data: return singlenote
 
-        ManiaSingleNoteIO.__process_hitobject_data(data, singlenote)
+        ManiaSingleNoteIO.__process_hitobject_data(data, singlenote, difficulty)
 
         return singlenote
 
@@ -23,7 +23,9 @@ class ManiaSingleNoteIO():
 
 
     @staticmethod
-    def __process_hitobject_data(data, singlenote):
+    def __process_hitobject_data(data, singlenote, difficulty):
         singlenote.pos            = Pos(int(data[0]), int(data[1]))
         singlenote.time           = int(data[2])
         singlenote.hitobject_type = int(data[3])
+
+        singlenote.difficulty     = difficulty

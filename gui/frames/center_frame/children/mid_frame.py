@@ -2,7 +2,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from gui.objects.playfield_mgr import PlayfieldManager
+from gui.widgets.map_manager import MapManager
+from gui.objects.display import Display
 from misc.callback import callback
 
 
@@ -18,16 +19,19 @@ class MidFrame(QFrame):
 
 
     def init_gui_elements(self):
-        self.layout            = QHBoxLayout()
-        self.playfield_manager = PlayfieldManager()
+        self.layout      = QVBoxLayout()
+        self.map_manager = MapManager()
+        self.display     = Display()
 
 
     def construct_gui(self):
         self.setLayout(self.layout)
         
-        self.playfield_manager.currentChanged.connect(self.tab_changed_event)
-        self.playfield_manager.tabCloseRequested.connect(self.tab_closing)
-        self.layout.addWidget(self.playfield_manager)
+        #self.map_manager.currentChanged.connect(self.map_changed_event)
+        #self.map_manager.tabCloseRequested.connect(self.tab_closing)
+        
+        self.layout.addWidget(self.map_manager)
+        self.layout.addWidget(self.display)
 
         # TODO: label showing cursor pos
         # TODO: label showing pos of selected object
@@ -35,21 +39,5 @@ class MidFrame(QFrame):
 
     def update_gui(self):
         self.setFrameShape(QFrame.StyledPanel)
-        self.playfield_manager.setMovable(True)
-        self.playfield_manager.setTabsClosable(True)
-
-    
-    def add_tab(self, playfield, name):
-        self.playfield_manager.addTab(playfield, name)
-        self.playfield_manager.setCurrentIndex(self.playfield_manager.indexOf(playfield))
-
-
-    @callback
-    def tab_changed_event(self, idx):
-        print('Tab changed to index ', idx)
-        self.tab_changed_event.emit(self.playfield_manager.widget(idx))
-
-
-    @callback
-    def tab_closing(self, idx):
-        print('TODO: tab implement closing')
+        self.map_manager.setMovable(True)
+        self.map_manager.setTabsClosable(True)

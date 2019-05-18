@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 from osu.local.playfield import Playfield
-from osu.local.beatmap.beatmap import Beatmap
+from osu.local.beatmap.beatmapIO import BeatmapIO
 
 
 class PlayFieldTest(QMainWindow):

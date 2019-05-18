@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 from osu.local.hitobject.hitobject import Hitobject
-from osu.local.beatmap.beatmap_utility import BeatmapUtil
+from osu.local.hitobject.std.std import Std
 
 from misc.frozen_cls import FrozenCls
 
@@ -26,12 +26,13 @@ class StdSingleNoteHitobject(Hitobject):
         Hitobject.__init__(self)
 
 
-    def render_hitobject_outline(self, painter, ratio_x, ratio_y):
+    def render_hitobject_outline(self, painter, ratio_x, ratio_y, time):
         painter.setPen(QColor(255, 0, 0, self.opacity*255))
 
-        pos_x = (self.pos.x - self.radius)*ratio_x
-        pos_y = (self.pos.y - self.radius)*ratio_y
-        painter.drawEllipse(pos_x, pos_y, 2*self.radius*ratio_x, 2*self.radius*ratio_y)
+        radius = Std.cs_to_px(self.difficulty.cs)
+        pos_x  = (self.pos.x - radius)*ratio_x
+        pos_y  = (self.pos.y - radius)*ratio_y
+        painter.drawEllipse(pos_x, pos_y, 2*radius*ratio_x, 2*radius*ratio_y)
 
 
     def render_hitobject_aimpoints(self, painter, ratio_x, ratio_y):
@@ -60,4 +61,5 @@ class StdSingleNoteHitobject(Hitobject):
 
 
     def boundingRect(self):
-        return QRectF(0, 0, self.radius, self.radius)
+        radius = BeatmapUtil.cs_to_px(self.difficulty.cs)
+        return QRectF(0, 0, radius, radius)

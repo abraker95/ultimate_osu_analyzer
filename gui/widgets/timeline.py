@@ -6,14 +6,17 @@ from gui.objects.graph.line_plot import LinePlot
 from misc.callback import callback
 
 from analysis.osu.std.map_metrics import MapMetrics
+from generic.switcher import Switcher
 
 
-class Timeline(pyqtgraph.PlotWidget):
+class Timeline(pyqtgraph.PlotWidget, Switcher):
 
     MIN_TIME = -5000
 
     def __init__(self):
-        super().__init__()
+        pyqtgraph.PlotWidget.__init__(self)
+        Switcher.__init__(self)
+
         pyqtgraph.setConfigOptions(antialias=True)
 
         #self.showAxis('left', show=False)
@@ -38,6 +41,30 @@ class Timeline(pyqtgraph.PlotWidget):
 
     def set_hitobject_data(self, hitobject_data):
         self.hitobjects_plot.update_data(hitobject_data.start_end_times(), self.y_mid_pos)
+
+
+    def save(self, name=None):
+        if name == None:
+            if not self.active: ValueError('Current switched value is None')
+            else:               name = self.active
+
+        data = {
+            'view' : self.getPlotItem().viewRange(),
+            'marker' : self.timeline_marker.value()
+        }
+
+        Switcher.add(self, name, data, overwrite=True)
+
+
+    def load(self, name):
+        if not self.switch(name): 
+            raise ValueError('Nothing saved under the name %s' % name)
+        
+        data = self.get()
+
+        self.setRange(xRange=data['view'][0])
+        self.setRange(yRange=data['view'][1])
+        self.timeline_marker.setValue(data['marker'])
 
 
     def set_misc_data(self, data):
