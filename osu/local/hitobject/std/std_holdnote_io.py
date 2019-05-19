@@ -148,12 +148,11 @@ class StdHoldNoteIO():
 
         # find an angle with an arc length of pixelLength along this circle
         radius = start_angle_point.distance_to(Pos(0, 0))
-        arc_angle = holdnote.pixel_length / radius                                                       # len = theta * r / theta = len / r
+        arc_angle = holdnote.pixel_length / radius                                                   # len = theta * r / theta = len / r
         end_angle = start_angle + arc_angle if end_angle > start_angle else start_angle - arc_angle  #  now use it for our new end angle
 
         # Calculate points
         step = holdnote.pixel_length / 5  # 5 = CURVE_POINTS_SEPERATION
-        holdnote.ncurve = step
         len = int(step) + 1
 
         for i in range(len):

@@ -40,10 +40,9 @@ class StdHoldNoteHitobject(Hitobject):
 
         self.to_repeat_time   = None
 
-        self.curve_points = []
-        self.gen_points   = []
-        self.tick_times   = []
-        self.ncurve       = []
+        self.curve_points = []  # Points that define slider in editor
+        self.gen_points   = []  # The rough generated slider curve
+        self.tick_times   = []  # Slider ticks/score points/aimpoints
 
         Hitobject.__init__(self)
         
