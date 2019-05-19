@@ -35,6 +35,9 @@ class IPythonConsole(RichJupyterWidget):
         
         self.exit_requested.connect(stop)
 
+        self.push_vars({ 'exit' : lambda: self.print_text('exit() has been disabled to avoid breaking features') })
+        self.push_vars({ 'help' : lambda: self.print_text('help() has been disabled to avoid breaking features') })
+
 
     def push_vars(self, variableDict):
         """
