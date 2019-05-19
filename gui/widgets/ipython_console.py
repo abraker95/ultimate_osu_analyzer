@@ -9,6 +9,7 @@ from qtconsole.rich_jupyter_widget import RichJupyterWidget
 from qtconsole.inprocess import QtInProcessKernelManager
 
 
+
 # Thanks https://stackoverflow.com/a/41070191
 class IPythonConsole(RichJupyterWidget):
     
@@ -20,18 +21,17 @@ class IPythonConsole(RichJupyterWidget):
             self.banner = customBanner
         
         self.font_size = 6
-        self.kernel_manager = kernel_manager = QtInProcessKernelManager()
+        self.kernel_manager = QtInProcessKernelManager()
 
-        kernel_manager.start_kernel(show_banner=False)
-        kernel_manager.kernel.gui = 'qt'
+        self.kernel_manager.start_kernel(show_banner=False)
+        self.kernel_manager.kernel.gui = 'qt'
         
-        self.kernel_client = kernel_client = self._kernel_manager.client()
-        kernel_client.start_channels()
+        self.kernel_client = self.kernel_manager.client()
+        self.kernel_client.start_channels()
 
         def stop():
-            kernel_client.stop_channels()
-            kernel_manager.shutdown_kernel()
-            guisupport.get_app_qt().exit()            
+            self.kernel_client.stop_channels()
+            self.kernel_manager.shutdown_kernel()        
         
         self.exit_requested.connect(stop)
 
