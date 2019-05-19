@@ -41,15 +41,15 @@ class StdSpinnerHitobject(Hitobject):
     def render_hitobject_outline(self, painter, ratio_x, ratio_y, time):
         painter.setPen(QPen(QColor(0, 255, 255, 255), 5))
 
-        outer_radius = Std.PLAYFIELD_HEIGHT*(1 - value_to_percent(self.time, self.end_time, time))
-        pos_x = (self.pos.x - outer_radius/2)*ratio_x
-        pos_y = (self.pos.y - outer_radius/2)*ratio_y
-        painter.drawEllipse(pos_x, pos_y, outer_radius*ratio_x, outer_radius*ratio_y)
+        outer_radius = 0.5*Std.PLAYFIELD_HEIGHT*(1 - value_to_percent(self.time, self.end_time, time))
+        pos_x = (self.pos.x - outer_radius)*ratio_x
+        pos_y = (self.pos.y - outer_radius)*ratio_y
+        painter.drawEllipse(pos_x, pos_y, 2*outer_radius*ratio_x, 2*outer_radius*ratio_y)
 
-        center_radius = 3
-        pos_x = (self.pos.x - center_radius/2)*ratio_x
-        pos_y = (self.pos.y - center_radius/2)*ratio_y
-        painter.drawEllipse(pos_x, pos_y, center_radius*ratio_x, center_radius*ratio_y)
+        center_radius = 1.5
+        pos_x = (self.pos.x - center_radius)*ratio_x
+        pos_y = (self.pos.y - center_radius)*ratio_y
+        painter.drawEllipse(pos_x, pos_y, 2*center_radius*ratio_x, 2*center_radius*ratio_y)
 
 
     def resizeEvent(self, event):

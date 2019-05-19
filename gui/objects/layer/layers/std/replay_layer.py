@@ -25,9 +25,10 @@ class ReplayLayer(Layer, Temporal):
         
         ratio_x = widget.width()/Std.PLAYFIELD_WIDTH
         ratio_y = widget.height()/Std.PLAYFIELD_HEIGHT
+        radius  = 1.5
 
         data  = self.replay.get_data_at_time(self.time)
-        pos_x = data.x*ratio_x
-        pos_y = data.y*ratio_y
+        pos_x = (data.x - radius)*ratio_x
+        pos_y = (data.y - radius)*ratio_y
 
-        painter.drawEllipse(pos_x, pos_y, 3, 3)
+        painter.drawEllipse(pos_x, pos_y, 2*radius, 2*radius)

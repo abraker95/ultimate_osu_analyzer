@@ -131,24 +131,24 @@ class StdHoldNoteHitobject(Hitobject):
     def render_sliderpoint(self, painter, ratio_x, ratio_y, time):
         painter.setPen(QColor(0, 0, 255, self.opacity*255))
         
-        slider_point_radius = 3
+        slider_point_radius = 1.5
         slider_point_pos = self.time_to_pos(time)
 
-        pos_x = (slider_point_pos.x - 0.5*slider_point_radius)*ratio_x
-        pos_y = (slider_point_pos.y - 0.5*slider_point_radius)*ratio_y
-        painter.drawEllipse(pos_x, pos_y, slider_point_radius, slider_point_radius)
+        pos_x = (slider_point_pos.x - slider_point_radius)*ratio_x
+        pos_y = (slider_point_pos.y - slider_point_radius)*ratio_y
+        painter.drawEllipse(pos_x, pos_y, 2*slider_point_radius*ratio_x, 2*slider_point_radius*ratio_y)
 
 
     def render_hitobject_aimpoints(self, painter, ratio_x, ratio_y):
         painter.setPen(QColor(255, 0, 255, self.opacity*255))
-        slider_tick_radius = 6
+        slider_tick_radius = 3
 
         for tick_time in self.tick_times:
             tick_pos = self.time_to_pos(tick_time)
 
-            pos_x = (tick_pos.x - 0.5*slider_tick_radius)*ratio_x
-            pos_y = (tick_pos.y - 0.5*slider_tick_radius)*ratio_y
-            painter.drawEllipse(pos_x, pos_y, slider_tick_radius, slider_tick_radius)
+            pos_x = (tick_pos.x - slider_tick_radius)*ratio_x
+            pos_y = (tick_pos.y - slider_tick_radius)*ratio_y
+            painter.drawEllipse(pos_x, pos_y, 2*slider_tick_radius*ratio_x, 2*slider_tick_radius*ratio_y)
 
 
     def boundingRect(self):

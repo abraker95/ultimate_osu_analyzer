@@ -37,11 +37,11 @@ class StdSingleNoteHitobject(Hitobject):
 
     def render_hitobject_aimpoints(self, painter, ratio_x, ratio_y):
         painter.setPen(QColor(255, 0, 255, self.opacity*255))
-        aimpoint_radius = 6
+        aimpoint_radius = 3
 
-        pos_x = (self.pos.x - 0.5*aimpoint_radius)*ratio_x
-        pos_y = (self.pos.y - 0.5*aimpoint_radius)*ratio_y
-        painter.drawEllipse(pos_x, pos_y, aimpoint_radius, aimpoint_radius)
+        pos_x = (self.pos.x - aimpoint_radius)*ratio_x
+        pos_y = (self.pos.y - aimpoint_radius)*ratio_y
+        painter.drawEllipse(pos_x, pos_y, 2*aimpoint_radius*ratio_x, 2*aimpoint_radius*ratio_y)
 
 
     def time_to_pos(self, time):
