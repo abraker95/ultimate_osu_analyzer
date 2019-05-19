@@ -35,6 +35,9 @@ class IPythonConsole(RichJupyterWidget):
         
         self.exit_requested.connect(stop)
 
+        self.magic('load_ext autoreload')
+        self.magic('autoreload 2')
+
         self.push_vars({ 'exit' : lambda: self.print_text('exit() has been disabled to avoid breaking features') })
         self.push_vars({ 'help' : lambda: self.print_text('help() has been disabled to avoid breaking features') })
 
@@ -45,6 +48,15 @@ class IPythonConsole(RichJupyterWidget):
         to the Jupyter console widget
         """
         self.kernel_manager.kernel.shell.push(variableDict)
+
+
+    def del_var(self, var_name):
+        self.kernel_manager.kernel.shell.del_var(var_name)
+
+
+    def magic(self, command):
+        command = command.split(' ')
+        self.kernel_manager.kernel.shell.run_line_magic(command[0], ' '.join(command[1:]))
 
 
     def clear(self):
