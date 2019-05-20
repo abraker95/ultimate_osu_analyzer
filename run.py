@@ -222,6 +222,7 @@ class MainWindow(QMainWindow):
 
     def close_map(self, beatmap):
         self.layer_manager_switch_gui.rmv(beatmap.metadata.name)
+        self.graph_manager_switch_gui.rmv(beatmap.metadata.name)
 
 
     def get_type_files(self, file_type):
