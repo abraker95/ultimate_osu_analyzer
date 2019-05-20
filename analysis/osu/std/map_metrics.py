@@ -23,6 +23,27 @@ class StdMapMetrics():
     
         return start_times[1:], intervals
 
+
+    @staticmethod
+    def calc_notes_per_sec(hitobject_data=[]):
+        start_times = StdMapData.start_times(hitobject_data)
+
+        if len(start_times) < 2: return [], []
+        intervals = 1000/(start_times[1:] - start_times[:-1])
+    
+        return start_times[1:], intervals
+
+
+    @staticmethod
+    def calc_distances(hitobject_data=[]):
+        all_times     = StdMapData.all_times(hitobject_data)
+        all_positions = StdMapData.all_positions(hitobject_data)
+
+        if len(all_positions) < 2: return [], []
+
+        dists = NumpyUtils.dists(all_positions[1:], all_positions[:-1])
+        return all_times[1:], dists
+
     
     @staticmethod
     #@Metric(Beatmap.GAMEMODE_OSU, 'velocity', 1, 2)
@@ -35,6 +56,27 @@ class StdMapMetrics():
         
         vel = NumpyUtils.dists(all_positions[1:], all_positions[:-1])/intervals
         return all_times[1:], vel
+
+
+    @staticmethod
+    def calc_velocity_start(hitobject_data=[]):
+        start_times   = StdMapData.start_times(hitobject_data)
+        start_positions = StdMapData.start_positions(hitobject_data)
+
+        if len(start_positions) < 2: return [], []
+        intervals = NumpyUtils.deltas(start_times)
+        
+        vel = NumpyUtils.dists(start_positions[1:], start_positions[:-1])/intervals
+        return start_times[1:], vel
+
+
+    @staticmethod
+    def calc_intensity(hitobject_data=[]):
+        times, velocity      = StdMapMetrics.calc_velocity_start(hitobject_data)
+        times, notes_per_sec = StdMapMetrics.calc_notes_per_sec(hitobject_data)
+
+        intensity = velocity*notes_per_sec
+        return times, intensity
 
 
     @staticmethod
