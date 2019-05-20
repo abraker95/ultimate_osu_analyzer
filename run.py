@@ -87,11 +87,11 @@ class MainWindow(QMainWindow):
         
         self.open_beatmap_action.setStatusTip('Open *.osu beatmap for analysis')
         self.open_beatmap_action.setShortcut('Ctrl+N')
-        self.open_beatmap_action.triggered.connect(self.open_beatmap)
+        self.open_beatmap_action.triggered.connect(self.request_open_beatmap)
 
         self.open_replay_action.setStatusTip('Open *.osr replay for analysis')
         self.open_replay_action.setShortcut('Shift+Ctrl+N')
-        self.open_replay_action.triggered.connect(self.open_replay)
+        self.open_replay_action.triggered.connect(self.request_open_replay)
 
         self.close_action.setStatusTip('Quit the application')
         self.close_action.setShortcut('Ctrl+Q')
@@ -116,6 +116,7 @@ class MainWindow(QMainWindow):
 
 
     def update_gui(self):
+        self.setAcceptDrops(True)
         self.setWindowTitle(MainWindow.title)
         self.setGeometry(MainWindow.left, MainWindow.top, MainWindow.width, MainWindow.height)
         self.status_bar.showMessage('Statusbar test message')
@@ -148,70 +149,75 @@ class MainWindow(QMainWindow):
         graph.time_changed_event.disconnect(self.timeline.timeline_marker.setValue)
 
 
-    def open_beatmap(self):
+    def request_open_beatmap(self):
         beatmap_filenames = self.get_type_files('osu files (*.osu)')
         if not beatmap_filenames: return
 
         for beatmap_filename in beatmap_filenames:
-            print(beatmap_filename)
-
-            # Create a new playfield and load the beatmap into it
-            beatmap = BeatmapIO.load_beatmap(beatmap_filename)
-            self.map_manager.add_map(beatmap, beatmap.metadata.name)
-
-            self.layer_manager_switch_gui.add(beatmap.metadata.name, LayerManager())
-            self.layer_manager_switch_gui.switch(beatmap.metadata.name)
-
-            # TODO: Adding layers will be one of things analysis manager does
-            if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
-                self.layer_manager_switch_gui.get().add_layer('hitobjects', HitobjectOutlineLayer(beatmap, self.timeline.time_changed_event))
-                self.layer_manager_switch_gui.get().add_layer('aimpoints', HitobjectAimpointLayer(beatmap, self.timeline.time_changed_event))
-
-            if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
-                self.layer_manager_switch_gui.get().add_layer('hitobjects', HitobjectRenderLayer(beatmap, self.timeline.time_changed_event))
-
-            self.graph_manager_switch_gui.add(beatmap.metadata.name, GraphManager())
-            self.graph_manager_switch_gui.switch(beatmap.metadata.name)
-
-            # TODO
-            # self.replay_manager_switch_gui.add(beatmap.metadata.name, ReplayManager())
-            # self.replay_manager_switch_gui.switch(beatmap.metadata.name)
+            self.open_beatmap(beatmap_filename)
 
 
-    def open_replay(self):
+    def open_beatmap(self, beatmap_filename):
+        # Create a new playfield and load the beatmap into it
+        beatmap = BeatmapIO.load_beatmap(beatmap_filename)
+        self.map_manager.add_map(beatmap, beatmap.metadata.name)
+
+        self.layer_manager_switch_gui.add(beatmap.metadata.name, LayerManager())
+        self.layer_manager_switch_gui.switch(beatmap.metadata.name)
+
+        # TODO: Adding layers will be one of things analysis manager does
+        if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
+            self.layer_manager_switch_gui.get().add_layer('hitobjects', HitobjectOutlineLayer(beatmap, self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer('aimpoints', HitobjectAimpointLayer(beatmap, self.timeline.time_changed_event))
+
+        if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
+            self.layer_manager_switch_gui.get().add_layer('replay', HitobjectRenderLayer(beatmap, self.timeline.time_changed_event))
+
+        self.graph_manager_switch_gui.add(beatmap.metadata.name, GraphManager())
+        self.graph_manager_switch_gui.switch(beatmap.metadata.name)
+
+        # TODO
+        # self.replay_manager_switch_gui.add(beatmap.metadata.name, ReplayManager())
+        # self.replay_manager_switch_gui.switch(beatmap.metadata.name)
+
+
+    def request_open_replay(self):
+        replay_filenames = self.get_type_files('osr files (*.osr)')
+        if not replay_filenames: return
+
+        for replay_filename in replay_filenames:
+            self.open_replay(replay_filename)
+
+
+    def open_replay(self, replay_filename):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle('Error')
         msg.setStandardButtons(QMessageBox.Ok)
 
-        replay_filenames = self.get_type_files('osr files (*.osr)')
-        if not replay_filenames: return
+        replay = Replay(replay_filename)
 
-        for replay_filename in replay_filenames:
-            print(replay_filename)
-            replay = Replay(replay_filename)
+        beatmap = self.map_manager.get_current_map()
+        if not beatmap:
+            msg.setText('Error opening replay\nOpen a beatmap before opening a replay.')
+            msg.exec_()
+            return
+        
+        ''' TODO: Get beatmap md5 working
+        if not replay.is_md5_match(beatmap.metadata.beatmap_md5):
+            msg.setText('Error opening replay\nTrying to load replay for the wrong beatmap.')
+            msg.exec_()
+            return
+        '''
 
-            beatmap = self.map_manager.get_current_map()
-            if not beatmap:
-                msg.setText('Error opening replay\nOpen a beatmap before opening a replay.')
-                msg.exec_()
-                return
-            
-            ''' TODO: Get beatmap md5 working
-            if not replay.is_md5_match(beatmap.metadata.beatmap_md5):
-                msg.setText('Error opening replay\nTrying to load replay for the wrong beatmap.')
-                msg.exec_()
-                return
-            '''
+        ''' TODO: Implement replay manager
+        # Add replay to a list of replays
+        self.replay_manager_switch_gui.get().add_replay(replay)
+        '''
 
-            ''' TODO: Implement replay manager
-            # Add replay to a list of replays
-            self.replay_manager_switch_gui.get().add_replay(replay)
-            '''
-
-            # TODO: Adding layers will be one of things analysis manager does
-            if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
-                self.layer_manager_switch_gui.get().add_layer('replay', ReplayLayer(replay, self.timeline.time_changed_event))
+        # TODO: Adding layers will be one of things analysis manager does
+        if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
+            self.layer_manager_switch_gui.get().add_layer('replay', ReplayLayer(replay, self.timeline.time_changed_event))
 
 
     def close_map(self, beatmap):
@@ -270,6 +276,41 @@ class MainWindow(QMainWindow):
 
 
         self.ipython_console.print_text('Available vars: ')
+
+
+    def dragEnterEvent(self, e):
+        paths = e.mimeData().text()
+        paths = paths.split('\n')
+
+        if len(paths) > 1:
+            paths = paths[:-1]
+
+        valid = True
+        for path in paths:
+            path      = path.split('///')[1]
+            file_type = path.split('.')[-1]
+        
+            if file_type not in ['osu', 'osr']:
+                valid = False
+                break
+
+        if valid: e.accept()
+        else:     e.ignore()
+
+
+    def dropEvent(self, e):
+        paths = e.mimeData().text()
+        paths = paths.split('\n')
+
+        if len(paths) > 1:
+            paths = paths[:-1]
+            
+        for path in paths:
+            path      = path.split('///')[1]
+            file_type = path.split('.')[-1]
+            
+            if file_type == 'osu': self.open_beatmap(path)
+            if file_type == 'osr': self.open_replay(path)
 
 
     def close_application(self):
