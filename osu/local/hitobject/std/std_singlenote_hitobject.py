@@ -48,7 +48,7 @@ class StdSingleNoteHitobject(Hitobject):
         return self.pos
         
 
-    def get_aimpoints(self):
+    def get_aimpoint_times(self):
         return [ self.time ]
 
 

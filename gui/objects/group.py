@@ -38,10 +38,10 @@ class Group():
 
 
     @callback
-    def rmv_elem(self, name, elem):
+    def rmv_elem(self, name):
         if not name in self.data: return
         
-        Group.rmv_elem.emit(self, elem)
+        Group.rmv_elem.emit(self, self.data[name])
         del self.data[name]
 
 

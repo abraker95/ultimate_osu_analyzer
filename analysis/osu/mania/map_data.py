@@ -1,11 +1,11 @@
 import numpy as np
 
-from osu.local.beatmap.beatmap_utility import BeatmapUtil
+from osu.local.hitobject.mania.mania import Mania
 from misc.numpy_utils import NumpyUtils
 
 
 
-class MapData():
+class ManiaMapData():
 
     TIME = 0
 
@@ -61,4 +61,4 @@ class MapData():
        # TODO
        return None
 
-MapData.full_hitobject_data = MapData()
+ManiaMapData.full_hitobject_data = ManiaMapData()

@@ -36,7 +36,7 @@ class LayerManagerSwitch(QWidget, Switcher):
         pass
 
 
-    def add_layer(self, layer):
+    def __add_layer(self, layer):
         self.layer_stack.currentWidget().addWidget(LayerGui(layer))
 
 
@@ -45,7 +45,7 @@ class LayerManagerSwitch(QWidget, Switcher):
         for layer in layer_manager.data.values():
             layer_manager_gui.get().addWidget(LayerGui(layer))
 
-        layer_manager.add_layer.connect(self.add_layer, inst=layer_manager)
+        layer_manager.add_layer.connect(self.__add_layer, inst=layer_manager)
 
         new_idx = self.layer_stack.addWidget(layer_manager_gui) 
         self.layer_stack.setCurrentIndex(new_idx)
@@ -55,7 +55,7 @@ class LayerManagerSwitch(QWidget, Switcher):
         old_mgr = self.layer_stack.currentWidget()        
         self.layer_stack.removeWidget(old_mgr)
         
-        layer_manager.add_layer.disconnect(self.add_layer, inst=old_mgr)
+        layer_manager.add_layer.disconnect(self.__add_layer, inst=old_mgr)
         if old_mgr:
             old_mgr.deleteLater()
             old_mgr = None

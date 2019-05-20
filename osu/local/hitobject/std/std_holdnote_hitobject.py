@@ -92,7 +92,7 @@ class StdHoldNoteHitobject(Hitobject):
         return self.tick_times[-1]
 
 
-    def get_aimpoints(self):
+    def get_aimpoint_times(self):
         return self.tick_times
 
 

@@ -6,13 +6,13 @@ from misc.callback import callback
 
 from gui.widgets.QContainer import QContainer
 from gui.widgets.dockable_graph import DockableGraph
-from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
+#from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
 
 from gui.objects.graph.line_plot import LinePlot
 
 #from analysis.metrics.metric_library_proxy import MetricLibraryProxy
 from core.gamemode_manager import gamemode_manager
-from core.graph_manager import graph_manager
+#from core.graph_manager import graph_manager
 
 
 class DropdownItem(QWidget):
@@ -63,8 +63,8 @@ class MetricOption(DropdownItem):
         for i in range(self.dropdown.count()):
             self.dropdown.removeItem(i)
 
-        metric_library = MetricLibraryProxy.proxy.get_active_lib()
-        if not metric_library: return
+        #metric_library = MetricLibraryProxy.proxy.get_active_lib()
+        #if not metric_library: return
 
         # TODO: Fix
         #self.dropdown.addItems(gamemode_manager.get().get_names())
@@ -164,8 +164,9 @@ class AnalysisControls(QWidget):
 
     @callback
     def create_graph_event(self, _):
-        if self.selected_graph_type == 'temporal_hitobject_graph':
+        #if self.selected_graph_type == 'temporal_hitobject_graph':
             #dockable_graph = DockableGraph(TemporalHitobjectGraph(LinePlot(), 'test', lambda: 0))
             #dockable_graph.show()
 
-            self.create_graph_event.emit(TemporalHitobjectGraph(LinePlot(), 'test', lambda: 0))
+            #self.create_graph_event.emit(TemporalHitobjectGraph(LinePlot(), 'test', lambda: 0))
+        pass

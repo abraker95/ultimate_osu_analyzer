@@ -4,10 +4,10 @@ from PyQt5.QtGui import *
 
 from pyqtgraph.dockarea import *
 
-from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
+#from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
 from gui.objects.graph.line_plot import LinePlot
 
-from analysis.osu.std.map_metrics import MapMetrics
+from analysis.osu.std.map_metrics import StdMapMetrics
 
 
 
@@ -78,7 +78,8 @@ class GraphManager(QWidget):
         self.dock_area.addDockWidget(Qt.LeftDockWidgetArea, dock)           # I have no idea why Left/Right is reversed
         self.graphs[graph.getPlotItem().titleLabel.text] = [ graph, dock ]
 
-        
+    
+    '''
     def add_graph_for_metric(self, metric, plot_type=None):
         number_dimensions = metric.get_metric_dimensions()
 
@@ -95,6 +96,7 @@ class GraphManager(QWidget):
 
         # TODO: Support for other types of graphs that are not time related
         self.add_graph(TemporalHitobjectGraph(plot_type, metric.name, metric))
+    '''
 
             
     def remove_graph(self, graph_name):

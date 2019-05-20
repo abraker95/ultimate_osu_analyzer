@@ -1,14 +1,11 @@
 import sys
 import time
+
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 from gui.frames.main_frame import MainFrame
-
-from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
-from gui.objects.graph.line_plot import LinePlot
-from gui.objects.display import Display
 
 from osu.local.beatmap.beatmapIO import BeatmapIO
 from osu.local.beatmap.beatmap import Beatmap
@@ -16,15 +13,22 @@ from osu.local.beatmap.beatmap import Beatmap
 from core.gamemode_manager import gamemode_manager
 from core.layer_manager import LayerManager
 
+from gui.objects.display import Display
+
+from gui.objects.layer.layers.data_2d_layer import Data2DLayer
 from gui.objects.layer.layers.std.hitobject_outline_layer import HitobjectOutlineLayer
 from gui.objects.layer.layers.std.hitobject_aimpoint_layer import HitobjectAimpointLayer
 
 from gui.objects.layer.layers.mania.hitobject_render_layer import HitobjectRenderLayer
 
-#from analysis.map_data_proxy import MapDataProxy
-#from analysis.metrics.metric_library_proxy import MetricLibraryProxy
-#from analysis.metrics.metric import Metric
-#from analysis.osu.std.map_metrics import MapMetrics
+from gui.widgets.graph_manager import GraphManager
+from gui.widgets.data_2d_graph import Data2DGraph
+from gui.widgets.data_2d_temporal_graph import Data2DTemporalGraph
+
+from analysis.osu.std.map_data import StdMapData
+from analysis.osu.mania.map_data import ManiaMapData
+
+from analysis.osu.std.map_metrics import StdMapMetrics
 
 
 
@@ -62,9 +66,10 @@ class MainWindow(QMainWindow):
         self.status_bar = self.statusBar()
 
         self.timeline                 = self.main_frame.bottom_frame.timeline
-        self.graph_manager            = self.main_frame.center_frame.right_frame.graph_manager
+        self.graph_manager_switch_gui = self.main_frame.center_frame.right_frame.graph_manager_switch
         self.analysis_controls        = self.main_frame.center_frame.right_frame.analysis_controls
         self.layer_manager_switch_gui = self.main_frame.center_frame.right_frame.layer_manager_switch
+        self.ipython_console          = self.main_frame.center_frame.right_frame.ipython_console
         self.map_manager              = self.main_frame.center_frame.mid_frame.map_manager
         self.display                  = self.main_frame.center_frame.mid_frame.display
 
@@ -90,13 +95,13 @@ class MainWindow(QMainWindow):
         self.view_tapping_intervals.setCheckable(True)
         self.view_tapping_intervals.triggered.connect(self.view_tapping_intervals_action)
 
-        self.analysis_controls.create_graph_event.connect(self.graph_manager.add_graph)
+        self.analysis_controls.create_graph_event.connect(self.graph_manager_switch_gui.add_graph)
         self.map_manager.map_changed_event.connect(self.change_map)
         self.map_manager.map_close_event.connect(self.close_map)
 
         # Allows to forward signals from any temporal graph without having means to get the instance
-        TemporalHitobjectGraph.__init__.connect(self.temporal_graph_creation_event)
-        TemporalHitobjectGraph.__del__.connect(self.temporal_graph_deletion_event)
+        Data2DTemporalGraph.__init__.connect(self.temporal_graph_creation_event)
+        Data2DTemporalGraph.__del__.connect(self.temporal_graph_deletion_event)
 
         self.layer_manager_switch_gui.switch.connect(lambda old, new: self.display.setScene(new), inst=self.layer_manager_switch_gui)
         # gamemode_manger.switch.connect(self.)    # puts out MetricManager
@@ -106,6 +111,20 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(MainWindow.title)
         self.setGeometry(MainWindow.left, MainWindow.top, MainWindow.width, MainWindow.height)
         self.status_bar.showMessage('Statusbar test message')
+
+        self.ipython_console.push_vars({ 'help' : self.console_help })
+        self.ipython_console.push_vars({ 'timeline' : self.timeline })
+        
+        self.ipython_console.push_vars({ 'get_beatmap' : self.map_manager.get_current_map })
+
+        self.ipython_console.push_vars({ 'add_layer_2d_data' : self.add_layer_2d_data })
+        self.ipython_console.push_vars({ 'add_graph_2d_data' : self.add_graph_2d_data })
+
+        self.ipython_console.push_vars({ 'StdMapData'   : StdMapData })
+        self.ipython_console.push_vars({ 'ManiaMapData' : ManiaMapData })
+
+        self.ipython_console.push_vars({ 'StdMapMetrics' : StdMapMetrics })
+
         self.show()
 
 
@@ -143,6 +162,9 @@ class MainWindow(QMainWindow):
             if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
                 self.layer_manager_switch_gui.get().add_layer('hitobjects', HitobjectRenderLayer(beatmap, self.timeline.time_changed_event))
 
+            self.graph_manager_switch_gui.add(beatmap.metadata.name, GraphManager())
+            self.graph_manager_switch_gui.switch(beatmap.metadata.name)
+
 
     def close_map(self, beatmap):
         self.layer_manager_switch_gui.rmv(beatmap.metadata.name)
@@ -161,8 +183,6 @@ class MainWindow(QMainWindow):
     def change_map(self, beatmap):
         if not beatmap: return
 
-        #MapDataProxy.full_hitobject_data.set_data_hitobjects(beatmap.hitobjects)
-
         # TODO: Fix bug where changing from a new loaded map first time doesn't safe timeline data
         try: self.timeline.save()
         except: pass
@@ -175,57 +195,32 @@ class MainWindow(QMainWindow):
             self.timeline.timeline_marker.setValue(min_time)
             self.timeline.save(beatmap.metadata.name)
 
-        #self.timeline.set_hitobject_data(MapDataProxy.full_hitobject_data)
-
-        #self.graph_manager.update_data()
-
         gamemode_manager.switch(beatmap.gamemode)
         self.layer_manager_switch_gui.switch(beatmap.metadata.name)
 
 
-    def switch_gamemode(self, gamemode):
-        MapDataProxy.set_gamemode(gamemode)
-        MetricLibraryProxy.proxy.set_gamemode(gamemode)
-        
-        '''
-        # TODO:
-            reset layers to gamemode
-            reset analysis to gamemode
-        '''
-
-        metric_library = MetricLibraryProxy.proxy.get()
-        print('Available metrics: ' + str(metric_library.get_names()))
-
-        analysis_controls = self.main_frame.center_frame.right_frame.analysis_controls
-        analysis_controls.refresh_metrics()
-
-        if gamemode == Beatmap.GAMEMODE_OSU:
-            print('Gamemode is now osu')
-            
-
-            graph_manager = self.main_frame.center_frame.right_frame.graph_manager
-            self.graph_manager.clear()
-
-            self.graph_manager.add_graph(TemporalHitobjectGraph(LinePlot(), 'Tapping Intervals',   MapMetrics.calc_tapping_intervals))
-            self.graph_manager.add_graph(TemporalHitobjectGraph(LinePlot(), 'Velocity',            MapMetrics.calc_velocity))
-            self.graph_manager.add_graph(TemporalHitobjectGraph(LinePlot(), 'Rhythmic Complexity', MapMetrics.calc_rhythmic_complexity))
-
-            # TODO: Enable velocity
-            # TODO: Enable acceleration
-            pass
-
-        if gamemode == Beatmap.GAMEMODE_MANIA:
-            print('Gamemode is now mania')
-            self.graph_manager.clear()
+    def add_layer_2d_data(self, name, data_2d):
+        self.layer_manager_switch_gui.get().add_layer(name, Data2DLayer(name, data_2d))
 
 
-        if gamemode == Beatmap.GAMEMODE_TAIKO:
-            print('Gamemode is now taiko')
-            self.graph_manager.clear()
+    def add_graph_2d_data(self, name, data_2d, temporal=False, plot_type=Data2DGraph.SCATTER_PLOT):
+        if not temporal:
+            self.graph_manager_switch_gui.get().add_graph(Data2DGraph(name, data_2d, plot_type))
+        else:
+            self.graph_manager_switch_gui.get().add_graph(Data2DTemporalGraph(name, data_2d, plot_type))
 
-        if gamemode == Beatmap.GAMEMODE_CATCH:
-            print('Gamemode is now catch')
-            self.graph_manager.clear()
+
+    def remove_layer(self, name):
+        # TODO
+        pass
+
+
+    def console_help(self):
+        string = 'Available vars: \
+            timeline, get_beatmap(), '
+
+
+        self.ipython_console.print_text('Available vars: ')
 
 
     def close_application(self):

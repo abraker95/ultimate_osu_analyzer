@@ -1,36 +1,42 @@
 from pyqtgraph.Qt import QtGui, QtCore
 import pyqtgraph
 
-from core.graph_manager import graph_manager
 from misc.callback import callback
+from gui.objects.graph.scatter_plot import ScatterPlot
+from gui.objects.graph.line_plot import LinePlot
 
 
-class TemporalHitobjectGraph(pyqtgraph.PlotWidget):
+class Data2DTemporalGraph(pyqtgraph.PlotWidget):
 
-    MIN_TIME = -5000
+    SCATTER_PLOT = 0
+    LINE_PLOT    = 1
+
+    MIN_TIME     = -5000
 
     @callback
-    def __init__(self, plot_item, name, data_func):
+    def __init__(self, name, data_2d, plot_type=None):
         super().__init__()
 
         pyqtgraph.setConfigOptions(antialias=True)
 
         self.showAxis('left', show=False)
-        self.setLimits(xMin=TemporalHitobjectGraph.MIN_TIME)
+        self.setLimits(xMin=Data2DTemporalGraph.MIN_TIME)
         self.setRange(xRange=(-100, 10000))
 
         self.getViewBox().setMouseEnabled(y=False)
         self.getPlotItem().setTitle(name)
 
-        self.plot_item = plot_item
+        if   plot_type == Data2DTemporalGraph.SCATTER_PLOT: self.plot_item = ScatterPlot()
+        elif plot_type == Data2DTemporalGraph.LINE_PLOT:    self.plot_item = LinePlot()
+        else:                                               self.plot_item = ScatterPlot()
         self.addItem(self.plot_item)
 
         self.timeline_marker = pyqtgraph.InfiniteLine(angle=90, movable=True)
-        self.timeline_marker.setBounds((TemporalHitobjectGraph.MIN_TIME + 100, None))
+        self.timeline_marker.setBounds((Data2DTemporalGraph.MIN_TIME + 100, None))
         self.timeline_marker.sigPositionChanged.connect(self.time_changed_event)
         self.addItem(self.timeline_marker, ignoreBounds=True)
-
-        self.data_func = data_func
+        
+        self.update_data(data_2d)
         self.__init__.emit(self)
 
 
@@ -39,10 +45,9 @@ class TemporalHitobjectGraph(pyqtgraph.PlotWidget):
         self.__del__.emit(self)
 
 
-    def update_data(self):
-        data = self.data_func()
-        data_x, data_y = self.validate_data(data)
-        self.plot_item.update_data(data)
+    def update_data(self, data_2d):
+        data_x, data_y = data_2d
+        self.plot_item.update_data(data_2d)
         
         if len(data_x) > 0: self.setRange(xRange=(data_x[0] - 100, data_x[-1] + 100))
         if len(data_y) > 0: self.setRange(yRange=(min(data_y), max(data_y)))
@@ -53,28 +58,11 @@ class TemporalHitobjectGraph(pyqtgraph.PlotWidget):
         if x_axis_label: self.getPlotItem().setLabel('bottom', text=x_axis_label)
         if y_axis_label: self.getPlotItem().setLabel('left',   text=y_axis_label)
 
-
-    def update_graph_style(self, color=None, points=None):
-        # TODO
-        pass
-
-
-    def validate_data(self, data):
-        if not data: return ([], [])
-        else:        return data
-
-
-    def mouseDragEvent(self, event):
-        event.ignore()
-
     
     def get_name(self):
         return self.getPlotItem().titleLabel.text
 
-
+    
     @callback
     def time_changed_event(self, marker):
         self.time_changed_event.emit(marker.value())
-
-
-graph_manager.add_graph('temporal_hitobject_graph', TemporalHitobjectGraph)

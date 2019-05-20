@@ -4,7 +4,7 @@ from PyQt5.QtGui import *
 
 from gui.widgets.layer_manager_switch import LayerManagerSwitch
 from gui.widgets.replay_manager import ReplayManager
-from gui.widgets.graph_manager import GraphManager
+from gui.widgets.graph_manager_switch import GraphManagerSwitch
 from gui.widgets.analysis_controls import AnalysisControls
 from gui.widgets.metric_manager import MetricManager
 from gui.widgets.ipython_console import IPythonConsole
@@ -26,7 +26,7 @@ class RightFrame(QFrame):
 
         self.layer_manager_switch = LayerManagerSwitch()
         self.replay_manager       = ReplayManager()
-        self.graph_manager        = GraphManager()
+        self.graph_manager_switch = GraphManagerSwitch()
         self.analysis_controls    = AnalysisControls()
         self.metric_manager       = MetricManager()
         self.ipython_console      = IPythonConsole()
@@ -37,7 +37,7 @@ class RightFrame(QFrame):
 
         self.tabs_area.addTab(self.layer_manager_switch, 'Layers')
         self.tabs_area.addTab(self.replay_manager, 'Replays')
-        self.tabs_area.addTab(self.graph_manager, 'Graphs')
+        self.tabs_area.addTab(self.graph_manager_switch, 'Graphs')
         self.tabs_area.addTab(self.analysis_controls, 'Analysis')
         self.tabs_area.addTab(self.metric_manager, 'Metrics')
         self.tabs_area.addTab(self.ipython_console, 'Console')
@@ -46,3 +46,5 @@ class RightFrame(QFrame):
 
     def update_gui(self):
         self.setFrameShape(QFrame.StyledPanel)
+
+        
