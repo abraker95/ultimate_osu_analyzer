@@ -12,6 +12,10 @@ class Replay():
         self.event_times = []
 
 
+    def is_md5_match(self, md5_hash):
+        return self.replay.beatmap_hash == md5_hash
+
+
     def get_event_times(self):
         if not self.event_times:
             self.__process_event_times()

@@ -9,6 +9,7 @@ from gui.frames.main_frame import MainFrame
 
 from osu.local.beatmap.beatmapIO import BeatmapIO
 from osu.local.beatmap.beatmap import Beatmap
+from osu.local.replay import Replay
 
 from core.gamemode_manager import gamemode_manager
 from core.layer_manager import LayerManager
@@ -18,6 +19,7 @@ from gui.objects.display import Display
 from gui.objects.layer.layers.data_2d_layer import Data2DLayer
 from gui.objects.layer.layers.std.hitobject_outline_layer import HitobjectOutlineLayer
 from gui.objects.layer.layers.std.hitobject_aimpoint_layer import HitobjectAimpointLayer
+from gui.objects.layer.layers.std.replay_layer import ReplayLayer
 
 from gui.objects.layer.layers.mania.hitobject_render_layer import HitobjectRenderLayer
 
@@ -55,6 +57,7 @@ class MainWindow(QMainWindow):
 
         self.file_menu           = self.menubar.addMenu('&File')
         self.open_beatmap_action = QAction("&Open beatmap", self)
+        self.open_replay_action  = QAction("&Open replay", self)
         self.close_action        = QAction("&Quit w", self)
 
         self.view_menu              = self.menubar.addMenu('&View')
@@ -79,11 +82,16 @@ class MainWindow(QMainWindow):
         self.toolbar.addAction(QAction(QIcon('new.bmp'), 'test menubar button', self))
 
         self.file_menu.addAction(self.open_beatmap_action)
+        self.file_menu.addAction(self.open_replay_action)
         self.file_menu.addAction(self.close_action)
         
         self.open_beatmap_action.setStatusTip('Open *.osu beatmap for analysis')
         self.open_beatmap_action.setShortcut('Ctrl+N')
         self.open_beatmap_action.triggered.connect(self.open_beatmap)
+
+        self.open_replay_action.setStatusTip('Open *.osr replay for analysis')
+        self.open_replay_action.setShortcut('Shift+Ctrl+N')
+        self.open_replay_action.triggered.connect(self.open_replay)
 
         self.close_action.setStatusTip('Quit the application')
         self.close_action.setShortcut('Ctrl+Q')
@@ -141,7 +149,7 @@ class MainWindow(QMainWindow):
 
 
     def open_beatmap(self):
-        beatmap_filenames = self.get_osu_files('osu files (*.osu)')
+        beatmap_filenames = self.get_type_files('osu files (*.osu)')
         if not beatmap_filenames: return
 
         for beatmap_filename in beatmap_filenames:
@@ -165,12 +173,52 @@ class MainWindow(QMainWindow):
             self.graph_manager_switch_gui.add(beatmap.metadata.name, GraphManager())
             self.graph_manager_switch_gui.switch(beatmap.metadata.name)
 
+            # TODO
+            # self.replay_manager_switch_gui.add(beatmap.metadata.name, ReplayManager())
+            # self.replay_manager_switch_gui.switch(beatmap.metadata.name)
+
+
+    def open_replay(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle('Error')
+        msg.setStandardButtons(QMessageBox.Ok)
+
+        replay_filenames = self.get_type_files('osr files (*.osr)')
+        if not replay_filenames: return
+
+        for replay_filename in replay_filenames:
+            print(replay_filename)
+            replay = Replay(replay_filename)
+
+            beatmap = self.map_manager.get_current_map()
+            if not beatmap:
+                msg.setText('Error opening replay\nOpen a beatmap before opening a replay.')
+                msg.exec_()
+                return
+            
+            ''' TODO: Get beatmap md5 working
+            if not replay.is_md5_match(beatmap.metadata.beatmap_md5):
+                msg.setText('Error opening replay\nTrying to load replay for the wrong beatmap.')
+                msg.exec_()
+                return
+            '''
+
+            ''' TODO: Implement replay manager
+            # Add replay to a list of replays
+            self.replay_manager_switch_gui.get().add_replay(replay)
+            '''
+
+            # TODO: Adding layers will be one of things analysis manager does
+            if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
+                self.layer_manager_switch_gui.get().add_layer('replay', ReplayLayer(replay, self.timeline.time_changed_event))
+
 
     def close_map(self, beatmap):
         self.layer_manager_switch_gui.rmv(beatmap.metadata.name)
 
 
-    def get_osu_files(self, file_type):
+    def get_type_files(self, file_type):
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.AnyFile)
         file_dialog.setNameFilters([ file_type ])
