@@ -197,6 +197,7 @@ class MainWindow(QMainWindow):
 
         gamemode_manager.switch(beatmap.gamemode)
         self.layer_manager_switch_gui.switch(beatmap.metadata.name)
+        self.graph_manager_switch_gui.switch(beatmap.metadata.name)
 
 
     def add_layer_2d_data(self, name, data_2d):
