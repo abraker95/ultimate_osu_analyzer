@@ -52,6 +52,8 @@ class Data2DTemporalGraph(pyqtgraph.PlotWidget):
         if len(data_x) > 0: self.setRange(xRange=(data_x[0] - 100, data_x[-1] + 100))
         if len(data_y) > 0: self.setRange(yRange=(min(data_y), max(data_y)))
 
+        self.setLimits(xMin=data_x[0] - 1000, xMax=data_x[-1] + 1000)
+
 
     def update_graph_info(self, title=None, x_axis_label=None, y_axis_label=None):
         if title:        self.getPlotItem().setTitle(title=title)
