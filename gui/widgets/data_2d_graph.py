@@ -17,7 +17,7 @@ class Data2DGraph(pyqtgraph.PlotWidget):
 
         pyqtgraph.setConfigOptions(antialias=True)
 
-        self.showAxis('left', show=False)
+        #self.showAxis('left', show=False)
         #self.setLimits(xMin=TemporalHitobjectGraph.MIN_TIME)
         self.setRange(xRange=(-100, 10000))
 

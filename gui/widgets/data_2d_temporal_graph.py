@@ -19,7 +19,7 @@ class Data2DTemporalGraph(pyqtgraph.PlotWidget):
 
         pyqtgraph.setConfigOptions(antialias=True)
 
-        self.showAxis('left', show=False)
+        #self.showAxis('left', show=False)
         self.setLimits(xMin=Data2DTemporalGraph.MIN_TIME)
         self.setRange(xRange=(-100, 10000))
 
