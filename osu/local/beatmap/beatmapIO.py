@@ -39,7 +39,6 @@ Output:
 '''
 class BeatmapIO():
 
-
     class Section():
 
         SECTION_NONE         = 0
@@ -66,35 +65,48 @@ class BeatmapIO():
             BeatmapIO.Section.SECTION_HITOBJECTS   : BeatmapIO.__parse_hitobjects_section
         }
 
+
     """
-    Loads a beatmap
+    Opens a beatmap file and reads it
 
     Args:
         filepath: (string) filepath to the beatmap file to load
     """
     @staticmethod
-    def load_beatmap(filepath=None):
-        beatmap = Beatmap()
-        if not filepath: return beatmap
-        
+    def open_beatmap(filepath=None):
         with open(filepath, 'rt', encoding='utf-8') as beatmap_file:
-            BeatmapIO.__parse_beatmap_file(beatmap_file, beatmap)
-            BeatmapIO.__process_timing_points(beatmap)
+            beatmap = BeatmapIO.load_beatmap(beatmap_file)
+        
+        return beatmap
 
-            if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
-                BeatmapIO.__process_slider_timings(beatmap)
-                BeatmapIO.__process_hitobject_end_times(beatmap)
-                BeatmapIO.__process_slider_tick_times(beatmap)
 
-            if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
-                BeatmapIO.__process_columns(beatmap)
+    """
+    Loads beatmap data
 
-            BeatmapIO.__validate(beatmap)
+    Args:
+        beatmap_file: (string) contents of the beatmap file
+    """
+    @staticmethod
+    def load_beatmap(beatmap_data):
+        beatmap = Beatmap()
+        
+        BeatmapIO.__parse_beatmap_data(beatmap_data, beatmap)
+        BeatmapIO.__process_timing_points(beatmap)
+
+        if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
+            BeatmapIO.__process_slider_timings(beatmap)
+            BeatmapIO.__process_hitobject_end_times(beatmap)
+            BeatmapIO.__process_slider_tick_times(beatmap)
+
+        if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
+            BeatmapIO.__process_columns(beatmap)
+
+        BeatmapIO.__validate(beatmap)
 
         beatmap.set_cs_val(beatmap.difficulty.cs)
         beatmap.set_ar_val(beatmap.difficulty.ar)
         beatmap.set_od_val(beatmap.difficulty.od)
-        
+
         return beatmap
 
 
@@ -137,16 +149,16 @@ class BeatmapIO():
 
 
     @staticmethod
-    def __parse_beatmap_file(beatmap_file, beatmap):
-        BeatmapIO.__parse_beatmap_file_format(beatmap_file, beatmap)
-        BeatmapIO.__parse_beatmap_file_data(beatmap_file, beatmap)
+    def __parse_beatmap_data(beatmap_data, beatmap):
+        BeatmapIO.__parse_beatmap_file_format(beatmap_data, beatmap)
+        BeatmapIO.__parse_beatmap_content(beatmap_data, beatmap)
 
         beatmap.metadata.name = beatmap.metadata.artist + ' - ' + beatmap.metadata.title + ' (' + beatmap.metadata.creator + ') ' + '[' + beatmap.metadata.version + ']'
 
 
     @staticmethod
-    def __parse_beatmap_file_format(beatmap_file, beatmap):
-        line  = beatmap_file.readline()
+    def __parse_beatmap_file_format(beatmap_data, beatmap):
+        line  = beatmap_data.readline()
         data  = line.split('osu file format v')
         
         try: beatmap.metadata.beatmap_format = int(data[1])
@@ -154,14 +166,14 @@ class BeatmapIO():
 
 
     @staticmethod
-    def __parse_beatmap_file_data(beatmap_file, beatmap):
+    def __parse_beatmap_content(beatmap_data, beatmap):
         if beatmap.metadata.beatmap_format == -1: return
 
         section = BeatmapIO.Section.SECTION_NONE
         line    = ''
         
         while True:
-            line = beatmap_file.readline()
+            line = beatmap_data.readline()
 
             if line.strip() == '[General]':        section = BeatmapIO.Section.SECTION_GENERAL
             elif line.strip() == '[Editor]':       section = BeatmapIO.Section.SECTION_EDITOR
@@ -283,11 +295,11 @@ class BeatmapIO():
             return
 
         if data[0] == 'BeatmapID':
-            # ignore
+            beatmap.metadata.beatmap_id = data[1].strip()
             return
 
         if data[0] == 'BeatmapSetID':
-            # ignore
+            beatmap.metadata.beatmapset_id = data[1].strip()
             return
 
 

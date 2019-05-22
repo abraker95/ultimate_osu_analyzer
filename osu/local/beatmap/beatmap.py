@@ -41,6 +41,9 @@ class Beatmap():
             self.version        = ''    # difficulty name
             self.creator        = ''
             self.name           = ''    # Artist - Title (Creator) [Difficulty]
+            
+            self.beatmap_id     = None
+            self.beatmapset_id  = None
             self.beatmap_md5    = None  # generatedilepath:
 
     
@@ -87,8 +90,8 @@ class Beatmap():
     def get_time_range(self):
         print('get_time_range')
         if self.gamemode == Beatmap.GAMEMODE_OSU:   return Std.get_time_range(self.hitobjects)
-        # TODO: if self.gamemode == Beatmap.GAMEMODE_TAIKO:   return Taiko.get_time_range(self.hitobjects)
-        # TODO: if self.gamemode == Beatmap.GAMEMODE_CATCH:   return Catch.get_time_range(self.hitobjects)
+        if self.gamemode == Beatmap.GAMEMODE_TAIKO: print('TODO: Taiko') #  return Taiko.get_time_range(self.hitobjects)
+        if self.gamemode == Beatmap.GAMEMODE_CATCH: print('TODO: Catch') #  return Catch.get_time_range(self.hitobjects)
         if self.gamemode == Beatmap.GAMEMODE_MANIA: return Mania.get_time_range(self.hitobjects)
 
 

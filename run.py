@@ -135,11 +135,14 @@ class MainWindow(QMainWindow):
 
         self.ipython_console.push_vars({ 'StdMapData'   : StdMapData })
         self.ipython_console.push_vars({ 'ManiaMapData' : ManiaMapData })
-
         self.ipython_console.push_vars({ 'StdMapMetrics' : StdMapMetrics })
 
         self.ipython_console.push_vars({ 'OsuApi' : OsuApi })
         self.ipython_console.push_vars({ 'OsuOnline' : OsuOnline })
+
+        self.ipython_console.push_vars({ 'open_beatmap' : self.open_beatmap })
+        self.ipython_console.push_vars({ 'load_beatmap' : self.load_beatmap })
+
         self.ipython_console.push_vars({ 'open_replay' : self.open_replay })
         self.ipython_console.push_vars({ 'load_replay' : self.load_replay })
 
@@ -161,16 +164,24 @@ class MainWindow(QMainWindow):
 
 
     def request_open_beatmap(self):
-        beatmap_filenames = self.get_type_files('osu files (*.osu)')
-        if not beatmap_filenames: return
+        beatmap_filepaths = self.get_type_files('osu files (*.osu)')
+        if not beatmap_filepaths: return
 
-        for beatmap_filename in beatmap_filenames:
-            self.open_beatmap(beatmap_filename)
+        for beatmap_filepath in beatmap_filepaths:
+            self.open_beatmap(beatmap_filepath)
 
 
-    def open_beatmap(self, beatmap_filename):
-        # Create a new playfield and load the beatmap into it
-        beatmap = BeatmapIO.load_beatmap(beatmap_filename)
+    def open_beatmap(self, beatmap_filepath):
+        beatmap = BeatmapIO.open_beatmap(beatmap_filepath)
+        self.apply_beatmap(beatmap)
+
+
+    def load_beatmap(self, beatmap_data):
+        beatmap = BeatmapIO.load_beatmap(beatmap_data)
+        self.apply_beatmap(beatmap)
+
+
+    def apply_beatmap(self, beatmap):
         self.map_manager.add_map(beatmap, beatmap.metadata.name)
 
         self.layer_manager_switch_gui.add(beatmap.metadata.name, LayerManager())
