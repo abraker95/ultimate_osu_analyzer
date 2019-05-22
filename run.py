@@ -9,7 +9,11 @@ from gui.frames.main_frame import MainFrame
 
 from osu.local.beatmap.beatmapIO import BeatmapIO
 from osu.local.beatmap.beatmap import Beatmap
-from osu.local.replay import Replay
+
+from osu.local.replay.replayIO import ReplayIO
+
+from osu.online.osu_api import OsuApi
+from osu.online.osu_online import OsuOnline
 
 from core.gamemode_manager import gamemode_manager
 from core.layer_manager import LayerManager
@@ -134,6 +138,13 @@ class MainWindow(QMainWindow):
 
         self.ipython_console.push_vars({ 'StdMapMetrics' : StdMapMetrics })
 
+        self.ipython_console.push_vars({ 'OsuApi' : OsuApi })
+        self.ipython_console.push_vars({ 'OsuOnline' : OsuOnline })
+        self.ipython_console.push_vars({ 'open_replay' : self.open_replay })
+        self.ipython_console.push_vars({ 'load_replay' : self.load_replay })
+
+        self.ipython_console.push_vars({ 'save_replay' : ReplayIO.save_replay })    # TODO: use Replay class instead of bytes
+
         self.show()
 
 
@@ -182,20 +193,28 @@ class MainWindow(QMainWindow):
 
 
     def request_open_replay(self):
-        replay_filenames = self.get_type_files('osr files (*.osr)')
-        if not replay_filenames: return
+        replay_filepaths = self.get_type_files('osr files (*.osr)')
+        if not replay_filepaths: return
 
-        for replay_filename in replay_filenames:
-            self.open_replay(replay_filename)
+        for replay_filepath in replay_filepaths:
+            self.open_replay(replay_filepath)
 
 
-    def open_replay(self, replay_filename):
+    def open_replay(self, replay_filepath):
+        replay = ReplayIO.open_replay(replay_filepath)
+        self.apply_replay(replay)
+        
+
+    def load_replay(self, replay_data):
+        replay = ReplayIO.load_replay(replay_data)
+        self.apply_replay(replay)
+
+
+    def apply_replay(self, replay):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle('Error')
         msg.setStandardButtons(QMessageBox.Ok)
-
-        replay = Replay(replay_filename)
 
         beatmap = self.map_manager.get_current_map()
         if not beatmap:
