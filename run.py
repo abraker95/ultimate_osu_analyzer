@@ -1,5 +1,6 @@
 import sys
 import time
+import threading
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -126,6 +127,7 @@ class MainWindow(QMainWindow):
         self.status_bar.showMessage('Statusbar test message')
 
         self.ipython_console.push_vars({ 'help' : self.console_help })
+        self.ipython_console.push_vars({ 'threaded' : self.threaded })
         self.ipython_console.push_vars({ 'timeline' : self.timeline })
         
         self.ipython_console.push_vars({ 'get_beatmap' : self.map_manager.get_current_map })
@@ -299,6 +301,23 @@ class MainWindow(QMainWindow):
     def remove_layer(self, name):
         # TODO
         pass
+
+
+    '''
+    Use:
+        result = []
+        thread = threaded(func, (param,), result)
+        thread.start()
+    '''
+    def threaded(self, func, args, result=None):
+        def wrap(func, args, result):
+            if type(result) == list: result.append(func(*args))
+            else: func(*args)
+                
+            print('-----------------------')
+            print('DONE')
+
+        return threading.Thread(target=wrap, args=(func, args, result))
 
 
     def console_help(self):
