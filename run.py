@@ -1,6 +1,5 @@
 import sys
 import time
-import threading
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -16,6 +15,7 @@ from osu.local.replay.replayIO import ReplayIO
 from osu.online.osu_api import OsuApi
 from osu.online.osu_online import OsuOnline
 
+from cli.cmd_utils import CmdUtils
 from core.gamemode_manager import gamemode_manager
 from core.layer_manager import LayerManager
 
@@ -126,8 +126,6 @@ class MainWindow(QMainWindow):
         self.setGeometry(MainWindow.left, MainWindow.top, MainWindow.width, MainWindow.height)
         self.status_bar.showMessage('Statusbar test message')
 
-        self.ipython_console.push_vars({ 'help' : self.console_help })
-        self.ipython_console.push_vars({ 'threaded' : self.threaded })
         self.ipython_console.push_vars({ 'timeline' : self.timeline })
         
         self.ipython_console.push_vars({ 'get_beatmap' : self.map_manager.get_current_map })
@@ -142,6 +140,7 @@ class MainWindow(QMainWindow):
         self.ipython_console.push_vars({ 'OsuApi' : OsuApi })
         self.ipython_console.push_vars({ 'OsuOnline' : OsuOnline })
 
+        self.ipython_console.push_vars({ 'CmdUtils' : CmdUtils })
         self.ipython_console.push_vars({ 'open_beatmap' : self.open_beatmap })
         self.ipython_console.push_vars({ 'load_beatmap' : self.load_beatmap })
 
@@ -301,31 +300,6 @@ class MainWindow(QMainWindow):
     def remove_layer(self, name):
         # TODO
         pass
-
-
-    '''
-    Use:
-        result = []
-        thread = threaded(func, (param,), result)
-        thread.start()
-    '''
-    def threaded(self, func, args, result=None):
-        def wrap(func, args, result):
-            if type(result) == list: result.append(func(*args))
-            else: func(*args)
-                
-            print('-----------------------')
-            print('DONE')
-
-        return threading.Thread(target=wrap, args=(func, args, result))
-
-
-    def console_help(self):
-        string = 'Available vars: \
-            timeline, get_beatmap(), '
-
-
-        self.ipython_console.print_text('Available vars: ')
 
 
     def dragEnterEvent(self, e):
