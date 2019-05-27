@@ -8,6 +8,8 @@ import time
 import os
 
 from osu.local.beatmap.beatmap import Beatmap
+from osu.online.login import api_key
+
 
 
 class OsuApi():
@@ -18,7 +20,7 @@ class OsuApi():
     Returns the LZMA stream containing the cursor and key data, not the full *.osr file
     '''
     @staticmethod
-    def fetch_replay_stream(api_key, user_name, beatmap_id, gamemode):
+    def fetch_replay_stream(user_name, beatmap_id, gamemode):
         param = []
         param.append('k=' + str(api_key))
         param.append('m=' + str(gamemode))
@@ -45,7 +47,7 @@ class OsuApi():
 
     
     @staticmethod
-    def fetch_beatmap_info(api_key, beatmap_id):
+    def fetch_beatmap_info(beatmap_id):
         param = []
         param.append('k=' + str(api_key))
         param.append('b=' + str(beatmap_id))
@@ -58,13 +60,14 @@ class OsuApi():
 
 
     @staticmethod
-    def fetch_score_info(api_key, beatmap_id, user_name, gamemode, mods):
+    def fetch_score_info(beatmap_id, user_name=None, gamemode=None, mods=None):
         param = []
         param.append('k=' + str(api_key))
         param.append('b=' + str(beatmap_id))
-        param.append('u=' + str(user_name))
-        param.append('m=' + str(gamemode))
-        param.append('mods=' + str(mods))
+        
+        if user_name != None: param.append('u=' + str(user_name))
+        if gamemode  != None: param.append('m=' + str(gamemode))
+        if mods      != None: param.append('mods=' + str(mods))
 
         url = 'https://osu.ppy.sh/api/get_scores?'
         url += '&'.join(param)
@@ -75,10 +78,10 @@ class OsuApi():
 
     # Thanks https://github.com/Xferno2/CSharpOsu/blob/master/CSharpOsu/CSharpOsu.cs
     @staticmethod
-    def fetch_replay_file(api_key, user_name, beatmap_id, gamemode, mods):
-        replay_data  = OsuApi.fetch_replay_stream(api_key, user_name, beatmap_id, gamemode)
-        beatmap_info = OsuApi.fetch_beatmap_info(api_key, beatmap_id)[0]
-        score_info   = OsuApi.fetch_score_info(api_key, beatmap_id, user_name, gamemode, mods)[0]
+    def fetch_replay_file(user_name, beatmap_id, gamemode, mods):
+        replay_data  = OsuApi.fetch_replay_stream(user_name, beatmap_id, gamemode)
+        beatmap_info = OsuApi.fetch_beatmap_info(beatmap_id)[0]
+        score_info   = OsuApi.fetch_score_info(beatmap_id, user_name=user_name, gamemode=gamemode, mods=mods)[0]
 
         version     = 0
         rank        = score_info['rank']
@@ -118,3 +121,25 @@ class OsuApi():
         data += struct.pack('<q', int(score_id))
 
         return data
+
+
+    @staticmethod
+    def fetch_replays_from_map(beatmap_id, gamemode, mods):
+        score_info = OsuApi.fetch_score_info(api_key, beatmap_id, gamemode-gamemode, mods=mods)
+        replays    = []
+        error      = False        
+        for i in range(len(score_info)):
+            score = score_info[i]
+            print('(%i/%i) Gettings replay for %s' % (i, len(score_info), str(score['username'])))
+
+            try: 
+                replays.append(OsuApi.fetch_replay_file(api_key, score['username'], beatmap_id, gamemode, mods))
+                error = False
+            except urllib.error.HTTPError:
+                if error: break
+                i -= 1  # Try again
+                error = True
+
+            time.sleep(10)
+
+        return replays

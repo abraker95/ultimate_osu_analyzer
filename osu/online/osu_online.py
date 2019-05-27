@@ -3,33 +3,100 @@ import urllib.request
 import json
 import time
 import os
+import io
 
 from osu.local.beatmap.beatmap import Beatmap
-
+from osu.online.session_manager import SessionMgr
+from osu.online.login import username, password
 
 
 class OsuOnline():
 
+    session_manager = None
+
     @staticmethod
-    def fetch_beatmap_file(beatmap_id):
+    def fetch_beatmap_file(beatmap_id, strio=False):
         url      = 'https://osu.ppy.sh/osu/' + str(beatmap_id)
         response = urllib.request.urlopen(url)
         data     = response.read()
         
-        return data.decode('utf-8')
+        if not strio: return data.decode('utf-8')
+        else:         return io.StringIO(data.decode('utf-8'))
 
     
     @staticmethod
     def fetch_scores(beatmap_id, gamemode):
-        if   gamemode == Beatmap.GAMEMODE_OSU:   gamemode = 'osu'
-        elif gamemode == Beatmap.GAMEMODE_TAIKO: gamemode = 'taiko'
-        elif gamemode == Beatmap.GAMEMODE_CATCH: gamemode = 'fruits'
-        elif gamemode == Beatmap.GAMEMODE_MANIA: gamemode = 'mania'
-        else: raise Exception('Unknown gamemode: ' + str(gamemode))
-
+        if type(gamemode) == int:
+            if   gamemode == Beatmap.GAMEMODE_OSU:   gamemode = 'osu'
+            elif gamemode == Beatmap.GAMEMODE_TAIKO: gamemode = 'taiko'
+            elif gamemode == Beatmap.GAMEMODE_CATCH: gamemode = 'fruits'
+            elif gamemode == Beatmap.GAMEMODE_MANIA: gamemode = 'mania'
+            else: raise Exception('Unknown gamemode: ' + str(gamemode))
+        
         url = 'https://osu.ppy.sh/beatmaps/' + str(beatmap_id) + '/scores?type=global&mode=' + str(gamemode)
         response = urllib.request.urlopen(url)
-        return json.loads(response.read())
+        data     = json.loads(response.read())
+
+        return data['scores']
+
+
+    @staticmethod
+    def fetch_replay_file(replay_id):
+        if not OsuOnline.session_manager:
+            OsuOnline.session_manager = SessionMgr()
+            OsuOnline.session_manager.login(username, password)
+
+        xsrf_token = OsuOnline.session_manager.get_xsrf_token()
+        if xsrf_token == None: raise Exception('xsrf_token is None')
+
+        osu_session = OsuOnline.session_manager.get_osu_session()
+        if osu_session == None: raise Exception('osu_session is None')
+
+        url = 'https://osu.ppy.sh/scores/osu/' + str(replay_id) + '/download'
+        headers = {
+            'X-CSRF-TOKEN': xsrf_token,
+            'osu_session' : osu_session
+        }
+
+        response = OsuOnline.session_manager.get(url, headers=headers)
+        return response.content
+
+
+    # Only gets first 50 beatmapsets
+    @staticmethod
+    def fetch_latest_ranked_beatmapsets(gamemode):
+        url = 'https://osu.ppy.sh/beatmapsets/search?m=' + str(gamemode)
+        response = urllib.request.urlopen(url)
+        data     = json.loads(response.read())
+        
+        return data['beatmapsets']
+
+
+    @staticmethod
+    def fetch_latest_ranked_beatmaps(gamemode):
+        latest_ranked_beatmapsets = OsuOnline.fetch_latest_ranked_beatmapsets(gamemode)
+        for latest_ranked_beatmapset in latest_ranked_beatmapsets:
+            title   = latest_ranked_beatmapset['title']
+            artist  = latest_ranked_beatmapset['artist']
+            creator = latest_ranked_beatmapset['creator']
+
+            for difficulty in latest_ranked_beatmapset['beatmaps']:
+                version = difficulty['version']
+
+                name = artist + ' - ' + title + ' (' + creator + ') ' + '[' + version + ']'
+                yield (name, difficulty)
+                time.sleep(0.1)
+
+
+    @staticmethod
+    def fetch_latest_ranked_beatmap_files(gamemode):
+        latest_ranked_beatmaps = OsuOnline.fetch_latest_ranked_beatmaps(gamemode)
+        for latest_ranked_beatmap in latest_ranked_beatmaps:
+                name, beatmap = latest_ranked_beatmap
+                print('fetching ' + name)
+
+                yield (name, OsuOnline.fetch_beatmap_file(beatmap['id']))
+                time.sleep(0.5)
 
 
     @staticmethod

@@ -16,6 +16,9 @@ from osu.online.osu_api import OsuApi
 from osu.online.osu_online import OsuOnline
 
 from cli.cmd_utils import CmdUtils
+from cli.cmd_osu import CmdOsu
+from cli.cmd_online import CmdOnline
+
 from core.gamemode_manager import gamemode_manager
 from core.layer_manager import LayerManager
 
@@ -127,26 +130,28 @@ class MainWindow(QMainWindow):
         self.status_bar.showMessage('Statusbar test message')
 
         self.ipython_console.push_vars({ 'timeline' : self.timeline })
-        
         self.ipython_console.push_vars({ 'get_beatmap' : self.map_manager.get_current_map })
 
         self.ipython_console.push_vars({ 'add_layer_2d_data' : self.add_layer_2d_data })
         self.ipython_console.push_vars({ 'add_graph_2d_data' : self.add_graph_2d_data })
 
-        self.ipython_console.push_vars({ 'StdMapData'   : StdMapData })
-        self.ipython_console.push_vars({ 'ManiaMapData' : ManiaMapData })
+        self.ipython_console.push_vars({ 'StdMapData'    : StdMapData })
+        self.ipython_console.push_vars({ 'ManiaMapData'  : ManiaMapData })
         self.ipython_console.push_vars({ 'StdMapMetrics' : StdMapMetrics })
 
-        self.ipython_console.push_vars({ 'OsuApi' : OsuApi })
+        self.ipython_console.push_vars({ 'OsuApi'    : OsuApi })
         self.ipython_console.push_vars({ 'OsuOnline' : OsuOnline })
 
-        self.ipython_console.push_vars({ 'CmdUtils' : CmdUtils })
+        self.ipython_console.push_vars({ 'CmdUtils'  : CmdUtils })
+        self.ipython_console.push_vars({ 'CmdOsu'    : CmdOsu })
+        self.ipython_console.push_vars({ 'CmdOnline' : CmdOnline })
+
         self.ipython_console.push_vars({ 'open_beatmap' : self.open_beatmap })
         self.ipython_console.push_vars({ 'load_beatmap' : self.load_beatmap })
+        self.ipython_console.push_vars({ 'save_beatmap' : BeatmapIO.save_beatmap })
 
         self.ipython_console.push_vars({ 'open_replay' : self.open_replay })
         self.ipython_console.push_vars({ 'load_replay' : self.load_replay })
-
         self.ipython_console.push_vars({ 'save_replay' : ReplayIO.save_replay })    # TODO: use Replay class instead of bytes
 
         self.show()

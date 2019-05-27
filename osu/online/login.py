@@ -1,0 +1,7 @@
+username = ''
+password = ''
+
+api_key = ''
+
+token_type   = ''
+access_token = ''

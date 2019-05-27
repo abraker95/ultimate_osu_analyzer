@@ -111,14 +111,15 @@ class BeatmapIO():
 
 
     """
-    Saves the currently loaded beatmap, if loaded
+    Saves beatmap file data
 
     Args:
         filepath: (string) what to save the beatmap as
     """
     @staticmethod
-    def save_beatmap(beatmap):
-        pass
+    def save_beatmap(beatmap_data, filepath):
+        with open(filepath, 'wt', encoding='utf-8') as f:
+            f.write(beatmap_data)
 
 
     """
