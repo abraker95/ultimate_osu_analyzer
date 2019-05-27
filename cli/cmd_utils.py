@@ -45,3 +45,9 @@ class CmdUtils():
             timeline, get_beatmap(), '
 
         #self.ipython_console.print_text('Available vars: ')
+
+
+    @staticmethod
+    def print_numbered_list(lst):
+        for i in range(len(lst)):
+            print(i, lst[i])
