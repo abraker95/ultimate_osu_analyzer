@@ -41,7 +41,11 @@ class LayerManagerSwitch(QWidget, Switcher):
 
 
     def __add_layer_manager(self, layer_manager):
-        layer_manager_gui = QContainer(QVBoxLayout())
+        layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignTop)
+        layout.setSpacing(0)
+
+        layer_manager_gui = QContainer(layout)
         for layer in layer_manager.data.values():
             layer_manager_gui.get().addWidget(LayerGui(layer))
 

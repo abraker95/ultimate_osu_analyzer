@@ -18,15 +18,17 @@ class LayerGui(QWidget):
 
 
     def init_gui_elements(self):
-        self.layout       = QVBoxLayout()
+        self.layout       = QHBoxLayout()
         self.label        = QLabel(self.layer.name, self)
-        self.enable_chkbx = QCheckBox('visible')
+        self.enable_chkbx = QCheckBox('visible  ')
 
 
     def construct_gui(self):
+        self.layout.setAlignment(Qt.AlignLeft)
+
         self.setLayout(self.layout)
-        self.layout.addWidget(self.label)
         self.layout.addWidget(self.enable_chkbx)
+        self.layout.addWidget(self.label)
 
         self.enable_chkbx.toggled.connect(self.layer_enable_event)
 
