@@ -125,7 +125,7 @@ class OsuApi():
 
     @staticmethod
     def fetch_replays_from_map(beatmap_id, gamemode, mods):
-        score_info = OsuApi.fetch_score_info(api_key, beatmap_id, gamemode-gamemode, mods=mods)
+        score_info = OsuApi.fetch_score_info(beatmap_id, gamemode-gamemode, mods=mods)
         replays    = []
         error      = False        
         for i in range(len(score_info)):
@@ -133,7 +133,7 @@ class OsuApi():
             print('(%i/%i) Gettings replay for %s' % (i, len(score_info), str(score['username'])))
 
             try: 
-                replays.append(OsuApi.fetch_replay_file(api_key, score['username'], beatmap_id, gamemode, mods))
+                replays.append(OsuApi.fetch_replay_file(score['username'], beatmap_id, gamemode, mods))
                 error = False
             except urllib.error.HTTPError:
                 if error: break
