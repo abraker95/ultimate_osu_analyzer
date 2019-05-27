@@ -8,6 +8,7 @@ import time
 import os
 
 from osu.local.beatmap.beatmap import Beatmap
+from osu.online.rate_limited import rate_limited
 from osu.online.login import api_key
 
 
@@ -19,6 +20,7 @@ class OsuApi():
     '''
     Returns the LZMA stream containing the cursor and key data, not the full *.osr file
     '''
+    @rate_limited(rate_limit=10)
     @staticmethod
     def fetch_replay_stream(user_name, beatmap_id, gamemode):
         param = []
@@ -30,13 +32,6 @@ class OsuApi():
         url = 'https://osu.ppy.sh/api/get_replay?'
         url += '&'.join(param)
 
-        try:    time_passed = time.clock() - OsuApi.fetch_replay_stream.last_run_time
-        except: time_passed = OsuApi.REPLAY_RATE_FETCHING_LIMIT + 1
-            
-        if time_passed < OsuApi.REPLAY_RATE_FETCHING_LIMIT:
-            raise Exception('Please wait ' + str(round(10 - time_passed, 2)) + ' more seconds until fetching a replay again')
-        OsuApi.fetch_replay_stream.last_run_time = time.clock()
-
         data = urllib.request.urlopen(url).read()
         try:    
             base_64 = json.loads(data.decode('utf-8'))
@@ -46,6 +41,7 @@ class OsuApi():
             raise Exception(error['error'])
 
     
+    @rate_limited(rate_limit=0.1)
     @staticmethod
     def fetch_beatmap_info(beatmap_id):
         param = []
@@ -59,6 +55,7 @@ class OsuApi():
         return json.loads(data.decode('utf-8'))
 
 
+    @rate_limited(rate_limit=0.1)
     @staticmethod
     def fetch_score_info(beatmap_id, user_name=None, gamemode=None, mods=None):
         param = []
@@ -77,6 +74,7 @@ class OsuApi():
 
 
     # Thanks https://github.com/Xferno2/CSharpOsu/blob/master/CSharpOsu/CSharpOsu.cs
+    @rate_limited(rate_limit=3)
     @staticmethod
     def fetch_replay_file(user_name, beatmap_id, gamemode, mods):
         replay_data  = OsuApi.fetch_replay_stream(user_name, beatmap_id, gamemode)

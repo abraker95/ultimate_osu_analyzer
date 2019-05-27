@@ -8,6 +8,7 @@ import io
 from osu.local.beatmap.beatmap import Beatmap
 from osu.online.session_manager import SessionMgr
 from osu.online.login import username, password
+from osu.online.rate_limited import rate_limited
 
 
 class OsuOnline():
@@ -15,6 +16,7 @@ class OsuOnline():
     session_manager = None
 
     @staticmethod
+    @rate_limited(rate_limit=0.5)
     def fetch_beatmap_file(beatmap_id, strio=False):
         url      = 'https://osu.ppy.sh/osu/' + str(beatmap_id)
         response = urllib.request.urlopen(url)
@@ -25,6 +27,7 @@ class OsuOnline():
 
     
     @staticmethod
+    @rate_limited(rate_limit=3)
     def fetch_scores(beatmap_id, gamemode):
         if type(gamemode) == int:
             if   gamemode == Beatmap.GAMEMODE_OSU:   gamemode = 'osu'
@@ -41,6 +44,7 @@ class OsuOnline():
 
 
     @staticmethod
+    @rate_limited(rate_limit=1)
     def fetch_replay_file(replay_id):
         if not OsuOnline.session_manager:
             OsuOnline.session_manager = SessionMgr()
