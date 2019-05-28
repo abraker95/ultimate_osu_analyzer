@@ -1,6 +1,17 @@
 from enum import Enum
 
 
+class MapStatus(Enum):
+    Ranked     = 1
+    Favourites = 2
+    Qualified  = 3
+    Pending    = 4
+    Graveyard  = 5
+    My         = 6
+    Any        = 7
+    Loved      = 8
+
+
 class GameMode(Enum):
     Standard     = 0
     Taiko        = 1

@@ -1,11 +1,12 @@
 from osu.online.osu_online import OsuOnline
 from osu.online.structs.web_structs import *
+from osu.local.enums import MapStatus
 
 
 class CmdOnline():
 
     @staticmethod
-    def get_latest_beatmapsets(gamemode, status=0):
+    def get_latest_beatmapsets(gamemode, status=MapStatus.Ranked):
         beatmapsets = OsuOnline.fetch_latest_beatmapsets(gamemode, status)
         return [ WebBeatmapset(beatmapset) for beatmapset in beatmapsets ]
 
