@@ -68,12 +68,29 @@ class OsuOnline():
 
     # Only gets first 50 beatmapsets
     @staticmethod
-    def fetch_latest_ranked_beatmapsets(gamemode):
-        url = 'https://osu.ppy.sh/beatmapsets/search?m=' + str(gamemode)
-        response = urllib.request.urlopen(url)
-        data     = json.loads(response.read())
-        
-        return data['beatmapsets']
+    def fetch_latest_beatmapsets(gamemode, status):
+        if not OsuOnline.session_manager:
+            OsuOnline.session_manager = SessionMgr()
+            OsuOnline.session_manager.login(username, password)
+
+        xsrf_token = OsuOnline.session_manager.get_xsrf_token()
+        if xsrf_token == None: raise Exception('xsrf_token is None')
+
+        osu_session = OsuOnline.session_manager.get_osu_session()
+        if osu_session == None: raise Exception('osu_session is None')
+
+        url_param = [ 'm=' + str(gamemode) ]
+        if status != None:
+            url_param.append('s=' + str(status))
+
+        url = 'https://osu.ppy.sh/beatmapsets/search?' + '&'.join(url_param)
+        headers = {
+            'X-CSRF-TOKEN': xsrf_token,
+            'osu_session' : osu_session
+        }
+
+        response = OsuOnline.session_manager.get(url, headers=headers)
+        return response.json()['beatmapsets']
 
 
     @staticmethod

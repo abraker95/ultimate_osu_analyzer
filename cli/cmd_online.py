@@ -5,8 +5,8 @@ from osu.online.structs.web_structs import *
 class CmdOnline():
 
     @staticmethod
-    def get_latest_beatmapsets(gamemode):
-        beatmapsets = OsuOnline.fetch_latest_ranked_beatmapsets(gamemode)
+    def get_latest_beatmapsets(gamemode, status=0):
+        beatmapsets = OsuOnline.fetch_latest_beatmapsets(gamemode, status)
         return [ WebBeatmapset(beatmapset) for beatmapset in beatmapsets ]
 
 
