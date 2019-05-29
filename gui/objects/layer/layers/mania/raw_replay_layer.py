@@ -37,7 +37,6 @@ class ManiaRawReplayLayer(Layer, Temporal):
         end_idx   = min(end_idx + 1, len(self.replay.play_data))
 
         replay_events = self.replay.play_data[start_idx : end_idx]
-        print(start_idx, end_idx)
 
         for replay_event in replay_events:
             for key_press in Mania.get_key_presses(replay_event.x):
