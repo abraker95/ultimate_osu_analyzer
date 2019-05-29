@@ -33,6 +33,7 @@ from gui.objects.layer.layers.std.replay_layer import StdReplayLayer
 from gui.objects.layer.layers.mania.raw_replay_layer import ManiaRawReplayLayer
 from gui.objects.layer.layers.mania.press_replay_layer import ManiaPressReplayLayer
 from gui.objects.layer.layers.mania.release_replay_layer import ManiaReleaseReplayLayer
+from gui.objects.layer.layers.mania.hold_replay_layer import ManiaHoldReplayLayer
 
 from gui.objects.layer.layers.mania.hitobject_render_layer import HitobjectRenderLayer
 
@@ -262,9 +263,10 @@ class MainWindow(QMainWindow):
 
         if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
             num_columns = beatmap.difficulty.cs
-            self.layer_manager_switch_gui.get().add_layer('raw_replay', ManiaRawReplayLayer((replay, num_columns), self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer('press_replay', ManiaPressReplayLayer((replay, num_columns), self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer('release_replay', ManiaReleaseReplayLayer((replay, num_columns), self.timeline.time_changed_event))
+            #self.layer_manager_switch_gui.get().add_layer('raw_replay',     ManiaRawReplayLayer((replay, num_columns), self.timeline.time_changed_event))
+            #self.layer_manager_switch_gui.get().add_layer('press_replay',   ManiaPressReplayLayer((replay, num_columns), self.timeline.time_changed_event))
+            #self.layer_manager_switch_gui.get().add_layer('release_replay', ManiaReleaseReplayLayer((replay, num_columns), self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer('hold_replay',    ManiaHoldReplayLayer((replay, num_columns), self.timeline.time_changed_event))
 
 
     def close_map(self, beatmap):
