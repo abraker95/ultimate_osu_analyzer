@@ -52,6 +52,6 @@ class ManiaPressReplayLayer(Layer, Temporal):
         scaled_note_height = ManiaSettings.note_height*ratio_y
 
         pos_x = x_offset + column*(ManiaSettings.note_width + ManiaSettings.note_seperation)*ratio_x
-        pos_y = y_offset + (self.time - event_time)*ratio_t - scaled_note_height
+        pos_y = y_offset + (self.time - event_time)*ratio_t
 
         return pos_x, pos_y, scaled_note_width
