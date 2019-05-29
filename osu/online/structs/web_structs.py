@@ -71,7 +71,7 @@ class WebScore(JsonObj):
 
     def get_replay_data_web(self):
         if self.replay_data == None:
-            self.replay_data = OsuOnline.fetch_replay_file(self.id)
+            self.replay_data = OsuOnline.fetch_replay_file(self.beatmap['mode'], self.id)
         return self.replay_data
 
 

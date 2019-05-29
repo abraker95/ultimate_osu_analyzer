@@ -45,7 +45,7 @@ class OsuOnline():
 
     @staticmethod
     @rate_limited(rate_limit=3)
-    def fetch_replay_file(replay_id):
+    def fetch_replay_file(gamemode, replay_id):
         if not OsuOnline.session_manager:
             OsuOnline.session_manager = SessionMgr()
             OsuOnline.session_manager.login(username, password)
@@ -56,11 +56,20 @@ class OsuOnline():
         osu_session = OsuOnline.session_manager.get_osu_session()
         if osu_session == None: raise Exception('osu_session is None')
 
-        url = 'https://osu.ppy.sh/scores/osu/' + str(replay_id) + '/download'
+        if type(gamemode) == int:
+            if   gamemode == Beatmap.GAMEMODE_OSU:   gamemode = 'osu'
+            elif gamemode == Beatmap.GAMEMODE_TAIKO: gamemode = 'taiko'
+            elif gamemode == Beatmap.GAMEMODE_CATCH: gamemode = 'fruits'
+            elif gamemode == Beatmap.GAMEMODE_MANIA: gamemode = 'mania'
+            else: raise Exception('Unknown gamemode: ' + str(gamemode))
+
+        url = 'https://osu.ppy.sh/scores/' + str(gamemode) + '/' + str(replay_id) + '/download'
         headers = {
             'X-CSRF-TOKEN': xsrf_token,
             'osu_session' : osu_session
         }
+
+        print(url)
 
         response = OsuOnline.session_manager.get(url, headers=headers)
         return response.content
