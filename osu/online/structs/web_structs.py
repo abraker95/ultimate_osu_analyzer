@@ -25,8 +25,9 @@ class WebBeatmap(JsonObj):
     
     def __init__(self, name, data):
         JsonObj.__init__(self, data)
-        self.name       = name + '[' + self.version + ']'
-        self.web_scores = None
+        self.name         = name + '[' + self.version + ']'
+        self.web_scores   = None
+        self.beatmap_file = None
 
 
     def get_scores(self, refresh=False):
@@ -35,14 +36,16 @@ class WebBeatmap(JsonObj):
         return self.web_scores
 
 
+    def get_beatmap_data(self, refresh=False):
+        if (self.beatmap_file == None) or refresh:
+            self.beatmap_file = OsuOnline.fetch_beatmap_file(self.id, strio=True)
+        return self.beatmap_file
+
+
     def download_beatmap(self, filepath):
         beatmap_data = OsuOnline.fetch_beatmap_file(self.id)
         pathname     = filepath + '/' + self.name + '.osu'
         BeatmapIO.save_beatmap(beatmap_data, pathname)
-
-
-    def get_beatmap_data(self):
-        return OsuOnline.fetch_beatmap_file(self.id, strio=True)
 
 
 
