@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 from osu.local.hitobject.hitobject import Hitobject
-from osu.local.hitobject.mania.mania import Mania
+from osu.local.hitobject.mania.mania import Mania, ManiaSettings
 
 from misc.frozen_cls import FrozenCls
 
@@ -17,20 +17,24 @@ class ManiaSingleNoteHitobject(QGraphicsItem, Hitobject):
         Hitobject.__init__(self)
 
 
-    def render_hitobject(self, painter, draw_data, time):
+    def render_hitobject(self, painter, spatial_data, time):
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setPen(QColor(255, 0, 0, self.opacity*255))
 
-        ratio_x, ratio_y, ratio_t, x_offset, y_offset, note_width, note_height, note_seperation = draw_data
+        draw_data = self.get_draw_data(*spatial_data, time)
+        painter.fillRect(QRectF(*draw_data), QBrush(QColor(255, 0, 0, self.opacity*255)))
+
+
+    def get_draw_data(self, ratio_x, ratio_y, ratio_t, x_offset, y_offset, current_time):
         column = Mania.get_column(self.pos.x, self.difficulty.cs)
 
-        scaled_note_width  = note_width*ratio_x
-        scaled_note_height = note_height*ratio_y
+        scaled_note_width  = ManiaSettings.note_width*ratio_x
+        scaled_note_height = ManiaSettings.note_height*ratio_y
 
-        pos_x = x_offset + column*(note_width + note_seperation)*ratio_x
-        pos_y = y_offset + (time - self.time)*ratio_t - scaled_note_height
+        pos_x = x_offset + column*(ManiaSettings.note_width + ManiaSettings.note_seperation)*ratio_x
+        pos_y = y_offset + (current_time - self.time)*ratio_t - scaled_note_height
 
-        painter.fillRect(QRectF(pos_x, pos_y, scaled_note_width, scaled_note_height), QBrush(QColor(255, 0, 0, self.opacity*255)))
+        return pos_x, pos_y, scaled_note_width, scaled_note_height
 
 
     def paint(self, painter, option, widget):

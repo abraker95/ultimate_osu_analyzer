@@ -7,11 +7,15 @@ from osu.local.enums import Mod
 from misc.math_utils import find
 
 
+# \FIXME: Try out new and old replays. There seems to be a discrepency between them here:
+#         https://github.com/ppy/osu/blob/master/osu.Game/Scoring/Legacy/LegacyScoreParser.cs#L78
 class Replay(osrparse.replay.Replay):
 
     def __init__(self, replay_data):
         osrparse.replay.Replay.__init__(self, replay_data)
         self.event_times = []
+
+        self.__process_event_times()
 
 
     def is_md5_match(self, md5_hash):
@@ -24,9 +28,15 @@ class Replay(osrparse.replay.Replay):
         return self.event_times
 
 
-    def get_data_at_time(self, time):
-        idx = find(self.get_event_times(), time)
+    def get_data_at_time(self, time, selector=None):
+        idx = find(self.get_event_times(), time, selector=selector)
         return self.play_data[idx]
+
+
+    def get_data_at_time_range(self, time_start, time_end, selector=None):
+        idx_start = find(self.get_event_times(), time_start, selector=selector)
+        idx_end   = find(self.get_event_times(), time_end, selector=selector)
+        return self.play_data[idx_start : idx_end]
 
 
     # Because the library's parse_string is dun goofed
@@ -77,18 +87,15 @@ class Replay(osrparse.replay.Replay):
     def parse_play_data(self, replay_data):
         offset_end = self.offset + self.__replay_length
         datastring = lzma.decompress(replay_data[self.offset : offset_end], format=lzma.FORMAT_AUTO).decode('ascii')[:-1]
-
-        if self.game_mode == GameMode.Standard:
-            events = [ eventstring.split('|') for eventstring in datastring.split(',') ]
-            self.play_data = [ReplayEvent(int(event[0]), float(event[1]), float(event[2]), int(event[3])) for event in events]
-        else:
-            raise NotImplementedError('TODO: replay parsing for other gamemodes')
-        
         self.offset = offset_end
+
+        events = [ eventstring.split('|') for eventstring in datastring.split(',') ]
+        self.play_data = [ ReplayEvent(int(event[0]), float(event[1]), float(event[2]), int(event[3])) for event in events ]
         
 
     def __process_event_times(self):
         time = 0
         for frame in self.play_data:
             time += frame.time_since_previous_action
+            frame.t = time
             self.event_times.append(time)
