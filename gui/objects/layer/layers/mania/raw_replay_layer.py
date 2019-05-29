@@ -46,8 +46,7 @@ class ManiaRawReplayLayer(Layer, Temporal):
 
     def get_draw_data(self, ratio_x, ratio_y, ratio_t, x_offset, y_offset, column, event_time):
         scaled_note_width  = ManiaSettings.note_width*ratio_x
-        scaled_note_height = ManiaSettings.note_height*ratio_y
-
+        
         pos_x = x_offset + column*(ManiaSettings.note_width + ManiaSettings.note_seperation)*ratio_x
         pos_y = y_offset + (self.time - event_time)*ratio_t
 
