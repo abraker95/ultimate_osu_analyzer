@@ -44,7 +44,7 @@ class OsuOnline():
 
 
     @staticmethod
-    @rate_limited(rate_limit=1)
+    @rate_limited(rate_limit=3)
     def fetch_replay_file(replay_id):
         if not OsuOnline.session_manager:
             OsuOnline.session_manager = SessionMgr()
