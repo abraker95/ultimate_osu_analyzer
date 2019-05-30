@@ -74,7 +74,6 @@ class ManiaSettingsGui(QWidget):
 
     def init_gui_elements(self):
         self.layout = QVBoxLayout()
-        self.label  = QLabel('Mania Settings')
 
         self.viewable_time_interval = EditableValueField(100, 10000, 'Viewable time interval: ')
         self.note_width             = EditableValueField(10, 127,    'Note width: ')
@@ -84,7 +83,6 @@ class ManiaSettingsGui(QWidget):
 
     def construct_gui(self):
         self.setLayout(self.layout)
-        #self.layout.addWidget(self.label)
 
         self.layout.addWidget(self.viewable_time_interval)
         self.layout.addWidget(self.note_width)
