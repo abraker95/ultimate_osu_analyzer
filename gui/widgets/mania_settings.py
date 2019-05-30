@@ -79,6 +79,7 @@ class ManiaSettingsGui(QWidget):
         self.note_width             = EditableValueField(10, 127,    'Note width (px): ')
         self.note_height            = EditableValueField(1, 50,      'Note height (ms): ')
         self.note_seperation        = EditableValueField(0, 100,     'Note seperation (px): ')
+        self.replay_opacity         = EditableValueField(0, 50,      'Replay opacity (%): ')
 
 
     def construct_gui(self):
@@ -88,11 +89,13 @@ class ManiaSettingsGui(QWidget):
         self.layout.addWidget(self.note_width)
         self.layout.addWidget(self.note_height)
         self.layout.addWidget(self.note_seperation)
+        self.layout.addWidget(self.replay_opacity)
 
         self.viewable_time_interval.value_changed.connect(ManiaSettings.set_viewable_time_interval, inst=self.viewable_time_interval)
         self.note_width.value_changed.connect(ManiaSettings.set_note_width, inst=self.note_width)
         self.note_height.value_changed.connect(ManiaSettings.set_note_height, inst=self.note_height)
         self.note_seperation.value_changed.connect(ManiaSettings.set_note_seperation, inst=self.note_seperation)
+        self.replay_opacity.value_changed.connect(ManiaSettings.set_replay_opacity, inst=self.replay_opacity)
 
 
     def update_gui(self):
@@ -100,3 +103,4 @@ class ManiaSettingsGui(QWidget):
         self.note_width.set_val(ManiaSettings.note_width)
         self.note_height.set_val(ManiaSettings.note_height)
         self.note_seperation.set_val(ManiaSettings.note_seperation)
+        self.replay_opacity.set_val(ManiaSettings.replay_opacity)

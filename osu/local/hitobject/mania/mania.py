@@ -9,6 +9,7 @@ class ManiaSettings():
     note_width             = 50     # osu!px
     note_height            = 15     # osu!px
     note_seperation        = 5      # osu!px
+    replay_opacity         = 50     # %
 
     @staticmethod
     @callback
@@ -36,6 +37,13 @@ class ManiaSettings():
     def set_note_seperation(note_seperation):
         ManiaSettings.note_seperation = note_seperation
         ManiaSettings.set_note_seperation.emit()
+
+
+    @staticmethod
+    @callback
+    def set_replay_opacity(replay_opacity):
+        ManiaSettings.replay_opacity = replay_opacity
+        ManiaSettings.set_replay_opacity.emit()
 
 
     @staticmethod 

@@ -27,11 +27,13 @@ class ManiaReleaseReplayLayer(Layer, Temporal):
         ManiaSettings.set_note_width.connect(self.layer_changed)
         ManiaSettings.set_note_seperation.connect(self.layer_changed)
         ManiaSettings.set_viewable_time_interval.connect(self.layer_changed)
+        ManiaSettings.set_replay_opacity.connect(self.layer_changed)
 
 
     def paint(self, painter, option, widget):
         if not self.time: return
-        painter.setPen(QPen(QColor(0, 100, 255, 120), 5))
+        opacity = 255*(ManiaSettings.replay_opacity/100)
+        painter.setPen(QPen(QColor(0, 100, 255, opacity), 5))
 
         num_columns  = int(self.columns)
         space_data   = widget.width(), widget.height(), num_columns, self.time

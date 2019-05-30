@@ -29,11 +29,12 @@ class ManiaHoldReplayLayer(Layer, Temporal):
         ManiaSettings.set_note_width.connect(self.layer_changed)
         ManiaSettings.set_note_seperation.connect(self.layer_changed)
         ManiaSettings.set_viewable_time_interval.connect(self.layer_changed)
+        ManiaSettings.set_replay_opacity.connect(self.layer_changed)
 
 
     def paint(self, painter, option, widget):
         if not self.time: return
-        painter.setPen(QPen(QColor(0, 50, 255, 120), 5))
+        opacity = 255*(ManiaSettings.replay_opacity/100)
 
         num_columns  = int(self.columns)
         space_data   = widget.width(), widget.height(), num_columns, self.time
@@ -55,7 +56,7 @@ class ManiaHoldReplayLayer(Layer, Temporal):
                 press_time, release_time = event
                 pos_x, pos_y, scaled_note_width, scaled_note_height = self.get_draw_data(*spatial_data[2:], column, press_time, release_time)
 
-                painter.fillRect(QRectF(pos_x, pos_y, scaled_note_width, scaled_note_height), QBrush(QColor(0, 50, 255, 20)))
+                painter.fillRect(QRectF(pos_x, pos_y, scaled_note_width, scaled_note_height), QBrush(QColor(0, 50, 255, opacity)))
 
 
     def get_draw_data(self, ratio_x, ratio_y, ratio_t, x_offset, y_offset, column, press_time, release_time):
