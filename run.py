@@ -40,6 +40,7 @@ from gui.objects.layer.layers.mania.hitobject_render_layer import HitobjectRende
 from gui.widgets.graph_manager import GraphManager
 from gui.widgets.data_2d_graph import Data2DGraph
 from gui.widgets.data_2d_temporal_graph import Data2DTemporalGraph
+from gui.widgets.mania_settings import ManiaSettingsGui
 
 from analysis.osu.std.map_data import StdMapData
 from analysis.osu.mania.map_data import ManiaMapData
@@ -69,16 +70,19 @@ class MainWindow(QMainWindow):
         self.main_frame = MainFrame() 
         self.menubar    = self.menuBar()
 
-        self.file_menu           = self.menubar.addMenu('&File')
-        self.open_beatmap_action = QAction("&Open beatmap", self)
-        self.open_replay_action  = QAction("&Open replay", self)
-        self.close_action        = QAction("&Quit w", self)
+        self.file_menu              = self.menubar.addMenu('&File')
+        self.open_beatmap_action    = QAction("&Open beatmap", self)
+        self.open_replay_action     = QAction("&Open replay", self)
+        self.close_action           = QAction("&Quit w", self)
 
         self.view_menu              = self.menubar.addMenu('&View')
         self.graphs_menu            = self.view_menu.addMenu('&Graphs')
         self.view_velocity          = QAction("&velocity", self)
         self.view_tapping_intervals = QAction("&tapping intervals", self)
         
+        self.options_menu           = self.menubar.addMenu('&Options')
+        self.mania_settings_action  = QAction("&Mania settings", self)
+
         self.toolbar    = self.addToolBar('Exit')
         self.status_bar = self.statusBar()
 
@@ -95,6 +99,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.main_frame)
         self.toolbar.addAction(QAction(QIcon('new.bmp'), 'test menubar button', self))
 
+        # File menu
         self.file_menu.addAction(self.open_beatmap_action)
         self.file_menu.addAction(self.open_replay_action)
         self.file_menu.addAction(self.close_action)
@@ -111,11 +116,17 @@ class MainWindow(QMainWindow):
         self.close_action.setShortcut('Ctrl+Q')
         self.close_action.triggered.connect(self.close_application)
 
+        # View menu
         self.view_velocity.setCheckable(True)
         self.view_velocity.triggered.connect(self.view_velocity_action)
 
         self.view_tapping_intervals.setCheckable(True)
         self.view_tapping_intervals.triggered.connect(self.view_tapping_intervals_action)
+
+        # Options menu
+        self.options_menu.addAction(self.mania_settings_action)
+
+        self.mania_settings_action.triggered.connect(self.show_mania_settings)
 
         self.analysis_controls.create_graph_event.connect(self.graph_manager_switch_gui.add_graph)
         self.map_manager.map_changed_event.connect(self.change_map)
@@ -319,6 +330,11 @@ class MainWindow(QMainWindow):
     def remove_layer(self, name):
         # TODO
         pass
+
+
+    def show_mania_settings(self):
+        self.tmp = ManiaSettingsGui()
+        self.tmp.show()
 
 
     def dragEnterEvent(self, e):
