@@ -96,8 +96,6 @@ class ManiaSettingsGui(QWidget):
 
 
     def update_gui(self):
-        self.label.setAlignment(Qt.AlignCenter)
-
         self.viewable_time_interval.set_val(ManiaSettings.viewable_time_interval)
         self.note_width.set_val(ManiaSettings.note_width)
         self.note_height.set_val(ManiaSettings.note_height)
