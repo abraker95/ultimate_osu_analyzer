@@ -1,5 +1,5 @@
 import math
-
+from misc.callback import callback
 
 
 # Drawing parameters
@@ -11,23 +11,31 @@ class ManiaSettings():
     note_seperation        = 5      # osu!px
 
     @staticmethod
+    @callback
     def set_viewable_time_interval(viewable_time_interval):
         ManiaSettings.viewable_time_interval = viewable_time_interval
+        ManiaSettings.set_viewable_time_interval.emit()
 
 
     @staticmethod
+    @callback
     def set_note_width(note_width):
         ManiaSettings.note_width = note_width
+        ManiaSettings.set_note_width.emit()
 
 
     @staticmethod
+    @callback
     def set_note_height(note_height):
         ManiaSettings.note_height = note_height
+        ManiaSettings.set_note_height.emit()
 
 
     @staticmethod
+    @callback
     def set_note_seperation(note_seperation):
         ManiaSettings.note_seperation = note_seperation
+        ManiaSettings.set_note_seperation.emit()
 
 
     @staticmethod 
