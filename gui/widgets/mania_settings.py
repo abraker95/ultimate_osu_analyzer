@@ -21,7 +21,7 @@ class EditableValueField(QWidget):
         self.layout.addWidget(self.text)
         self.layout.addWidget(self.slider)
 
-        self.label.setFixedWidth(115)
+        self.label.setFixedWidth(130)
         self.text.setFixedWidth(35)
         self.setFixedHeight(50)
 
@@ -75,10 +75,10 @@ class ManiaSettingsGui(QWidget):
     def init_gui_elements(self):
         self.layout = QVBoxLayout()
 
-        self.viewable_time_interval = EditableValueField(100, 10000, 'Viewable time interval: ')
-        self.note_width             = EditableValueField(10, 127,    'Note width: ')
-        self.note_height            = EditableValueField(1, 50,      'Note height: ')
-        self.note_seperation        = EditableValueField(0, 100,     'Note seperation: ')
+        self.viewable_time_interval = EditableValueField(100, 10000, 'Viewable time interval (ms): ')
+        self.note_width             = EditableValueField(10, 127,    'Note width (px): ')
+        self.note_height            = EditableValueField(1, 50,      'Note height (ms): ')
+        self.note_seperation        = EditableValueField(0, 100,     'Note seperation (px): ')
 
 
     def construct_gui(self):
