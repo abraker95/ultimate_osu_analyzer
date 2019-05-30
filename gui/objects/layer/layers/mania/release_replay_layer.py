@@ -23,6 +23,11 @@ class ManiaReleaseReplayLayer(Layer, Temporal):
         time_driver.connect(self.time_changed)
         self.time_changed.connect(lambda time: self.layer_changed())
 
+        ManiaSettings.set_note_height.connect(self.layer_changed)
+        ManiaSettings.set_note_width.connect(self.layer_changed)
+        ManiaSettings.set_note_seperation.connect(self.layer_changed)
+        ManiaSettings.set_viewable_time_interval.connect(self.layer_changed)
+
 
     def paint(self, painter, option, widget):
         if not self.time: return

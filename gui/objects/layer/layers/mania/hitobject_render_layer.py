@@ -8,13 +8,18 @@ from osu.local.hitobject.mania.mania import Mania, ManiaSettings
 class HitobjectRenderLayer(Layer, Temporal):
 
     def __init__(self, data, time_driver):
-        Layer.__init__(self, 'Hitobject outlines')
+        Layer.__init__(self, 'Hitobject render')
         Temporal.__init__(self)
 
         self.beatmap = data
 
         time_driver.connect(self.time_changed)
         self.time_changed.connect(lambda time: self.layer_changed())
+
+        ManiaSettings.set_note_height.connect(self.layer_changed)
+        ManiaSettings.set_note_width.connect(self.layer_changed)
+        ManiaSettings.set_note_seperation.connect(self.layer_changed)
+        ManiaSettings.set_viewable_time_interval.connect(self.layer_changed)
 
 
     def paint(self, painter, option, widget):
