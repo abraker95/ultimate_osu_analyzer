@@ -16,6 +16,3 @@ class GraphManager(Group):
     @callback
     def rmv_graph(self, graph_name):
         self.rmv_elem(graph_name)
-
-
-graph_manager = GraphManager()

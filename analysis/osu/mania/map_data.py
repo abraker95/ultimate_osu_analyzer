@@ -5,60 +5,64 @@ from misc.numpy_utils import NumpyUtils
 
 
 
+'''
+[
+    [  [ time_start, time_end ], [ time_start, time_end ], ... N notes in col ],
+    [  [ time_start, time_end ], [ time_start, time_end ], ... N notes in col ],
+    ... N col
+]
+'''
 class ManiaMapData():
 
-    TIME = 0
+    START_TIME = 0
+    END_TIME   = 1
 
-    '''
-    [
-        [  [ time_start, time_end ], [ time_start, time_end ], ... N notes in col ],
-        [  [ time_start, time_end ], [ time_start, time_end ], ... N notes in col ],
-        ... N col
-    ]
-    '''
-    def __init__(self):
-        self.set_data_raw([])
+    @staticmethod
+    def get_hitobject_data(hitobjects):
+        hitobject_data = list([ [] for _ in range(len(hitobjects)) ])
+        
+        for column, column_hitobjects in zip(range(len(hitobjects)), hitobjects):
+            for hitobject in column_hitobjects:
+                hitobject_data[column].append((hitobject.time, hitobject.get_end_time()))
 
-
-    def set_data_hitobjects(self, hitobjects):
-        self.hitobject_data = [ hitobject.raw_data() for hitobject in hitobjects ]
-        return self
+        return hitobject_data
 
 
-    def set_data_raw(self, raw_data):
-        self.hitobject_data = raw_data
-        return self
+    @staticmethod
+    def start_times(hitobject_data, column=None):
+        if column == None: return np.sort(np.array([ hitobject[ManiaMapData.START_TIME] for column in hitobject_data for hitobject in column ]))
+        else:              return np.array([ hitobject[ManiaMapData.START_TIME] for hitobject in hitobject_data[column] ])
 
 
-    def start_times(self):
-        # TODO
-        return np.array([ ])
+    @staticmethod
+    def end_times(hitobject_data, column=None):
+        if column == None: return np.sort(np.array([ hitobject[ManiaMapData.END_TIME] for column in hitobject_data for hitobject in column ]))
+        else:              return np.array([ hitobject[ManiaMapData.END_TIME] for hitobject in hitobject_data[column] ])
 
 
-    def end_times(self):
-        # TODO
-        return np.array([ ])
-
-
-    def all_times(self, flat=True):
+    @staticmethod
+    def all_times(flat=True):
         # TODO
         if flat: return np.array([ ])
         else:    return [ ]
 
 
-    def start_end_times(self):
-        # TODO
-        all_times = self.all_times(flat=False)
-        return [ ]
+    @staticmethod
+    def start_end_times(hitobject_data, column):
+        return np.array(hitobject_data[column])
 
 
-    def get_idx_start_time(self, time):
-        # TODO
-        return None
+    @staticmethod
+    def get_idx_start_time(hitobject_data, column, time):
+        if not time: return None
+
+        times = ManiaMapData.start_times(hitobject_data, column)
+        return min(max(0, np.searchsorted(times, [time], side='right')[0] - 1), len(times))
 
 
-    def get_idx_end_time(self, time):
-       # TODO
-       return None
+    @staticmethod
+    def get_idx_end_time(hitobject_data, column, time):
+        if not time: return None
 
-ManiaMapData.full_hitobject_data = ManiaMapData()
+        times = ManiaMapData.end_times(hitobject_data, column)
+        return min(max(0, np.searchsorted(times, [time], side='right')[0] - 1), len(times))
