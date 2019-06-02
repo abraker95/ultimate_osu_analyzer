@@ -18,11 +18,9 @@ class ManiaMapMetrics():
     @staticmethod
     def calc_tapping_intervals(hitobject_data, column):
         start_times = ManiaMapData.start_times(hitobject_data, column)
-
         if len(start_times) < 2: return [], []
-        intervals = start_times[1:] - start_times[:-1]
     
-        return start_times[1:], intervals
+        return start_times[1:], np.diff(start_times)
 
 
     @staticmethod
@@ -39,6 +37,6 @@ class ManiaMapMetrics():
             start_times = ManiaMapData.start_times(hitobject_data, column)
 
             if len(start_times) < 2: return [], []
-            intervals = 1000/(start_times[1:] - start_times[:-1])
+            intervals = 1000/np.diff(start_times)
         
             return start_times[1:], intervals

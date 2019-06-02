@@ -1,3 +1,5 @@
+import numpy as np
+
 from misc.geometry import *
 from misc.numpy_utils import NumpyUtils
 
@@ -52,7 +54,7 @@ class StdMapMetrics():
         all_positions = StdMapData.all_positions(hitobject_data)
 
         if len(all_positions) < 2: return [], []
-        intervals = NumpyUtils.deltas(all_times)
+        intervals = np.diff(all_times)
         
         vel = NumpyUtils.dists(all_positions[1:], all_positions[:-1])/intervals
         return all_times[1:], vel
@@ -64,7 +66,7 @@ class StdMapMetrics():
         start_positions = StdMapData.start_positions(hitobject_data)
 
         if len(start_positions) < 2: return [], []
-        intervals = NumpyUtils.deltas(start_times)
+        intervals = np.diff(start_times)
         
         vel = NumpyUtils.dists(start_positions[1:], start_positions[:-1])/intervals
         return start_times[1:], vel
