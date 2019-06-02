@@ -30,26 +30,26 @@ class ManiaMapData():
 
     @staticmethod
     def start_times(hitobject_data, column=None):
-        if column == None: return np.sort(np.array([ hitobject[ManiaMapData.START_TIME] for column in hitobject_data for hitobject in column ]))
-        else:              return np.array([ hitobject[ManiaMapData.START_TIME] for hitobject in hitobject_data[column] ])
+        if column == None: return np.sort(np.asarray([ hitobject[ManiaMapData.START_TIME] for column in hitobject_data for hitobject in column ]))
+        else:              return np.asarray([ hitobject[ManiaMapData.START_TIME] for hitobject in hitobject_data[column] ])
 
 
     @staticmethod
     def end_times(hitobject_data, column=None):
-        if column == None: return np.sort(np.array([ hitobject[ManiaMapData.END_TIME] for column in hitobject_data for hitobject in column ]))
-        else:              return np.array([ hitobject[ManiaMapData.END_TIME] for hitobject in hitobject_data[column] ])
+        if column == None: return np.sort(np.asarray([ hitobject[ManiaMapData.END_TIME] for column in hitobject_data for hitobject in column ]))
+        else:              return np.asarray([ hitobject[ManiaMapData.END_TIME] for hitobject in hitobject_data[column] ])
 
 
     @staticmethod
     def all_times(flat=True):
         # TODO
-        if flat: return np.array([ ])
+        if flat: return np.asarray([ ])
         else:    return [ ]
 
 
     @staticmethod
     def start_end_times(hitobject_data, column):
-        return np.array(hitobject_data[column])
+        return np.asarray(hitobject_data[column])
 
 
     @staticmethod

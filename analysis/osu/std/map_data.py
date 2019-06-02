@@ -74,33 +74,33 @@ class StdMapData():
 
     @staticmethod
     def start_times(hitobject_data):
-        return np.array([ note[0][StdMapData.TIME] for note in hitobject_data ])
+        return np.asarray([ note[0][StdMapData.TIME] for note in hitobject_data ])
 
 
     @staticmethod
     def end_times(hitobject_data):
-        return np.array([ note[-1][StdMapData.TIME] for note in hitobject_data ])
+        return np.asarray([ note[-1][StdMapData.TIME] for note in hitobject_data ])
 
 
     @staticmethod
     def start_positions(hitobject_data):
-        return np.array([ note[0][StdMapData.POS] for note in hitobject_data ])
+        return np.asarray([ note[0][StdMapData.POS] for note in hitobject_data ])
 
     
     @staticmethod
     def end_positions(hitobject_data):
-        return np.array([ note[-1][StdMapData.POS] for note in hitobject_data ])
+        return np.asarray([ note[-1][StdMapData.POS] for note in hitobject_data ])
 
 
     @staticmethod
     def all_positions(hitobject_data, flat=True):
-        if flat: return np.array([ data[StdMapData.POS] for note in hitobject_data for data in note ])
+        if flat: return np.asarray([ data[StdMapData.POS] for note in hitobject_data for data in note ])
         else:    return [[data[StdMapData.POS] for data in note] for note in hitobject_data]
 
 
     @staticmethod
     def all_times(hitobject_data, flat=True):
-        if flat: return np.array([ data[StdMapData.TIME] for note in hitobject_data for data in note ])
+        if flat: return np.asarray([ data[StdMapData.TIME] for note in hitobject_data for data in note ])
         else:    return [[data[StdMapData.TIME] for data in note] for note in hitobject_data]
 
     
@@ -114,7 +114,7 @@ class StdMapData():
     def get_idx_start_time(hitobject_data, time):
         if not time: return None
 
-        times = np.array(StdMapData.start_times(hitobject_data))
+        times = np.asarray(StdMapData.start_times(hitobject_data))
         return min(max(0, np.searchsorted(times, [time], side='right')[0] - 1), len(times))
 
     
@@ -122,7 +122,7 @@ class StdMapData():
     def get_idx_end_time(hitobject_data, time):
         if not time: return None
             
-        times = np.array(StdMapData.end_times(hitobject_data))
+        times = np.asarray(StdMapData.end_times(hitobject_data))
         return min(max(0, np.searchsorted(times, [time], side='right')[0] - 1), len(times))
 
 
