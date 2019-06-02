@@ -29,6 +29,7 @@ from gui.objects.layer.layers.std.hitobject_outline_layer import HitobjectOutlin
 from gui.objects.layer.layers.std.hitobject_aimpoint_layer import HitobjectAimpointLayer
 
 from gui.objects.layer.layers.std.replay_cursor_layer import StdReplayCursorLayer
+from gui.objects.layer.layers.std.replay_hold_layer import StdReplayHoldLayer
 
 from gui.objects.layer.layers.mania.raw_replay_layer import ManiaRawReplayLayer
 from gui.objects.layer.layers.mania.press_replay_layer import ManiaPressReplayLayer
@@ -273,6 +274,7 @@ class MainWindow(QMainWindow):
         # TODO: Adding layers will be one of things analysis manager does
         if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
             self.layer_manager_switch_gui.get().add_layer('replay cursor', StdReplayCursorLayer(replay, self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer('replay hold', StdReplayHoldLayer(replay, self.timeline.time_changed_event))
 
         if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
             num_columns = beatmap.difficulty.cs
