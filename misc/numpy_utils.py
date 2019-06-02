@@ -69,11 +69,11 @@ class NumpyUtils():
 
     @staticmethod
     def mania_chord_to_jack(lst):
-        '''
+        """
         Used for notes/second calculation. Converts chords to jack equivalent based on note timings.
         So, for example, 2 note chords 1 second apart can be interpreted as single note jacks 500ms apart
         3 note chords 1 second apart can be interepreted as sing note jacks 333.33ms apart, and so on.
-        '''
+        """
 
         # When the input_array is diffed, unchanging sequences will be 0. We can detect
         # which indices that occurs at using np.where. Since the indices will correspond to
