@@ -79,16 +79,14 @@ class NumpyUtils():
         mask           = np.zeros(len(lst))
         mask[idx_diff] = 1
 
+        # Filter out repeatitions
         filtered = lst[mask == 0]
 
         # Get values corresponding to how many consecutive value in a row there are
         mult = 1/NumpyUtils.find_runs(lst)
 
-        # Turn all 1's to 0's for multiplication
-        mult[mult == 1] = 0
-
         # Delta between values; append 0 at beginning since the operation truncated the start
         diff = np.insert(np.diff(filtered), 0, 0)
 
         # output = curr_val - (curr_val - prev_val)/num_consecutive
-        return mask, filtered - diff*mult
+        return mask, filtered, filtered - diff*(1-mult)
