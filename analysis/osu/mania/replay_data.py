@@ -38,24 +38,24 @@ class ManiaReplayData():
 
     @staticmethod
     def start_times(event_data, column):
-        return np.array([ event[ManiaReplayData.START_TIME] for event in event_data[column] ])
+        return np.asarray([ event[ManiaReplayData.START_TIME] for event in event_data[column] ])
 
 
     @staticmethod
     def end_times(event_data, column):
-        return np.array([ event[ManiaReplayData.END_TIME] for event in event_data[column] ])
+        return np.asarray([ event[ManiaReplayData.END_TIME] for event in event_data[column] ])
 
 
     @staticmethod
     def all_times(flat=True):
         # TODO
-        if flat: return np.array([ ])
+        if flat: return np.asarray([ ])
         else:    return [ ]
 
 
     @staticmethod
     def start_end_times(event_data, column):
-        return np.array(event_data[column])
+        return np.asarray(event_data[column])
 
 
     @staticmethod
