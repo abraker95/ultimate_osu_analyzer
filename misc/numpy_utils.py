@@ -85,7 +85,7 @@ class NumpyUtils():
         mask           = np.zeros(len(lst))
         mask[idx_diff] = 1
 
-        # Filter out repeatitions
+        # Filter out repetitions
         filtered = lst[mask == 0]
 
         # Get values corresponding to how many consecutive value in a row there are
