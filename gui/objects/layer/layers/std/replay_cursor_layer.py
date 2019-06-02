@@ -7,10 +7,10 @@ from gui.objects.layer.layer import Layer
 from osu.local.hitobject.std.std import Std
 
 
-class StdReplayLayer(Layer, Temporal):
+class StdReplayCursorLayer(Layer, Temporal):
 
     def __init__(self, data, time_driver):
-        Layer.__init__(self, 'Replay - ' + str(data.player_name))
+        Layer.__init__(self, 'Replay cursor - ' + str(data.player_name))
         Temporal.__init__(self)
 
         self.replay = data
