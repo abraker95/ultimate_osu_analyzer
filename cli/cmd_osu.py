@@ -7,6 +7,11 @@ from osu.local.replay.replayIO import ReplayIO
 class CmdOsu():
 
     @staticmethod
+    def open_replay_file(replay_filepath):
+        return ReplayIO.open_replay(replay_filepath)
+        
+
+    @staticmethod
     def save_web_beatmaps(web_beatmaps):
         '''
         In: [ WebBeatmap, ... ]
