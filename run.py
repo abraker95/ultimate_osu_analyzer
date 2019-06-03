@@ -44,6 +44,7 @@ from gui.widgets.data_2d_temporal_graph import Data2DTemporalGraph
 from gui.widgets.mania_settings import ManiaSettingsGui
 
 from analysis.osu.std.map_data import StdMapData
+from analysis.osu.std.replay_data import StdReplayData
 from analysis.osu.std.map_metrics import StdMapMetrics
 
 from analysis.osu.mania.map_data import ManiaMapData
@@ -155,10 +156,12 @@ class MainWindow(QMainWindow):
         self.ipython_console.push_vars({ 'add_graph_2d_data' : self.add_graph_2d_data })
 
         self.ipython_console.push_vars({ 'StdMapData'    : StdMapData })
+        self.ipython_console.push_vars({ 'StdReplayData' : StdReplayData })
         self.ipython_console.push_vars({ 'StdMapMetrics' : StdMapMetrics })
 
         self.ipython_console.push_vars({ 'ManiaMapData'    : ManiaMapData })
         self.ipython_console.push_vars({ 'ManiaMapMetrics' : ManiaMapMetrics })
+
         #self.ipython_console.push_vars({ 'OsuApi'    : OsuApi })
         #self.ipython_console.push_vars({ 'OsuOnline' : OsuOnline })
 
