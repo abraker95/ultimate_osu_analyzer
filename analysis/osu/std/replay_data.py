@@ -27,7 +27,7 @@ class StdReplayData():
     ]
     '''
     @staticmethod 
-    def get_replay_data(replay_events):
+    def get_event_data(replay_events):
         event_data = []
 
         m1_mask    = (1 << 0)

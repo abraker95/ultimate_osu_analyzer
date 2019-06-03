@@ -28,7 +28,7 @@ class StdReplayHoldLayer(Layer, Temporal):
         if not self.time: return
 
         if self.event_data == None:
-            self.event_data = StdReplayData.get_replay_data(self.replay.play_data)
+            self.event_data = StdReplayData.get_event_data(self.replay.play_data)
         
         ratio_x = widget.width()/Std.PLAYFIELD_WIDTH
         ratio_y = widget.height()/Std.PLAYFIELD_HEIGHT
