@@ -37,7 +37,7 @@ class StdReplayData():
         smoke_mask = (1 << 4)
 
         for replay_event in replay_events:
-            # "and not" because K1 is always used with M1; K2 is always used with M2. So check for keys first, then mouse
+            # "and not" because K1 is always used with M1; K2 is always used with M2. So make sure keys are not pressed along with mouse
             m1_pressed    = ((replay_event.keys_pressed & m1_mask) > 0) and not ((replay_event.keys_pressed & k1_mask) > 0)
             m2_pressed    = ((replay_event.keys_pressed & m2_mask) > 0) and not ((replay_event.keys_pressed & k2_mask) > 0)
             k1_pressed    = ((replay_event.keys_pressed & k1_mask) > 0)
