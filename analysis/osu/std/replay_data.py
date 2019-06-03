@@ -127,7 +127,7 @@ class StdReplayData():
 
 
     @staticmethod
-    def get_idx_press_end_time(event_data, key, time):
+    def get_idx_press_end_time(event_data, time, key=None):
         if not time: return None
 
         times = StdReplayData.press_end_times(event_data, key)
