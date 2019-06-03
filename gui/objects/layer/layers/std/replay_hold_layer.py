@@ -32,7 +32,6 @@ class StdReplayHoldLayer(Layer, Temporal):
         
         ratio_x = widget.width()/Std.PLAYFIELD_WIDTH
         ratio_y = widget.height()/Std.PLAYFIELD_HEIGHT
-        radius  = 1.5
 
         start_idx = find(self.event_data, self.time - StdReplayHoldLayer.viewable_time_interval, selector=lambda event: event[StdReplayData.TIME])
         end_idx   = find(self.event_data, self.time, selector=lambda event: event[StdReplayData.TIME])
