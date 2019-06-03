@@ -42,7 +42,6 @@ class StdReplayHoldLayer(Layer, Temporal):
             prev_pos_x, curr_pos_x = prev_event[StdReplayData.XPOS]*ratio_x, curr_event[StdReplayData.XPOS]*ratio_x
             prev_pos_y, curr_pos_y = prev_event[StdReplayData.YPOS]*ratio_y, curr_event[StdReplayData.YPOS]*ratio_y
 
-            # K1 is always used with M1; K2 is always used with M2. So check for keys first, then mouse
             if   prev_event[StdReplayData.K1]: painter.setPen(QColor.fromHsl(32,  255, 128, 255))
             elif prev_event[StdReplayData.K2]: painter.setPen(QColor.fromHsl(180, 255, 96,  255))
             elif prev_event[StdReplayData.M1]: painter.setPen(QColor.fromHsl(0,   255, 128, 255))
