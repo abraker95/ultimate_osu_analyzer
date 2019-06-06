@@ -61,13 +61,16 @@ class StdReplayData():
         event_data = np.asarray(event_data)
         
         if key == None:
-            m1_press_start_times = StdReplayData.press_start_times(event_data, StdReplayData.M1)
-            m2_press_start_times = StdReplayData.press_start_times(event_data, StdReplayData.M2)
-            k1_press_start_times = StdReplayData.press_start_times(event_data, StdReplayData.K1)
-            k2_press_start_times = StdReplayData.press_start_times(event_data, StdReplayData.K2)
+            m1_idxs, m1_press_start_times = StdReplayData.press_start_times(event_data, StdReplayData.M1)
+            m2_idxs, m2_press_start_times = StdReplayData.press_start_times(event_data, StdReplayData.M2)
+            k1_idxs, k1_press_start_times = StdReplayData.press_start_times(event_data, StdReplayData.K1)
+            k2_idxs, k2_press_start_times = StdReplayData.press_start_times(event_data, StdReplayData.K2)
 
             press_start_times = np.concatenate((m1_press_start_times, m2_press_start_times, k1_press_start_times, k2_press_start_times))
-            return np.sort(press_start_times, axis=None)
+            press_idxs        = np.concatenate((m1_idxs, m2_idxs, k1_idxs, k2_idxs))
+
+            sort_idxs = np.argsort(press_start_times, axis=None)
+            return np.asarray([ press_idxs[sort_idxs], press_start_times[sort_idxs] ])
         else:
             times    = StdReplayData.component_data(event_data, StdReplayData.TIME)
             key_data = StdReplayData.component_data(event_data, key)
@@ -79,7 +82,7 @@ class StdReplayData():
             press_start_mask  = np.logical_and(key_changed, is_hold)
             press_start_times = times[press_start_mask]
 
-            return press_start_times
+            return np.asarray([ np.where(press_start_mask == 1)[0], press_start_times ])
 
 
     @staticmethod
@@ -87,13 +90,16 @@ class StdReplayData():
         event_data = np.asarray(event_data)
 
         if key == None:
-            m1_press_end_times = StdReplayData.press_end_times(event_data, StdReplayData.M1)
-            m2_press_end_times = StdReplayData.press_end_times(event_data, StdReplayData.M2)
-            k1_press_end_times = StdReplayData.press_end_times(event_data, StdReplayData.K1)
-            k2_press_end_times = StdReplayData.press_end_times(event_data, StdReplayData.K2)
+            m1_idxs, m1_press_end_times = StdReplayData.press_end_times(event_data, StdReplayData.M1)
+            m2_idxs, m2_press_end_times = StdReplayData.press_end_times(event_data, StdReplayData.M2)
+            k1_idxs, k1_press_end_times = StdReplayData.press_end_times(event_data, StdReplayData.K1)
+            k2_idxs, k2_press_end_times = StdReplayData.press_end_times(event_data, StdReplayData.K2)
 
             press_end_times = np.concatenate((m1_press_end_times, m2_press_end_times, k1_press_end_times, k2_press_end_times))
-            return np.sort(press_end_times, axis=None)
+            press_idxs      = np.concatenate((m1_idxs, m2_idxs, k1_idxs, k2_idxs))
+
+            sort_idxs = np.argsort(press_end_times, axis=None)
+            return np.asarray([ press_idxs[sort_idxs], press_end_times[sort_idxs] ])
         else:
             times    = StdReplayData.component_data(event_data, StdReplayData.TIME)
             key_data = StdReplayData.component_data(event_data, key)
@@ -105,7 +111,7 @@ class StdReplayData():
             press_end_mask  = np.logical_and(key_changed, is_not_hold)
             press_end_times = times[press_end_mask]
             
-            return press_end_times
+            return np.asarray([ np.where(press_end_mask == 1)[0], press_end_times ])
 
     
     @staticmethod
