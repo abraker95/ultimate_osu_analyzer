@@ -45,6 +45,11 @@ class StdMapData():
 
 
     @staticmethod
+    def get_aimpoint_data(std_hitobjects):
+        return np.asarray(list(StdMapData.std_hitobjects_to_aimpoints(std_hitobjects)))
+
+
+    @staticmethod
     def get_data_before(hitobject_data, time):
         idx_time = StdMapData.get_idx_start_time(hitobject_data, time)
 
