@@ -17,6 +17,11 @@ def is_point_on_line(point, line):
 		return True
 
 
+def is_point_in_circle(point, center, radius):
+    point_x, point_y   = point
+    center_x, center_y = center
+    return (point_x - center_x)**2 + (point_y - center_y)**2 < radius**2
+
 
 # Thanks http://www.softwareandfinance.com/Visual_CPP/VCPP_Intersection_Two_lines_EndPoints.html
 def has_intersection_point(line_a, line_b):

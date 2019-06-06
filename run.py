@@ -30,6 +30,7 @@ from gui.objects.layer.layers.std.hitobject_aimpoint_layer import HitobjectAimpo
 
 from gui.objects.layer.layers.std.replay_cursor_layer import StdReplayCursorLayer
 from gui.objects.layer.layers.std.replay_hold_layer import StdReplayHoldLayer
+from gui.objects.layer.layers.std.score_debug_layer import StdScoreDebugLayer
 
 from gui.objects.layer.layers.mania.raw_replay_layer import ManiaRawReplayLayer
 from gui.objects.layer.layers.mania.press_replay_layer import ManiaPressReplayLayer
@@ -45,6 +46,7 @@ from gui.widgets.mania_settings import ManiaSettingsGui
 
 from analysis.osu.std.map_data import StdMapData
 from analysis.osu.std.replay_data import StdReplayData
+from analysis.osu.std.score_data import StdScoreData
 from analysis.osu.std.map_metrics import StdMapMetrics
 
 from analysis.osu.mania.map_data import ManiaMapData
@@ -151,12 +153,14 @@ class MainWindow(QMainWindow):
 
         self.ipython_console.push_vars({ 'timeline' : self.timeline })
         self.ipython_console.push_vars({ 'get_beatmap' : self.map_manager.get_current_map })
+        # TODO: self.ipython_console.push_vars({ 'get_replays' : self.replay_manager.get_all })
 
         self.ipython_console.push_vars({ 'add_layer_2d_data' : self.add_layer_2d_data })
         self.ipython_console.push_vars({ 'add_graph_2d_data' : self.add_graph_2d_data })
 
         self.ipython_console.push_vars({ 'StdMapData'    : StdMapData })
         self.ipython_console.push_vars({ 'StdReplayData' : StdReplayData })
+        self.ipython_console.push_vars({ 'StdScoreData'  : StdScoreData })
         self.ipython_console.push_vars({ 'StdMapMetrics' : StdMapMetrics })
 
         self.ipython_console.push_vars({ 'ManiaMapData'    : ManiaMapData })
@@ -278,6 +282,7 @@ class MainWindow(QMainWindow):
         if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
             self.layer_manager_switch_gui.get().add_layer('replay cursor', StdReplayCursorLayer(replay, self.timeline.time_changed_event))
             self.layer_manager_switch_gui.get().add_layer('replay hold', StdReplayHoldLayer(replay, self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer('score debug', StdScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
 
         if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
             num_columns = beatmap.difficulty.cs
