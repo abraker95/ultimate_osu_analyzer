@@ -116,12 +116,10 @@ class StdReplayData():
     
     @staticmethod
     def press_start_end_times(event_data, key=None):
-        if key == None:
-            # TODO
-            return np.asarray([ ])
-        else:
-            # TODO
-            return np.asarray([ ])
+        press_start_idx, press_start_times = StdReplayData.press_start_times(event_data, key)
+        press_end_idx, press_end_times     = StdReplayData.press_end_times(event_data, key)
+
+        return np.asarray(list(zip(press_start_idx, press_start_times, press_end_idx, press_end_times)))
 
     
     @staticmethod
