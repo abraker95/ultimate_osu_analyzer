@@ -131,19 +131,13 @@ class StdMapData():
         return min(max(0, np.searchsorted(times, [time], side='right')[0] - 1), len(times))
 
 
-    def __init__(self):
-        self.set_data_raw([])
 
 
-    def __len__(self):
-        return len(self.hitobject_data)
 
 
-    def set_data_raw(self, raw_data):
-        self.hitobject_data = raw_data
-        return self
 
 
+    '''
     def append_to_end(self, raw_data, is_part_of_hitobject=False):
         if raw_data == None:   return
         if len(raw_data) == 0: return
@@ -158,3 +152,4 @@ class StdMapData():
         
         if is_part_of_hitobject: self.hitobject_data[0].insert(0, raw_data)
         else:                    self.hitobject_data.insert(0, [ raw_data ])
+    '''
