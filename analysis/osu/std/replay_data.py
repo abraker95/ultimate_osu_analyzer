@@ -9,25 +9,29 @@ from misc.numpy_utils import NumpyUtils
 
 class StdReplayData():
 
-    TIME  = 0
-    XPOS  = 1
-    YPOS  = 2
-    M1    = 3
-    M2    = 4
-    K1    = 5
-    K2    = 6
-    SMOKE = 7
+    TIME  = 0   # [ int ]   Time of event
+    XPOS  = 1   # [ float ] Cursor's x-position
+    YPOS  = 2   # [ float ] Cursor's y-position
+    M1    = 3   # [ bool ]  Mouse 1 button flag
+    M2    = 4   # [ bool ]  Mouse 2 button flag
+    K1    = 5   # [ bool ]  Keyboard 1 button flag
+    K2    = 6   # [ bool ]  Keyboard 2 button flag
+    SMOKE = 7   # [ bool ]  Smoke button flag
 
-    '''
-    [
-        [ time, x_pos, y_pos, m1, m2, k1, k2, smoke ],
-        [ time, x_pos, y_pos, m1, m2, k1, k2, smoke ],
-        [ time, x_pos, y_pos, m1, m2, k1, k2, smoke ],
-        ...  N events
-    ]
-    '''
     @staticmethod 
     def get_event_data(replay_events):
+        
+        """
+        Returns:
+        [
+            [ time, x_pos, y_pos, m1, m2, k1, k2, smoke ],
+            [ time, x_pos, y_pos, m1, m2, k1, k2, smoke ],
+            [ time, x_pos, y_pos, m1, m2, k1, k2, smoke ],
+            ...  N events
+        ]
+
+        A list of events with data on time, positions of cursor, and flags on various key presses
+        """
         event_data = []
 
         m1_mask    = (1 << 0)
@@ -58,6 +62,13 @@ class StdReplayData():
 
     @staticmethod
     def press_start_times(event_data, key=None):
+        """
+        Returns: [ press_start_idxs, press_start_times ] = [ [ int, int, ... ], [ int, int, ... ] ]
+        
+        Tuple with indices in event_data where a press ends and timings where press ends.
+        press_start_idxs can be used on original event_data to get full data related to start times
+        like so: event_data[press_start_idxs]
+        """
         event_data = np.asarray(event_data)
         
         if key == None:
@@ -87,6 +98,13 @@ class StdReplayData():
 
     @staticmethod
     def press_end_times(event_data, key=None):
+        """
+        Returns: [ press_end_idxs, press_end_times ] = [ [ int, int, ... ], [ int, int, ... ] ]
+        
+        Tuple with indices in event_data where a press ends and timings where press ends.
+        press_end_idxs can be used on original event_data to get full data related to end times
+        like so: event_data[press_end_idxs]
+        """
         event_data = np.asarray(event_data)
 
         if key == None:
@@ -116,6 +134,14 @@ class StdReplayData():
     
     @staticmethod
     def press_start_end_times(event_data, key=None):
+        """
+        Returns: 
+        [ 
+            [ press_start_idx, press_start_time, press_end_idx, press_end_time ],
+            [ press_start_idx, press_start_time, press_end_idx, press_end_time ],
+            ...
+        ]
+        """
         press_start_idx, press_start_times = StdReplayData.press_start_times(event_data, key)
         press_end_idx, press_end_times     = StdReplayData.press_end_times(event_data, key)
 
