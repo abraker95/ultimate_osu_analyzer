@@ -95,19 +95,19 @@ class StdMapData():
     @staticmethod
     def all_positions(hitobject_data, flat=True):
         if flat: return np.asarray([ data[StdMapData.POS] for note in hitobject_data for data in note ])
-        else:    return [[data[StdMapData.POS] for data in note] for note in hitobject_data]
+        else:    return np.asarray([[data[StdMapData.POS] for data in note] for note in hitobject_data])
 
 
     @staticmethod
     def all_times(hitobject_data, flat=True):
         if flat: return np.asarray([ data[StdMapData.TIME] for note in hitobject_data for data in note ])
-        else:    return [[data[StdMapData.TIME] for data in note] for note in hitobject_data]
+        else:    return np.asarray([[data[StdMapData.TIME] for data in note] for note in hitobject_data])
 
     
     @staticmethod
     def start_end_times(hitobject_data):
         all_times = StdMapData.all_times(hitobject_data, flat=False)
-        return [ (hitobject_times[0], hitobject_times[-1]) for hitobject_times in all_times ]
+        return np.asarray([ (hitobject_times[0], hitobject_times[-1]) for hitobject_times in all_times ])
 
 
     @staticmethod
