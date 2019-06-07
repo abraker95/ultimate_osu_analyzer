@@ -147,6 +147,16 @@ class StdReplayData():
 
         return np.asarray(list(zip(press_start_idx, press_start_times, press_end_idx, press_end_times)))
 
+
+    @staticmethod
+    def get_idx_time(event_data, time):
+        event_times = event_data[:,StdReplayData.TIME]
+
+        idx = np.where(event_times >= time)[0]
+        idx = (event_times.size - 1) if idx.size == 0 else min(idx[0] + 1, event_times.size - 1)
+
+        return idx
+
     
     @staticmethod
     def get_idx_press_start_time(event_data, time, key=None):
