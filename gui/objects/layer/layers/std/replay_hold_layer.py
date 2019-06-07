@@ -2,6 +2,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
+import numpy as np
+
 from misc.math_utils import *
 from generic.temporal import Temporal
 from gui.objects.layer.layer import Layer
@@ -14,10 +16,12 @@ class StdReplayHoldLayer(Layer, Temporal):
     viewable_time_interval = 1000   # ms
 
     def __init__(self, data, time_driver):
-        self.replay     = data
-        self.event_data = None
+        replay = data
 
-        Layer.__init__(self, 'Replay hold - ' + str(self.replay.player_name))
+        self.event_data = StdReplayData.get_event_data(replay.play_data)
+        self.event_data = np.asarray(self.event_data)
+
+        Layer.__init__(self, 'Replay hold - ' + str(replay.player_name))
         Temporal.__init__(self)
 
         time_driver.connect(self.time_changed)
@@ -27,15 +31,11 @@ class StdReplayHoldLayer(Layer, Temporal):
     def paint(self, painter, option, widget):
         if not self.time: return
 
-        if self.event_data == None:
-            self.event_data = StdReplayData.get_event_data(self.replay.play_data)
-        
         ratio_x = widget.width()/Std.PLAYFIELD_WIDTH
         ratio_y = widget.height()/Std.PLAYFIELD_HEIGHT
 
-        start_idx = find(self.event_data, self.time - StdReplayHoldLayer.viewable_time_interval, selector=lambda event: event[StdReplayData.TIME])
-        end_idx   = find(self.event_data, self.time, selector=lambda event: event[StdReplayData.TIME])
-        end_idx   = min(end_idx + 1, len(self.event_data))
+        start_idx = StdReplayData.get_idx_time(self.event_data, self.time - StdReplayHoldLayer.viewable_time_interval)
+        end_idx   = StdReplayData.get_idx_time(self.event_data, self.time)
 
         for prev_event, curr_event in zip(self.event_data[start_idx:end_idx - 1], self.event_data[start_idx + 1:end_idx]):
             prev_pos_x, curr_pos_x = prev_event[StdReplayData.XPOS]*ratio_x, curr_event[StdReplayData.XPOS]*ratio_x
