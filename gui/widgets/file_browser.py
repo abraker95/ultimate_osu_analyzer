@@ -15,13 +15,22 @@ class FileBrowser(QWidget):
 
     def init_gui_elements(self):
         self.layout = QVBoxLayout()
-        self.label  = QLabel('File Browser')
+
+        self.file_system_model = QFileSystemModel()
+        self.file_tree_view    = QTreeView()
 
 
     def construct_gui(self):
         self.setLayout(self.layout)
-        self.layout.addWidget(self.label)
+        self.layout.addWidget(self.file_tree_view)
 
 
     def update_gui(self):
-        self.label.setAlignment(Qt.AlignCenter)
+        self.file_system_model.setNameFilters(('*.osu', '*.osr'))
+        self.file_system_model.setNameFilterDisables(False)
+        self.file_system_model.setRootPath(QDir.currentPath())
+
+        self.file_tree_view.setDragEnabled(True)
+        self.file_tree_view.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.file_tree_view.setModel(self.file_system_model)
+        self.file_tree_view.setRootIndex(self.file_system_model.index(QDir.currentPath()))
