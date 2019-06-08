@@ -33,4 +33,6 @@ class FileBrowser(QWidget):
         self.file_tree_view.setDragEnabled(True)
         self.file_tree_view.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.file_tree_view.setModel(self.file_system_model)
+        self.file_tree_view.hideColumn(1)   # Hide file size column
+        self.file_tree_view.hideColumn(2)   # Hide file type column
         self.file_tree_view.setRootIndex(self.file_system_model.index(QDir.currentPath()))
