@@ -23,6 +23,12 @@ def is_point_in_circle(point, center, radius):
     return (point_x - center_x)**2 + (point_y - center_y)**2 < radius**2
 
 
+def get_distance(point_a, point_b):
+    point_ax, point_ay = point_a
+    point_bx, point_by = point_b
+    return ((point_ax - point_bx)**2 + (point_ay - point_by)**2)**0.5
+
+
 # Thanks http://www.softwareandfinance.com/Visual_CPP/VCPP_Intersection_Two_lines_EndPoints.html
 def has_intersection_point(line_a, line_b):
     line_a_check_x1 = ( line_b.start.x <= line_a.start.x <= line_b.end.x )
