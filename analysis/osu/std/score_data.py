@@ -19,12 +19,20 @@ from analysis.osu.std.replay_data import StdReplayData
 '''
 class StdScoreData():
 
-    pos_hit_range  = 100   # ms range of the late hit window
-    neg_hit_range  = 100   # ms range of the early hit window
-    pos_miss_range = 50    # ms range of the late miss window
-    neg_miss_range = 50    # ms range of the early miss window
+    pos_hit_range      = 100   # ms range of the late hit window
+    neg_hit_range      = 100   # ms range of the early hit window
+    pos_hit_miss_range = 50    # ms range of the late miss window
+    neg_hit_miss_range = 50    # ms range of the early miss window
 
-    hitobject_radius = Std.cs_to_px(4)
+    dist_miss_range = 50       # ms range the cursor can deviate from aimpoint distance threshold before it's a miss
+
+    pos_rel_range       = 100  # ms range of the late release window
+    neg_rel_range       = 100  # ms range of the early release window
+    pos_rel_miss_range  = 50   # ms range of the late release window
+    neg_rel_miss_range  = 50   # ms range of the early release window
+
+    hitobject_radius = Std.cs_to_px(4)  # Radius from hitobject for which cursor needs to be within for a tap to count
+    follow_radius    = Std.cs_to_px(4)  # Radius from slider aimpoint for which cursor needs to be within for a hold to count
 
     # Disables hitting next note too early. If False, the neg_miss_range of the current note is 
     # overridden to extend to the previous note's pos_hit_range boundary.
@@ -60,8 +68,8 @@ class StdScoreData():
     @staticmethod
     def get_score_data(replay_data, map_data):
 
-        pos_nothing_range = StdScoreData.pos_hit_range + StdScoreData.pos_miss_range
-        neg_nothing_range = StdScoreData.neg_hit_range + StdScoreData.neg_miss_range
+        pos_nothing_range = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
+        neg_nothing_range = StdScoreData.neg_hit_range + StdScoreData.neg_hit_miss_range
 
         event_data = StdReplayData.press_start_end_times(replay_data)
         curr_key_event_idx = 0
@@ -89,7 +97,7 @@ class StdScoreData():
             if len(event_data) == 0: key_event_idx = 0
             else:
                 # Get first replay event that leaeves the hitobject's positive miss window
-                lookforward_time = aimpoint_time + StdScoreData.pos_hit_range + StdScoreData.pos_miss_range
+                lookforward_time = aimpoint_time + StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
                 key_event_idx = np.where(event_data[:,1] >= lookforward_time)[0]
 
                 # If there are no replay events after the hitobject, get up to the last one;
@@ -142,6 +150,12 @@ class StdScoreData():
                 # If a tap is anything else, it's a hit if on circle
                 if pos_offset < StdScoreData.hitobject_radius:
                     score_data.append([ press_time, cursor_cor, time_offset, round(pos_offset, 3), hitobject_idx ])
+
+                    if not StdScoreData.lazy_sliders:
+                        # TODO: Handle sliders here
+                        # TODO: compare release_time against slider release window
+                        pass
+
                     curr_key_event_idx    = idx + 1      # consume event
                     is_hitobject_consumed = True; break  # consume hitobject
 
@@ -153,7 +167,7 @@ class StdScoreData():
             # The player never tapped this hitobject. 
             if not is_hitobject_consumed:
                 idx = min(curr_key_event_idx, len(event_data) - 1)
-                score_data.append([ aimpoint_time, aimpoint_cor, float(StdScoreData.pos_hit_range + StdScoreData.pos_miss_range), float('nan'), hitobject_idx ])
+                score_data.append([ aimpoint_time, aimpoint_cor, float(StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range), float('nan'), hitobject_idx ])
 
         return np.asarray(score_data)
 
