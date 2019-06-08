@@ -39,6 +39,7 @@ from gui.objects.layer.layers.mania.hold_replay_layer import ManiaHoldReplayLaye
 
 from gui.objects.layer.layers.mania.hitobject_render_layer import HitobjectRenderLayer
 
+from gui.widgets.replay_manager import ReplayManager
 from gui.widgets.graph_manager import GraphManager
 from gui.widgets.data_2d_graph import Data2DGraph
 from gui.widgets.data_2d_temporal_graph import Data2DTemporalGraph
@@ -91,13 +92,14 @@ class MainWindow(QMainWindow):
         self.toolbar    = self.addToolBar('Exit')
         self.status_bar = self.statusBar()
 
-        self.timeline                 = self.main_frame.bottom_frame.timeline
-        self.graph_manager_switch_gui = self.main_frame.center_frame.right_frame.graph_manager_switch
-        self.analysis_controls        = self.main_frame.center_frame.right_frame.analysis_controls
-        self.layer_manager_switch_gui = self.main_frame.center_frame.right_frame.layer_manager_switch
-        self.ipython_console          = self.main_frame.center_frame.right_frame.ipython_console
-        self.map_manager              = self.main_frame.center_frame.mid_frame.map_manager
-        self.display                  = self.main_frame.center_frame.mid_frame.display
+        self.timeline                  = self.main_frame.bottom_frame.timeline
+        self.layer_manager_switch_gui  = self.main_frame.center_frame.right_frame.layer_manager_switch
+        self.replay_manager_switch_gui = self.main_frame.center_frame.right_frame.replay_manager_switch
+        self.graph_manager_switch_gui  = self.main_frame.center_frame.right_frame.graph_manager_switch
+        self.analysis_controls         = self.main_frame.center_frame.right_frame.analysis_controls
+        self.ipython_console           = self.main_frame.center_frame.right_frame.ipython_console
+        self.map_manager               = self.main_frame.center_frame.mid_frame.map_manager
+        self.display                   = self.main_frame.center_frame.mid_frame.display
 
 
     def construct_gui(self):
@@ -220,6 +222,9 @@ class MainWindow(QMainWindow):
         self.layer_manager_switch_gui.add(beatmap.metadata.name, LayerManager())
         self.layer_manager_switch_gui.switch(beatmap.metadata.name)
 
+        self.replay_manager_switch_gui.add(beatmap.metadata.name, ReplayManager())
+        self.replay_manager_switch_gui.switch(beatmap.metadata.name)
+
         # TODO: Adding layers will be one of things analysis manager does
         if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
             self.layer_manager_switch_gui.get().add_layer('hitobjects', HitobjectOutlineLayer(beatmap, self.timeline.time_changed_event))
@@ -230,10 +235,6 @@ class MainWindow(QMainWindow):
 
         self.graph_manager_switch_gui.add(beatmap.metadata.name, GraphManager())
         self.graph_manager_switch_gui.switch(beatmap.metadata.name)
-
-        # TODO
-        # self.replay_manager_switch_gui.add(beatmap.metadata.name, ReplayManager())
-        # self.replay_manager_switch_gui.switch(beatmap.metadata.name)
 
 
     def request_open_replay(self):
@@ -273,10 +274,8 @@ class MainWindow(QMainWindow):
             return
         '''
 
-        ''' TODO: Implement replay manager
         # Add replay to a list of replays
         self.replay_manager_switch_gui.get().add_replay(replay)
-        '''
 
         # TODO: Adding layers will be one of things analysis manager does
         if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
@@ -294,6 +293,7 @@ class MainWindow(QMainWindow):
 
     def close_map(self, beatmap):
         self.layer_manager_switch_gui.rmv(beatmap.metadata.name)
+        self.replay_manager_switch_gui.rmv(beatmap.metadata.name)
         self.graph_manager_switch_gui.rmv(beatmap.metadata.name)
 
 
@@ -325,6 +325,7 @@ class MainWindow(QMainWindow):
 
         gamemode_manager.switch(beatmap.gamemode)
         self.layer_manager_switch_gui.switch(beatmap.metadata.name)
+        self.replay_manager_switch_gui.switch(beatmap.metadata.name)
         self.graph_manager_switch_gui.switch(beatmap.metadata.name)
 
 
