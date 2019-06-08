@@ -2,6 +2,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
+import numpy as np
+
 from analysis.osu.std.replay_data import StdReplayData
 from analysis.osu.std.map_data import StdMapData
 from analysis.osu.std.score_data import StdScoreData
@@ -47,6 +49,7 @@ class StdScoreDebugLayer(Layer, Temporal):
 
         for score in self.score_data[start_idx:end_idx]:
             pos_x, pos_y = score[1]
-            offset       = score[2]
+            time_offset  = score[2]
+            pos_offset   = score[3]
 
-            painter.drawText(pos_x*self.ratio_x, pos_y*self.ratio_y, str(offset))
+            painter.drawText(pos_x*self.ratio_x, pos_y*self.ratio_y, str(time_offset) + '  ' + str(pos_offset))
