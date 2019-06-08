@@ -86,14 +86,16 @@ class StdScoreData():
                 # TODO
                 pass
 
-            # Get first replay event that leaeves the hitobject's positive miss window
-            lookforward_time = aimpoint_time + StdScoreData.pos_hit_range + StdScoreData.pos_miss_range
-            key_event_idx = np.where(event_data[:,1] >= lookforward_time)[0]
+            if len(event_data) == 0: key_event_idx = 0
+            else:
+                # Get first replay event that leaeves the hitobject's positive miss window
+                lookforward_time = aimpoint_time + StdScoreData.pos_hit_range + StdScoreData.pos_miss_range
+                key_event_idx = np.where(event_data[:,1] >= lookforward_time)[0]
 
-            # If there are no replay events after the hitobject, get up to the last one;
-            # if curr_key_event_idx is equal to it, then the for loop isn't going to run anyway
-            if len(key_event_idx) == 0: key_event_idx = len(event_data)
-            else:                       key_event_idx = key_event_idx[0]
+                # If there are no replay events after the hitobject, get up to the last one;
+                # if curr_key_event_idx is equal to it, then the for loop isn't going to run anyway
+                if len(key_event_idx) == 0: key_event_idx = len(event_data)
+                else:                       key_event_idx = key_event_idx[0]
             
             # Go through unprocessed replay events
             for idx in range(curr_key_event_idx, key_event_idx):
