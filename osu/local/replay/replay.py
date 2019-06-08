@@ -1,6 +1,7 @@
 import osrparse
 import lzma
 
+from osu.local.hitobject.std.std import Std
 from osrparse.replay import ReplayEvent
 from osrparse.enums import GameMode
 from osu.local.enums import Mod
@@ -20,6 +21,55 @@ class Replay(osrparse.replay.Replay):
 
     def is_md5_match(self, md5_hash):
         return self.beatmap_hash == md5_hash
+
+
+    def get_name(self):
+        player_mods = self.player_name + ' ' + self.get_mods_name()
+        score_acc   = str(self.score) + ' (x' + str(self.max_combo) + ', ' + str(self.get_acc()) + '%)'
+        hits_misses = str(self.number_300s + self.gekis) + '/' + str(self.number_100s + self.katus) + '/' + str(self.number_50s) + '/' + str(self.misses)
+        return player_mods + ' - ' + score_acc + ' | ' + hits_misses
+
+
+    def get_acc(self):
+        if self.game_mode == GameMode.Standard:
+            acc = 100*Std.get_acc_from_hits(self.number_300s + self.gekis, self.number_100s + self.katus, self.number_50s, self.misses)
+
+        if self.game_mode == GameMode.Taiko:
+            acc = -1
+            # TODO
+            pass
+
+        if self.game_mode == GameMode.CatchTheBeat:
+            acc = -1
+            # TODO
+            pass
+
+        if self.game_mode == GameMode.Osumania:
+            acc = -1
+            # TODO
+            pass
+
+        return round(acc, 3)
+
+
+    def get_mods_name(self):
+        if Mod.NoMod in self.mod_combination: return ''
+        mods_str = '+'
+
+        if Mod.Hidden in self.mod_combination:      mods_str += 'HD'
+        if Mod.DoubleTime in self.mod_combination:  mods_str += 'DT'
+        if Mod.Nightcore in self.mod_combination:   mods_str += 'NC'
+        if Mod.HalfTime in self.mod_combination:    mods_str += 'HT'
+        if Mod.HardRock in self.mod_combination:    mods_str += 'HR'
+        if Mod.Easy in self.mod_combination:        mods_str += 'EZ'
+        if Mod.SuddenDeath in self.mod_combination: mods_str += 'SD'
+        if Mod.Perfect in self.mod_combination:     mods_str += 'PF'
+        if Mod.Flashlight in self.mod_combination:  mods_str += 'FL'
+        if Mod.NoFail in self.mod_combination:      mods_str += 'NF'
+        if Mod.Relax in self.mod_combination:       mods_str += 'RX'
+        if Mod.Autopilot in self.mod_combination:   mods_str += 'AP'
+
+        return mods_str
 
 
     def get_event_times(self):

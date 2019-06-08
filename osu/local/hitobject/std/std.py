@@ -66,6 +66,13 @@ class Std():
 
 
     @staticmethod
+    def get_acc_from_hits(num_300_hits, num_100_hits, num_50_hits, num_misses):
+        score_hits  = 50*num_50_hits + 100*num_100_hits + 300*num_300_hits
+        score_total = 300*(num_misses + num_50_hits + num_100_hits + num_300_hits)
+        return score_hits/score_total
+
+
+    @staticmethod
     def get_time_range(hitobjects):
         try:    return (hitobjects[0].time, hitobjects[-1].end_time)
         except: return (hitobjects[0].time, hitobjects[-1].time)
