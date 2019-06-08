@@ -1,7 +1,7 @@
 import numpy as np
 
 from misc.numpy_utils import NumpyUtils
-from misc.geometry import is_point_in_circle
+from misc.geometry import get_distance
 
 from osu.local.hitobject.std.std import Std
 from analysis.osu.std.map_data import StdMapData
@@ -11,16 +11,16 @@ from analysis.osu.std.replay_data import StdReplayData
 
 '''
 [
-    [ time, x_pos_offset, y_pos_offset, hit_offset ],
-    [ time, x_pos_offset, y_pos_offset, hit_offset ],
-    [ time, x_pos_offset, y_pos_offset, hit_offset ],
+    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, pos_offset, hitobject_idx ],
+    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, pos_offset, hitobject_idx ],
+    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, pos_offset, hitobject_idx ],
     ...  N events
 ]
 '''
 class StdScoreData():
 
-    pos_hit_range  = 100    # ms range of the late hit window
-    neg_hit_range  = 100    # ms range of the early hit window
+    pos_hit_range  = 100   # ms range of the late hit window
+    neg_hit_range  = 100   # ms range of the early hit window
     pos_miss_range = 50    # ms range of the late miss window
     neg_miss_range = 50    # ms range of the early miss window
 
@@ -98,45 +98,48 @@ class StdScoreData():
             # Go through unprocessed replay events
             for idx in range(curr_key_event_idx, key_event_idx):
                 press_idx, press_time, release_idx, release_time = event_data[idx]
-                
-                offset     = press_time - aimpoint_time
+                time_offset = press_time - aimpoint_time
+
                 cursor_cor = replay_data[int(press_idx)][1], replay_data[int(press_idx)][2]
+                pos_offset = get_distance(cursor_cor, aimpoint_cor)
+
+                #score_data.append([ press_time, cursor_cor, offset, key_event_idx, len(event_data) ])
                 
                 # Way early taps. Doesn't matter where, is a miss if blank miss is on, otherwise ignore these
-                is_in_neg_nothing_range = offset < -neg_nothing_range
+                is_in_neg_nothing_range = time_offset < -neg_nothing_range
                 if is_in_neg_nothing_range:
                     if StdScoreData.blank_miss:
-                        score_data.append([ press_time, cursor_cor, float('nan'), press_idx, offset ])
+                        score_data.append([ press_time, cursor_cor, float('nan'), float('nan'), float('nan') ])
                     curr_key_event_idx = idx + 1  # consume event
                     continue                      # next key press
 
                 # Way late taps. Doesn't matter where, ignore these
-                is_in_pos_nothing_range = offset > pos_nothing_range
+                is_in_pos_nothing_range = time_offset > pos_nothing_range
                 if is_in_pos_nothing_range:
                     if StdScoreData.blank_miss:
-                        score_data.append([ press_time, cursor_cor, float('nan') ])
+                        score_data.append([ press_time, cursor_cor, float('nan'), float('nan'), float('nan') ])
                     curr_key_event_idx = idx + 1  # consume event
                     continue                      # next key press
 
                 # Early miss tap if on circle
-                is_in_neg_miss_range = offset < -StdScoreData.neg_hit_range
+                is_in_neg_miss_range = time_offset < -StdScoreData.neg_hit_range
                 if is_in_neg_miss_range:
-                    if is_point_in_circle(cursor_cor, aimpoint_cor, StdScoreData.hitobject_radius):
-                        score_data.append([ press_time, cursor_cor, float('-inf') ])
+                    if pos_offset < StdScoreData.hitobject_radius:
+                        score_data.append([ press_time, cursor_cor, float('-inf'), float('nan'), hitobject_idx ])
                         curr_key_event_idx    = idx + 1      # consume event
                         is_hitobject_consumed = True; break  # consume hitobject
 
                 # Late miss tap if on circle
-                is_in_pos_miss_range = offset > StdScoreData.pos_hit_range
+                is_in_pos_miss_range = time_offset > StdScoreData.pos_hit_range
                 if is_in_pos_miss_range:
-                    if is_point_in_circle(cursor_cor, aimpoint_cor, StdScoreData.hitobject_radius):
-                        score_data.append([ press_time, cursor_cor, float('inf') ])
+                    if pos_offset < StdScoreData.hitobject_radius:
+                        score_data.append([ press_time, cursor_cor, float('inf'), float('nan'), hitobject_idx ])
                         curr_key_event_idx    = idx + 1      # consume event
                         is_hitobject_consumed = True; break  # consume hitobject
 
                 # If a tap is anything else, it's a hit if on circle
-                if is_point_in_circle(cursor_cor, aimpoint_cor, StdScoreData.hitobject_radius):
-                    score_data.append([ press_time, cursor_cor, offset ])
+                if pos_offset < StdScoreData.hitobject_radius:
+                    score_data.append([ press_time, cursor_cor, time_offset, round(pos_offset, 3), hitobject_idx ])
                     curr_key_event_idx    = idx + 1      # consume event
                     is_hitobject_consumed = True; break  # consume hitobject
 
@@ -148,7 +151,7 @@ class StdScoreData():
             # The player never tapped this hitobject. 
             if not is_hitobject_consumed:
                 idx = min(curr_key_event_idx, len(event_data) - 1)
-                score_data.append([ aimpoint_time, aimpoint_cor, float(StdScoreData.pos_hit_range + StdScoreData.pos_miss_range) ])
+                score_data.append([ aimpoint_time, aimpoint_cor, float(StdScoreData.pos_hit_range + StdScoreData.pos_miss_range), float('nan'), hitobject_idx ])
 
         return np.asarray(score_data)
 
