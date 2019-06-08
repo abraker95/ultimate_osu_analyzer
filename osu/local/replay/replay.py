@@ -90,7 +90,7 @@ class Replay(osrparse.replay.Replay):
         self.offset = offset_end
 
         events = [ eventstring.split('|') for eventstring in datastring.split(',') ]
-        self.play_data = [ ReplayEvent(int(event[0]), float(event[1]), float(event[2]), int(event[3])) for event in events ]
+        self.play_data = [ ReplayEvent(int(event[0]), float(event[1]), float(event[2]), int(event[3])) for event in events if int(event[0]) != -12345 ]
         
 
     def __process_event_times(self):
