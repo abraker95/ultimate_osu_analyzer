@@ -36,3 +36,5 @@ class FileBrowser(QWidget):
         self.file_tree_view.hideColumn(1)   # Hide file size column
         self.file_tree_view.hideColumn(2)   # Hide file type column
         self.file_tree_view.setRootIndex(self.file_system_model.index(QDir.currentPath()))
+        self.file_tree_view.header().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.file_tree_view.resizeColumnToContents(0)   # Resize file name column
