@@ -2,7 +2,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from gui.widgets.layer_gui import LayerGui
 from gui.widgets.QContainer import QContainer
 
 from generic.switcher import Switcher
@@ -36,35 +35,24 @@ class LayerManagerSwitch(QWidget, Switcher):
         pass
 
 
-    def __add_layer(self, layer):
-        self.layer_stack.currentWidget().addWidget(LayerGui(layer))
+    def add_layer(self, layer):
+        self.layer_stack.currentWidget().add_layer(layer)
+
+
+    def rmv_layer(self, layer):
+        self.layer_stack.currentWidget().rmv_layer(layer)
 
 
     def __add_layer_manager(self, layer_manager):
-        layout = QVBoxLayout()
-        layout.setAlignment(Qt.AlignTop)
-        layout.setSpacing(0)
-
-        layer_manager_gui = QContainer(layout)
-        for layer in layer_manager.data.values():
-            layer_manager_gui.get().addWidget(LayerGui(layer))
-
-        layer_manager.add_layer.connect(self.__add_layer, inst=layer_manager)
-
-        new_idx = self.layer_stack.addWidget(layer_manager_gui) 
+        new_idx = self.layer_stack.addWidget(layer_manager) 
         self.layer_stack.setCurrentIndex(new_idx)
 
 
-    def __rmv_layer_manager(self, layer_manager):
+    def __rmv_layer_manager(self):
         old_mgr = self.layer_stack.currentWidget()        
         self.layer_stack.removeWidget(old_mgr)
-        
-        layer_manager.add_layer.disconnect(self.__add_layer, inst=old_mgr)
-        if old_mgr:
-            old_mgr.deleteLater()
-            old_mgr = None
 
 
     def __switch_layer_manager(self, old_layer_manager, new_layer_manager):
-        if old_layer_manager != None: self.__rmv_layer_manager(old_layer_manager)
+        if old_layer_manager != None: self.__rmv_layer_manager()
         if new_layer_manager != None: self.__add_layer_manager(new_layer_manager)

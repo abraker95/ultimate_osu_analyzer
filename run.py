@@ -20,7 +20,6 @@ from cli.cmd_osu import CmdOsu
 from cli.cmd_online import CmdOnline
 
 from core.gamemode_manager import gamemode_manager
-from core.layer_manager import LayerManager
 
 from gui.objects.display import Display
 
@@ -39,6 +38,7 @@ from gui.objects.layer.layers.mania.hold_replay_layer import ManiaHoldReplayLaye
 
 from gui.objects.layer.layers.mania.hitobject_render_layer import HitobjectRenderLayer
 
+from gui.widgets.layer_manager import LayerManager
 from gui.widgets.replay_manager import ReplayManager
 from gui.widgets.graph_manager import GraphManager
 from gui.widgets.data_2d_graph import Data2DGraph
@@ -148,7 +148,7 @@ class MainWindow(QMainWindow):
         Data2DTemporalGraph.__init__.connect(self.temporal_graph_creation_event)
         Data2DTemporalGraph.__del__.connect(self.temporal_graph_deletion_event)
 
-        self.layer_manager_switch_gui.switch.connect(lambda old, new: self.display.setScene(new), inst=self.layer_manager_switch_gui)
+        self.layer_manager_switch_gui.switch.connect(lambda old, new: self.display.setScene(new.get_scene()), inst=self.layer_manager_switch_gui)
         # gamemode_manger.switch.connect(self.)    # puts out MetricManager
 
 
@@ -232,11 +232,11 @@ class MainWindow(QMainWindow):
 
         # TODO: Adding layers will be one of things analysis manager does
         if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
-            self.layer_manager_switch_gui.get().add_layer('hitobjects', HitobjectOutlineLayer(beatmap, self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer('aimpoints', HitobjectAimpointLayer(beatmap, self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer(HitobjectOutlineLayer(beatmap, self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer(HitobjectAimpointLayer(beatmap, self.timeline.time_changed_event))
 
         if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
-            self.layer_manager_switch_gui.get().add_layer('hitobjects', HitobjectRenderLayer(beatmap, self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer(HitobjectRenderLayer(beatmap, self.timeline.time_changed_event))
 
         self.graph_manager_switch_gui.add(beatmap.metadata.name, GraphManager())
         self.graph_manager_switch_gui.switch(beatmap.metadata.name)
@@ -284,16 +284,16 @@ class MainWindow(QMainWindow):
 
         # TODO: Adding layers will be one of things analysis manager does
         if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
-            self.layer_manager_switch_gui.get().add_layer('replay cursor', StdReplayCursorLayer(replay, self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer('replay hold', StdReplayHoldLayer(replay, self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer('score debug', StdScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer(StdReplayCursorLayer(replay, self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer(StdReplayHoldLayer(replay, self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer(StdScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
 
         if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
             num_columns = beatmap.difficulty.cs
-            #self.layer_manager_switch_gui.get().add_layer('raw_replay',     ManiaRawReplayLayer((replay, num_columns), self.timeline.time_changed_event))
-            #self.layer_manager_switch_gui.get().add_layer('press_replay',   ManiaPressReplayLayer((replay, num_columns), self.timeline.time_changed_event))
-            #self.layer_manager_switch_gui.get().add_layer('release_replay', ManiaReleaseReplayLayer((replay, num_columns), self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer('hold_replay',    ManiaHoldReplayLayer((replay, num_columns), self.timeline.time_changed_event))
+            #self.layer_manager_switch_gui.get().add_layer(ManiaRawReplayLayer((replay, num_columns), self.timeline.time_changed_event))
+            #self.layer_manager_switch_gui.get().add_layer(ManiaPressReplayLayer((replay, num_columns), self.timeline.time_changed_event))
+            #self.layer_manager_switch_gui.get().add_layer(ManiaReleaseReplayLayer((replay, num_columns), self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer(ManiaHoldReplayLayer((replay, num_columns), self.timeline.time_changed_event))
 
 
     def close_map(self, beatmap):
