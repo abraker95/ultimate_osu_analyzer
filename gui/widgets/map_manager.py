@@ -74,6 +74,11 @@ class MapManager(QTabBar):
         del self.data[self.tabData(idx)]
         self.rmv_map(idx)
 
+        if len(self.data) < 1:
+            # Add a placeholder tab and disable tab closing
+            self.setTabsClosable(False)
+            self.addTab('')
+
 
     @callback
     def map_changed_event(self, idx):
