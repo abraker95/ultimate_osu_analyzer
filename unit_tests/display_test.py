@@ -46,8 +46,8 @@ class DisplayTest(QMainWindow):
         self.switcher.add('map_1', self.layer_manager_1)
         self.switcher.add('map_2', self.layer_manager_2)
 
-        self.beatmap_1 = BeatmapIO.load_beatmap('unit_tests\\maps\\Mutsuhiko Izumi - Red Goose (nold_1702) [ERT Basic].osu')
-        self.beatmap_2 = BeatmapIO.load_beatmap('unit_tests\\maps\\Within Temptation - The Unforgiving (Armin) [Marathon].osu')
+        self.beatmap_1 = BeatmapIO.open_beatmap('unit_tests\\maps\\Mutsuhiko Izumi - Red Goose (nold_1702) [ERT Basic].osu')
+        self.beatmap_2 = BeatmapIO.open_beatmap('unit_tests\\maps\\Within Temptation - The Unforgiving (Armin) [Marathon].osu')
 
         self.layer_manager_1.add_layer('beatmap', HitobjectOutlineLayer(self.beatmap_1, self.time_browse_test))
         self.layer_manager_1.add_layer('beatmap', HitobjectOutlineLayer(self.beatmap_2, self.time_browse_test))

@@ -5,10 +5,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 from gui.widgets.graph_manager import GraphManager
-from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
+from gui.widgets.data_2d_temporal_graph import Data2DTemporalGraph
 from gui.objects.graph.line_plot import LinePlot
-
-from analysis.osu.std.map_metrics import MapMetrics
 
 
 class GraphManagerTest(QMainWindow):
@@ -43,7 +41,7 @@ class GraphManagerTest(QMainWindow):
     '''
     def add_remove_graph_test(self, app):
         print('add_remove_graph_test')
-        temporal_graph = TemporalHitobjectGraph(LinePlot(), 'test', lambda: None)
+        temporal_graph = Data2DTemporalGraph('test', ([0], [0]))
         self.graph_manager.add_graph(temporal_graph)
         time.sleep(0.1)
         app.processEvents()
@@ -65,7 +63,7 @@ class GraphManagerTest(QMainWindow):
     def multi_add_remove_graph_test(self, app):
         print('multi_add_remove_graph_test')
         for i in range(10):
-            temporal_graph = TemporalHitobjectGraph(LinePlot(), 'test' + str(i), lambda: None)
+            temporal_graph = Data2DTemporalGraph('test' + str(i), ([0], [0]))
             self.graph_manager.add_graph(temporal_graph)
             time.sleep(0.1)
             app.processEvents()
@@ -89,7 +87,7 @@ class GraphManagerTest(QMainWindow):
 
     def remove_graph_failure_test(self, app):
         print('remove_graph_failure_test')
-        temporal_graph = TemporalHitobjectGraph(LinePlot(), 'test', lambda: None)
+        temporal_graph = Data2DTemporalGraph('test', ([0], [0]))
         self.graph_manager.add_graph(temporal_graph)
         app.processEvents()
         time.sleep
@@ -116,7 +114,7 @@ class GraphManagerTest(QMainWindow):
     def clear_graphs_test(self, app):
         print('clear_graphs_test')
         for i in range(10):
-            temporal_graph = TemporalHitobjectGraph(LinePlot(), 'test' + str(i), lambda: None)
+            temporal_graph = Data2DTemporalGraph('test' + str(i), ([0], [0]))
             self.graph_manager.add_graph(temporal_graph)
             time.sleep(0.1)
             app.processEvents()
@@ -141,14 +139,14 @@ class GraphManagerTest(QMainWindow):
         print('multi_time_minupilation')
 
         # Test them both connected
-        temporal_graph_1 = TemporalHitobjectGraph(LinePlot(), 'test_1', lambda: None)
+        temporal_graph_1 = Data2DTemporalGraph('test', ([0], [0]))
         self.graph_manager.add_graph(temporal_graph_1)
 
-        temporal_graph_2 = TemporalHitobjectGraph(LinePlot(), 'test_2', lambda: None)
+        temporal_graph_2 = Data2DTemporalGraph('test', ([0], [0]))
         self.graph_manager.add_graph(temporal_graph_2)
 
-        TemporalHitobjectGraph.time_changed_event.connect(temporal_graph_2.timeline_marker.setValue)
-        TemporalHitobjectGraph.time_changed_event.connect(temporal_graph_1.timeline_marker.setValue)
+        Data2DTemporalGraph.time_changed_event.connect(temporal_graph_2.timeline_marker.setValue)
+        Data2DTemporalGraph.time_changed_event.connect(temporal_graph_1.timeline_marker.setValue)
 
         for t in range(1, 2000, 10):
             temporal_graph_1.timeline_marker.setValue(t)
@@ -160,8 +158,8 @@ class GraphManagerTest(QMainWindow):
             assert graph_1_time == graph_2_time, 'Graph time markers do not match'
 
         # Disconnect and move each graphs' marker
-        TemporalHitobjectGraph.time_changed_event.disconnect(temporal_graph_2.timeline_marker.setValue)
-        TemporalHitobjectGraph.time_changed_event.disconnect(temporal_graph_1.timeline_marker.setValue)
+        Data2DTemporalGraph.time_changed_event.disconnect(temporal_graph_2.timeline_marker.setValue)
+        Data2DTemporalGraph.time_changed_event.disconnect(temporal_graph_1.timeline_marker.setValue)
 
         for t in range(2001, 4000, 10):
             temporal_graph_1.timeline_marker.setValue(t)
@@ -194,12 +192,12 @@ class GraphManagerTest(QMainWindow):
         # Create a bunch of graphs and connect their markers
         graphs = {}
         for i in range(5):
-            graph = TemporalHitobjectGraph(LinePlot(), 'test' + str(i), lambda: None)
+            graph = Data2DTemporalGraph('test' + str(i), ([0], [0]))
             self.graph_manager.add_graph(graph)
             graphs['test' + str(i)] = graph
 
         for graph in graphs.values():
-            TemporalHitobjectGraph.time_changed_event.connect(graph.timeline_marker.setValue)
+            Data2DTemporalGraph.time_changed_event.connect(graph.timeline_marker.setValue)
  
         # Move the marker of each graph, one by one
         for graph in graphs.values():
@@ -219,7 +217,7 @@ class GraphManagerTest(QMainWindow):
         # Remove a few graphs
         remove_graphs = [ 'test1', 'test4' ]
         for name in remove_graphs:
-            TemporalHitobjectGraph.time_changed_event.disconnect(graphs[name].timeline_marker.setValue)
+            Data2DTemporalGraph.time_changed_event.disconnect(graphs[name].timeline_marker.setValue)
 
             self.graph_manager.remove_graph(name)
             del graphs[name]

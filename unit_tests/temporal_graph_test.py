@@ -4,10 +4,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from gui.widgets.temporal_hitobject_graph import TemporalHitobjectGraph
+from gui.widgets.data_2d_temporal_graph import Data2DTemporalGraph
 from gui.objects.graph.line_plot import LinePlot
-
-from analysis.osu.std.map_metrics import MapMetrics
 
 
 class TemporalGraphTest(QMainWindow):
@@ -15,7 +13,7 @@ class TemporalGraphTest(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         
-        self.temporal_graph = TemporalHitobjectGraph(LinePlot(), 'Test', lambda: None)
+        self.temporal_graph = Data2DTemporalGraph('Test', ([0], [0]))
         self.setCentralWidget(self.temporal_graph)
 
         self.setWindowTitle('Graph manager test')

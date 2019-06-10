@@ -6,7 +6,7 @@ class BeatmapTests():
 
     @staticmethod
     def test_beatmap_loading_mania(filepath):
-        beatmap = BeatmapIO.load_beatmap(filepath)
+        beatmap = BeatmapIO.open_beatmap(filepath)
         
         # Test metadata
         assert beatmap.metadata.beatmap_format == 14, 'beatmap_format = (%s)' % str(beatmap.metadata.beatmap_format)
@@ -37,7 +37,7 @@ class BeatmapTests():
 
     @staticmethod
     def test_beatmap_loading_std(filepath):
-        beatmap = BeatmapIO.load_beatmap(filepath)
+        beatmap = BeatmapIO.open_beatmap(filepath)
         
         # Test metadata
         assert beatmap.metadata.beatmap_format == 9, 'beatmap_format = (%s)' % str(beatmap.metadata.beatmap_format)
@@ -68,7 +68,7 @@ class BeatmapTests():
 
     @staticmethod
     def test_hitobject_visibility_std():
-        beatmap = BeatmapIO.load_beatmap('unit_tests\\abraker - unknown (abraker) [250ms].osu')
+        beatmap = BeatmapIO.open_beatmap('unit_tests\\abraker - unknown (abraker) [250ms].osu')
 
         test_data_ar7 = {
             # time : list of objects expected to be visible
