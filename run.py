@@ -148,7 +148,7 @@ class MainWindow(QMainWindow):
         Data2DTemporalGraph.__init__.connect(self.temporal_graph_creation_event)
         Data2DTemporalGraph.__del__.connect(self.temporal_graph_deletion_event)
 
-        self.layer_manager_switch_gui.switch.connect(lambda old, new: self.display.setScene(new.get_scene()), inst=self.layer_manager_switch_gui)
+        self.layer_manager_switch_gui.switch.connect(self.set_scene, inst=self.layer_manager_switch_gui)
         # gamemode_manger.switch.connect(self.)    # puts out MetricManager
 
 
@@ -348,6 +348,13 @@ class MainWindow(QMainWindow):
     def remove_layer(self, name):
         # TODO
         pass
+
+
+    def set_scene(self, old_layer_mgr, new_layer_mgr):
+        if new_layer_mgr != None:
+            self.display.setScene(new_layer_mgr.get_scene())
+        else:
+            self.display.setScene(QGraphicsScene())
 
 
     def show_mania_settings(self):
