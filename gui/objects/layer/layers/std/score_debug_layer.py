@@ -12,13 +12,11 @@ from misc.math_utils import *
 from generic.temporal import Temporal
 from gui.objects.layer.layer import Layer
 
-from osu.local.hitobject.std.std import Std
+from osu.local.hitobject.std.std import Std, StdSettings
 
 
 
 class StdScoreDebugLayer(Layer, Temporal):
-
-    viewable_time_interval = 1000   # ms
 
     def __init__(self, data, time_updater):
         Layer.__init__(self, 'Score debug layer')
@@ -33,6 +31,8 @@ class StdScoreDebugLayer(Layer, Temporal):
         time_updater.connect(self.time_changed)
         self.time_changed.connect(lambda time: self.layer_changed())
 
+        StdSettings.set_viewable_time_interval.connect(self.layer_changed)
+
 
     def paint(self, painter, option, widget):
         if not self.time: return
@@ -43,7 +43,7 @@ class StdScoreDebugLayer(Layer, Temporal):
 
         painter.setPen(QColor(255, 0, 0, 255))
 
-        start_idx = find(self.score_data, self.time - StdScoreDebugLayer.viewable_time_interval, selector=lambda event: event[0])
+        start_idx = find(self.score_data, self.time - StdSettings.viewable_time_interval, selector=lambda event: event[0])
         end_idx   = find(self.score_data, self.time, selector=lambda event: event[0])
         end_idx   = min(end_idx + 1, len(self.score_data))
 

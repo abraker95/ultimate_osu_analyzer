@@ -1,7 +1,78 @@
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+
 import math
 
 from misc.math_utils import *
 from osu.local.hitobject.hitobject import Hitobject
+from misc.callback import callback
+
+
+class StdSettings():
+
+    viewable_time_interval = 1000                                # ms
+    cursor_radius          = 1.5                                 # osu!px
+    cursor_thickness       = 1                                   # osu!px
+    cursor_color           = QColor(0, 200, 0, 255)              # rgba
+    k1_color               = QColor.fromHsl(32,  255, 128, 255)  # rgba
+    k2_color               = QColor.fromHsl(180, 255, 96,  255)  # rgba
+    m1_color               = QColor.fromHsl(0,   255, 128, 255)  # rgba
+    m2_color               = QColor.fromHsl(120, 255, 96,  255)  # rgba
+
+    @staticmethod
+    @callback
+    def set_viewable_time_interval(viewable_time_interval):
+        StdSettings.viewable_time_interval = viewable_time_interval
+        StdSettings.set_viewable_time_interval.emit()
+
+
+    @staticmethod
+    @callback
+    def set_cursor_radius(cursor_radius):
+        StdSettings.cursor_radius = cursor_radius
+        StdSettings.set_cursor_radius.emit()
+
+
+    @staticmethod
+    @callback
+    def set_cursor_thickness(cursor_thickness):
+        StdSettings.cursor_thickness = cursor_thickness
+        StdSettings.set_cursor_thickness.emit()
+
+
+    @staticmethod
+    @callback
+    def set_cursor_color(cursor_color):
+        StdSettings.cursor_color = cursor_color
+        StdSettings.set_cursor_color.emit()
+
+
+    @staticmethod
+    @callback
+    def set_k1_color(k1_color):
+        StdSettings.k1_color = k1_color
+        StdSettings.set_k1_color.emit()
+
+
+    @staticmethod
+    @callback
+    def set_k2_color(k2_color):
+        StdSettings.k2_color = k2_color
+        StdSettings.set_k2_color.emit()
+
+
+    @staticmethod
+    @callback
+    def set_m1_color(m1_color):
+        StdSettings.m1_color = m1_color
+        StdSettings.set_m1_color.emit()
+
+
+    @staticmethod
+    @callback
+    def set_m2_color(m2_color):
+        StdSettings.m2_color = m2_color
+        StdSettings.set_m2_color.emit()
 
 
 

@@ -43,6 +43,8 @@ from gui.widgets.replay_manager import ReplayManager
 from gui.widgets.graph_manager import GraphManager
 from gui.widgets.data_2d_graph import Data2DGraph
 from gui.widgets.data_2d_temporal_graph import Data2DTemporalGraph
+
+from gui.widgets.std_settings import StdSettingsGui
 from gui.widgets.mania_settings import ManiaSettingsGui
 
 from analysis.osu.std.map_data import StdMapData
@@ -87,6 +89,7 @@ class MainWindow(QMainWindow):
         self.view_tapping_intervals = QAction("&tapping intervals", self)
         
         self.options_menu           = self.menubar.addMenu('&Options')
+        self.std_settings_action    = QAction("&Std settings", self)
         self.mania_settings_action  = QAction("&Mania settings", self)
 
         self.toolbar    = self.addToolBar('Exit')
@@ -131,8 +134,10 @@ class MainWindow(QMainWindow):
         self.view_tapping_intervals.triggered.connect(self.view_tapping_intervals_action)
 
         # Options menu
+        self.options_menu.addAction(self.std_settings_action)
         self.options_menu.addAction(self.mania_settings_action)
 
+        self.std_settings_action.triggered.connect(self.show_std_settings)
         self.mania_settings_action.triggered.connect(self.show_mania_settings)
 
         self.analysis_controls.create_graph_event.connect(self.graph_manager_switch_gui.add_graph)
@@ -347,6 +352,11 @@ class MainWindow(QMainWindow):
 
     def show_mania_settings(self):
         self.tmp = ManiaSettingsGui()
+        self.tmp.show()
+
+    
+    def show_std_settings(self):
+        self.tmp = StdSettingsGui()
         self.tmp.show()
 
 
