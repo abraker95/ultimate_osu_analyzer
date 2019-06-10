@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 from gui.widgets.editable_value_field import EditableValueField
-from gui.widgets.editable_color_field import EditableColorField
 from osu.local.hitobject.std.std import StdSettings
 
 
