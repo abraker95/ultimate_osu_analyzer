@@ -37,10 +37,8 @@ class Switcher():
     def rmv(self, key):
         if key not in self.data: return
         if self.active == key:
-            # Switch to first key if possible
-            if len(self.data) > 1:
-                self.switch(list(self.data.keys())[0])
-            else:
-                self.switch(None)
+            # Switch to the first key if possible
+            if len(self.data) > 1: self.switch(list(self.data.keys())[0])
+            else:                  self.switch(None)
 
         del self.data[key]

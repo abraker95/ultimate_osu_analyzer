@@ -140,7 +140,7 @@ class MainWindow(QMainWindow):
         self.std_settings_action.triggered.connect(self.show_std_settings)
         self.mania_settings_action.triggered.connect(self.show_mania_settings)
 
-        self.analysis_controls.create_graph_event.connect(self.graph_manager_switch_gui.add_graph)
+        self.analysis_controls.create_graph_event.connect(lambda: self.graph_manager_switch_gui.get().add_graph)
         self.map_manager.map_changed_event.connect(self.change_map)
         self.map_manager.map_close_event.connect(self.close_map)
 

@@ -9,7 +9,7 @@ from unit_tests.callback_test import CallbackTest
 from unit_tests.beatmap_tests import BeatmapTests
 from unit_tests.temporal_graph_test import TemporalGraphTest
 from unit_tests.graph_manager_test import GraphManagerTest
-from unit_tests.layer_manager_switch_test import LayerManagerSwitchTest
+from unit_tests.manager_switch_test import ManagerSwitchTest
 from unit_tests.std_replay_test import StdReplayTest
 from unit_tests.display_test import DisplayTest
 
@@ -49,9 +49,9 @@ if __name__ == '__main__':
     std_replay_test = StdReplayTest(app)
     std_replay_test.close()
 
-    layer_manager_switch_test = LayerManagerSwitchTest()
-    layer_manager_switch_test.layer_manager_switch_test(app)
-    layer_manager_switch_test.close()
+    manager_switch_test = ManagerSwitchTest()
+    manager_switch_test.manager_switch_test()
+    manager_switch_test.manager_add_remove_test()
 
     temporal_graph_test = TemporalGraphTest()
     temporal_graph_test.time_minupilation_test(app)
