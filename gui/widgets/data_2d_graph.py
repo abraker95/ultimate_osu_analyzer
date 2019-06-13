@@ -1,4 +1,5 @@
 from pyqtgraph.Qt import QtGui, QtCore
+import numpy as np
 import pyqtgraph
 
 from misc.callback import callback
@@ -43,9 +44,12 @@ class Data2DGraph(pyqtgraph.PlotWidget):
 
 
     def update_data(self, data_2d):
+        # Filter out infinities
         data_x, data_y = data_2d
-        self.plot_item.update_data(data_2d)
-        
+        inf_idx_filter = np.where(np.isfinite(data_y.astype(np.float64)))
+        data_x, data_y = data_x[inf_idx_filter], data_y[inf_idx_filter]
+
+        self.plot_item.update_data((data_x, data_y))
         if len(data_x) > 0: self.setRange(xRange=(data_x[0] - 100, data_x[-1] + 100))
         if len(data_y) > 0: self.setRange(yRange=(min(data_y), max(data_y)))
 
