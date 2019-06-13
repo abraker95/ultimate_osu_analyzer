@@ -156,7 +156,7 @@ class MainWindow(QMainWindow):
         self.setAcceptDrops(True)
         self.setWindowTitle(MainWindow.title)
         self.setGeometry(MainWindow.left, MainWindow.top, MainWindow.width, MainWindow.height)
-        self.status_bar.showMessage('Statusbar test message')
+        self.status_bar.showMessage('')
 
         self.ipython_console.push_vars({ 'timeline' : self.timeline })
         self.ipython_console.push_vars({ 'get_beatmap' : self.map_manager.get_current_map })
@@ -222,6 +222,8 @@ class MainWindow(QMainWindow):
 
 
     def apply_beatmap(self, beatmap):
+        self.status_bar.showMessage('Applying map "' + str(beatmap.metadata.name) + '"')
+
         self.map_manager.add_map(beatmap, beatmap.metadata.name)
 
         self.layer_manager_switch_gui.add(beatmap.metadata.name, LayerManager())
@@ -279,6 +281,8 @@ class MainWindow(QMainWindow):
             return
         '''
 
+        self.status_bar.showMessage('Applying replay . . .')
+
         # Add replay to a list of replays
         self.replay_manager_switch_gui.get().add_replay(replay)
 
@@ -295,8 +299,12 @@ class MainWindow(QMainWindow):
             #self.layer_manager_switch_gui.get().add_layer(ManiaReleaseReplayLayer((replay, num_columns), self.timeline.time_changed_event))
             self.layer_manager_switch_gui.get().add_layer(ManiaHoldReplayLayer((replay, num_columns), self.timeline.time_changed_event))
 
+        self.status_bar.showMessage('Replay applied. Check replay tab.')
+
 
     def close_map(self, beatmap):
+        self.status_bar.showMessage('Closing map "' + str(beatmap.metadata.name) + '"')
+
         self.layer_manager_switch_gui.rmv(beatmap.metadata.name)
         self.replay_manager_switch_gui.rmv(beatmap.metadata.name)
         self.graph_manager_switch_gui.rmv(beatmap.metadata.name)
@@ -315,6 +323,8 @@ class MainWindow(QMainWindow):
     def change_map(self, beatmap):
         if not beatmap: return
 
+        self.status_bar.showMessage('Switching to map "' + str(beatmap.metadata.name) + '"')
+
         # TODO: Fix bug where changing from a new loaded map first time doesn't safe timeline data
         try: self.timeline.save()
         except: pass
@@ -332,6 +342,8 @@ class MainWindow(QMainWindow):
         self.layer_manager_switch_gui.switch(beatmap.metadata.name)
         self.replay_manager_switch_gui.switch(beatmap.metadata.name)
         self.graph_manager_switch_gui.switch(beatmap.metadata.name)
+
+        self.status_bar.showMessage('Switched to map "' + str(beatmap.metadata.name) + '"')
 
 
     def add_layer_2d_data(self, name, data_2d):
