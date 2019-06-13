@@ -61,13 +61,7 @@ class StdScoreData():
     overlap_hit_handling  = False
 
     @staticmethod
-    def ddd():
-        pass
-
-
-    @staticmethod
     def get_score_data(replay_data, map_data):
-
         pos_nothing_range = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
         neg_nothing_range = StdScoreData.neg_hit_range + StdScoreData.neg_hit_miss_range
 
