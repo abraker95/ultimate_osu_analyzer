@@ -49,6 +49,7 @@ from gui.widgets.mania_settings import ManiaSettingsGui
 
 from analysis.osu.std.map_data import StdMapData
 from analysis.osu.std.replay_data import StdReplayData
+from analysis.osu.std.replay_metrics import StdReplayMetrics
 from analysis.osu.std.score_data import StdScoreData
 from analysis.osu.std.map_metrics import StdMapMetrics
 
@@ -151,6 +152,11 @@ class MainWindow(QMainWindow):
         self.layer_manager_switch_gui.switch.connect(self.set_scene, inst=self.layer_manager_switch_gui)
         # gamemode_manger.switch.connect(self.)    # puts out MetricManager
 
+        CmdOsu.create_score_offset_graph.connect(self.create_score_offset_graph)
+        CmdOsu.create_cursor_velocity_graph.connect(self.create_cursor_velocity_graph)
+        CmdOsu.create_cursor_acceleration_graph.connect(self.create_cursor_acceleration_graph)
+        CmdOsu.create_cursor_jerk_graph.connect(self.create_cursor_jerk_graph)
+
 
     def update_gui(self):
         self.setAcceptDrops(True)
@@ -242,8 +248,6 @@ class MainWindow(QMainWindow):
 
         self.graph_manager_switch_gui.add(beatmap.metadata.name, GraphManager())
         self.graph_manager_switch_gui.switch(beatmap.metadata.name)
-
-        CmdOsu.create_offset_graph.connect(self.create_offset_graph)
 
 
     def request_open_replay(self):
@@ -438,7 +442,7 @@ class MainWindow(QMainWindow):
             pass
 
 
-    def create_offset_graph(self, replay_data):
+    def create_score_offset_graph(self, replay_data):
         self.status_bar.showMessage('Creating replay hit offsets graph')
 
         hitobjects = self.map_manager.get_current_map().hitobjects
@@ -446,9 +450,36 @@ class MainWindow(QMainWindow):
 
         score_data = StdScoreData.get_score_data(replay_data, aimpoint_data)
         times, offsets = score_data[:,0], score_data[:,2]
-        self.add_graph_2d_data('replay_hit_offsets', (times, offsets), temporal=True)
+        self.add_graph_2d_data('replay hit offsets', (times, offsets), temporal=True, plot_type=Data2DGraph.SCATTER_PLOT)
 
         self.status_bar.showMessage('Created replay hit offsets graph. Check graphs tab.')
+
+
+    def create_cursor_velocity_graph(self, replay_data):
+        self.status_bar.showMessage('Creating replay cursor velocity graph')
+
+        velocity_data = StdReplayMetrics.cursor_velocity(replay_data)
+        self.add_graph_2d_data('replay cursor velocity', velocity_data, temporal=True, plot_type=Data2DGraph.LINE_PLOT)
+
+        self.status_bar.showMessage('Created replay cursor velocity graph. Check graphs tab.')
+
+
+    def create_cursor_acceleration_graph(self, replay_data):
+        self.status_bar.showMessage('Creating replay cursor acceleration graph')
+
+        acceleration_data = StdReplayMetrics.cursor_acceleration(replay_data)
+        self.add_graph_2d_data('replay cursor acceleration', acceleration_data, temporal=True, plot_type=Data2DGraph.LINE_PLOT)
+
+        self.status_bar.showMessage('Created replay cursor acceleration graph. Check graphs tab.')
+    
+
+    def create_cursor_jerk_graph(self, replay_data):
+        self.status_bar.showMessage('Creating replay cursor jerk graph')
+
+        jerk_data = StdReplayMetrics.cursor_jerk(replay_data)
+        self.add_graph_2d_data('replay cursor jerk', jerk_data, temporal=True, plot_type=Data2DGraph.LINE_PLOT)
+
+        self.status_bar.showMessage('Created replay cursor jerk graph. Check graphs tab.')
 
 
 
