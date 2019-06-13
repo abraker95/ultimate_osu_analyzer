@@ -243,6 +243,8 @@ class MainWindow(QMainWindow):
         self.graph_manager_switch_gui.add(beatmap.metadata.name, GraphManager())
         self.graph_manager_switch_gui.switch(beatmap.metadata.name)
 
+        CmdOsu.create_offset_graph.connect(self.create_offset_graph)
+
 
     def request_open_replay(self):
         replay_filepaths = self.get_type_files('osr files (*.osr)')
@@ -434,6 +436,20 @@ class MainWindow(QMainWindow):
         else:
             # TODO: remove graph
             pass
+
+
+    def create_offset_graph(self, replay_data):
+        self.status_bar.showMessage('Creating replay hit offsets graph')
+
+        hitobjects = self.map_manager.get_current_map().hitobjects
+        aimpoint_data = StdMapData.get_aimpoint_data(hitobjects)
+
+        score_data = StdScoreData.get_score_data(replay_data, aimpoint_data)
+        times, offsets = score_data[:,0], score_data[:,2]
+        self.add_graph_2d_data('replay_hit_offsets', (times, offsets), temporal=True)
+
+        self.status_bar.showMessage('Created replay hit offsets graph. Check graphs tab.')
+
 
 
 if __name__ == '__main__':

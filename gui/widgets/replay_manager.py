@@ -3,6 +3,14 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from enum import Enum
 
+from analysis.osu.std.replay_data import StdReplayData
+#from analysis.osu.taiko.replay_data import TaikoReplayData
+#from analysis.osu.catch.replay_data import CatchReplayData
+from analysis.osu.mania.replay_data import ManiaReplayData
+
+from osrparse.enums import GameMode
+from cli.cmd_osu import CmdOsu
+
 
 class Column(Enum):
 
@@ -20,8 +28,10 @@ class Column(Enum):
 
 class ReplayManagerItem(QTreeWidgetItem):
 
-    def __init__(self, data):
-        QTreeWidgetItem.__init__(self, data)
+    def __init__(self, replay, columns):
+        QTreeWidgetItem.__init__(self, columns)
+        self.replay      = replay
+        self.replay_data = None
 
 
     def __lt__(self, other):
@@ -36,6 +46,19 @@ class ReplayManagerItem(QTreeWidgetItem):
         if column == Column.HITS_100.value:    return float(self.text(column)) < float(other.text(column))  # numeric sort
         if column == Column.HITS_50.value:     return float(self.text(column)) < float(other.text(column))  # numeric sort
         if column == Column.HITS_0.value:      return float(self.text(column)) < float(other.text(column))  # numeric sort
+
+
+    def get_replay_data(self):
+        if self.replay_data == None:
+            if   self.replay.game_mode == GameMode.Standard:     self.replay_data = StdReplayData.get_event_data(self.replay.play_data)
+            #elif self.replay.game_mode == GameMode.Taiko:        self.replay_data = TaikoReplayData.get_event_data(self.replay.play_data)
+            #elif self.replay.game_mode == GameMode.CatchTheBeat: self.replay_data = CatchReplayData.get_event_data(self.replay.play_data)
+            #elif self.replay.game_mode == GameMode.Osumania:     self.replay_data = ManiaReplayData.get_replay_data(self.replay.play_data, columns)
+            else:
+                RuntimeError('Unsupported gamemode: ' + str(self.replay.game_mode))
+
+        return self.replay_data
+
 
 
 class ReplayManager(QWidget):
@@ -73,7 +96,7 @@ class ReplayManager(QWidget):
     def add_replay(self, replay):
         columns = (replay.player_name, replay.get_mods_name(), str(replay.score), str(replay.max_combo), str(replay.get_acc()),
                    str(replay.number_300s + replay.gekis), str(replay.number_100s + replay.katus), str(replay.number_50s), str(replay.misses))
-        self.replay_list.addTopLevelItem(ReplayManagerItem(columns))
+        self.replay_list.addTopLevelItem(ReplayManagerItem(replay, columns))
 
         for i in range(Column.NUM_COLS.value):
             self.replay_list.resizeColumnToContents(i)
@@ -89,21 +112,26 @@ class ReplayManager(QWidget):
 
         set_visible_action = QAction('&Set only this visible')
         set_visible_action.setStatusTip('Hides all other replay layers')
-        set_visible_action.triggered.connect(lambda item=item: self.__set_this_visible(item))
+        set_visible_action.triggered.connect(lambda _, item=item: self.__set_this_visible(item))
+
+        create_offset_graph_action = QAction('&Create offset graph')
+        create_offset_graph_action.setStatusTip('Add an offset graph to the Graphs tab')
+        create_offset_graph_action.triggered.connect(lambda _, item=item: self.__create_offset_graph(item))
 
         locate_replay_action = QAction('&Locate Replay')
         locate_replay_action.setStatusTip('Locates replay in file browser')
-        locate_replay_action.triggered.connect(lambda item=item: self.__locate_replay(item))
+        locate_replay_action.triggered.connect(lambda _, item=item: self.__locate_replay(item))
 
         copy_replay_code_action = QAction('&Copy replay code to clipboard')
         copy_replay_code_action.setStatusTip('Copies the code needed to access the replay to clipboard')
-        copy_replay_code_action.triggered.connect(lambda item=item: self.__replay_code_to_clipboard(item))
+        copy_replay_code_action.triggered.connect(lambda _, item=item: self.__replay_code_to_clipboard(item))
 
         # TODO: Figure out how to get available replay layers
         # layer_menu = QMenu()
 
         menu = QMenu(self)
         menu.addAction(set_visible_action)
+        menu.addAction(create_offset_graph_action)
         menu.addAction(locate_replay_action)
         menu.addAction(copy_replay_code_action)
         menu.exec(self.replay_list.mapToGlobal(pos))
@@ -111,6 +139,11 @@ class ReplayManager(QWidget):
 
     def __set_this_visible(self, item):
         print('TODO: __set_this_visible')
+
+
+    def __create_offset_graph(self, item):
+        replay_data = item.get_replay_data()
+        CmdOsu.create_offset_graph(replay_data)
 
 
     def __locate_replay(self, item):

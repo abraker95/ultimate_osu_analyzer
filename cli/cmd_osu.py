@@ -3,6 +3,8 @@ import time
 from osu.local.beatmap.beatmapIO import BeatmapIO
 from osu.local.replay.replayIO import ReplayIO
 
+from misc.callback import callback
+
 
 class CmdOsu():
 
@@ -29,3 +31,9 @@ class CmdOsu():
         for web_replay in web_replays:
             web_replay.download_replay('tmp/replays/')
             time.sleep(10)
+
+
+    @staticmethod
+    @callback
+    def create_offset_graph(replay_data):
+        CmdOsu.create_offset_graph.emit(replay_data)
