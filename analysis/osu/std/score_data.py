@@ -141,7 +141,7 @@ class StdScoreData():
                 is_in_neg_miss_range = time_offset < -StdScoreData.neg_hit_range
                 if is_in_neg_miss_range:
                     if pos_offset < StdScoreData.hitobject_radius:
-                        score_data.append([ press_time, cursor_cor, float('-inf'), (np.nan, np.nan), hitobject_idx ])
+                        score_data.append([ press_time, cursor_cor, -float(StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range), cursor_cor - aimpoint_cor, hitobject_idx ])
                         curr_key_event_idx    = idx + 1      # consume event
                         is_hitobject_consumed = True; break  # consume hitobject
 
@@ -149,7 +149,7 @@ class StdScoreData():
                 is_in_pos_miss_range = time_offset > StdScoreData.pos_hit_range
                 if is_in_pos_miss_range:
                     if pos_offset < StdScoreData.hitobject_radius:
-                        score_data.append([ press_time, cursor_cor, float('inf'), (np.nan, np.nan), hitobject_idx ])
+                        score_data.append([ press_time, cursor_cor, float(StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range), cursor_cor - aimpoint_cor, hitobject_idx ])
                         curr_key_event_idx    = idx + 1      # consume event
                         is_hitobject_consumed = True; break  # consume hitobject
 
