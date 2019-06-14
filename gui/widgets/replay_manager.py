@@ -137,6 +137,10 @@ class ReplayManager(QWidget):
             copy_replay_code_action.setStatusTip('Copies the code needed to access the replay to clipboard')
             copy_replay_code_action.triggered.connect(lambda _, item=item: self.__replay_code_to_clipboard(item))
 
+            copy_score_code_action = QAction('&Copy score code to clipboard')
+            copy_score_code_action.setStatusTip('Copies the code needed to access the score to clipboard')
+            copy_score_code_action.triggered.connect(lambda _, item=item: self.__score_code_to_clipboard(item))
+
             # Graph menu items
             create_score_offset_graph_action = QAction('&Create offset graph')
             create_score_offset_graph_action.setStatusTip('Add an offset graph to the Graphs tab')
@@ -159,6 +163,7 @@ class ReplayManager(QWidget):
             menu.addAction(set_visible_action)
             menu.addAction(locate_replay_action)
             menu.addAction(copy_replay_code_action)
+            menu.addAction(copy_score_code_action)
             
             graph_submenu = menu.addMenu('Graphs')
             graph_submenu.addAction(create_score_offset_graph_action)
@@ -181,6 +186,13 @@ class ReplayManager(QWidget):
 
     def __replay_code_to_clipboard(self, item):
         QApplication.clipboard().setText('replay_data = get_replays()[' + str(self.replay_list.currentIndex().row()) + ']')
+
+
+    def __score_code_to_clipboard(self, item):
+        replay_data_code = 'get_replays()[' + str(self.replay_list.currentIndex().row()) + ']'
+        map_data_code    = 'StdMapData.get_aimpoint_data(get_beatmap().hitobjects)'
+        score_data_code  = 'score_data = StdScoreData.get_score_data(' + replay_data_code + ', ' + map_data_code + ')'
+        QApplication.clipboard().setText(score_data_code)
 
         
     def __create_score_offset_graph(self, item):
