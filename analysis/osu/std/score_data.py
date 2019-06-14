@@ -180,50 +180,70 @@ class StdScoreData():
 
     @staticmethod
     def tap_offset_mean(score_data):
-        return np.mean(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
+        hit_offsets = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
+        hit_offsets = NumpyUtils.nan_filter(hit_offsets)
+
+        return np.mean(hit_offsets)
 
 
     @staticmethod
     def tap_offset_var(score_data):
-        return np.var(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
+        hit_offsets = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
+        hit_offsets = NumpyUtils.nan_filter(hit_offsets)
+
+        return np.var(hit_offsets)
 
 
     @staticmethod
     def tap_offset_stdev(score_data):
-        return np.std(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
+        hit_offsets = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
+        hit_offsets = NumpyUtils.nan_filter(hit_offsets)
+
+        return np.std(hit_offsets)
 
 
     @staticmethod
     def cursor_pos_offset_mean(score_data):
-        mean_x = np.mean(score_data[:, StdScoreDataEnums.POS_OFFSET.value][0])
-        mean_y = np.mean(score_data[:, StdScoreDataEnums.POS_OFFSET.value][1])
-        return (mean_x, mean_y)
+        pos_x = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.POS_OFFSET.value][0])
+        pos_y = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.POS_OFFSET.value][1])
+
+        pos_x = NumpyUtils.nan_filter(pos_x)
+        pos_y = NumpyUtils.nan_filter(pos_y)
+
+        return (np.mean(pos_x), np.mean(pos_y))
 
 
     @staticmethod
     def cursor_pos_offset_var(score_data):
-        var_x = np.var(score_data[:, StdScoreDataEnums.POS_OFFSET.value][0])
-        var_y = np.var(score_data[:, StdScoreDataEnums.POS_OFFSET.value][1])
+        pos_x = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.POS_OFFSET.value][0])
+        pos_y = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.POS_OFFSET.value][1])
 
-        return (var_x, var_y)
+        pos_x = NumpyUtils.nan_filter(pos_x)
+        pos_y = NumpyUtils.nan_filter(pos_y)
+
+        return (np.var(pos_x), np.var(pos_y))
 
 
     @staticmethod
     def cursor_pos_offset_stdev(score_data):
-        stdev_x = np.std(score_data[:, StdScoreDataEnums.POS_OFFSET.value][0])
-        stdev_y = np.std(score_data[:, StdScoreDataEnums.POS_OFFSET.value][1])
+        pos_x = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.POS_OFFSET.value][0])
+        pos_y = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.POS_OFFSET.value][1])
 
-        return (stdev_x, stdev_y)
+        pos_x = NumpyUtils.nan_filter(pos_x)
+        pos_y = NumpyUtils.nan_filter(pos_y)
+
+        return (np.std(pos_x), np.std(pos_y))
 
 
     @staticmethod
-    def odds_all_tap_within(score_data, offset):
+    def odds_some_tap_within(score_data, offset):
         """
-        Creates a gaussian distribution using avg and var of tap offsets and calculates the odds that all of the hits 
-        are within the specified offset
+        Creates a gaussian distribution model using avg and var of tap offsets and calculates the odds that some hit
+        is within the specified offset
 
         Returns: probability one random value [X] is between -offset <= X <= offset
-                 To calculate the odds of all taps occuring within offset, do odds_all_tap_within(score_data, offset)**len(score_data)
+                 TL;DR: look at all the hits for scores; What are the odds of you picking 
+                        a random hit that is between -offset and offset?
         """
         mean  = StdScoreData.tap_offset_mean(score_data)
         stdev = StdScoreData.tap_offset_stdev(score_data)
@@ -235,15 +255,18 @@ class StdScoreData():
 
 
     @staticmethod
-    def odds_all_cursor_within(score_data, offset):
+    def odds_some_cursor_within(score_data, offset):
         """
-        Creates a gaussian distribution using avg and var of cursor 2D position offsets and uses it to calculates the odds 
-        that all of the cursor positions are within the specified distance from the center of all hitobjects
+        Creates a 2D gaussian distribution model using avg and var of cursor 2D position offsets and uses it to calculates the odds 
+        that some cursor position is within the specified distance from the center of any hitobject
 
         Returns: probability one random value [X, Y] is between (-offset, -offset) <= (X, Y) <= (offset, offset)
-                 To calculate the odds of all cursor positions occuring within offset, do odds_all_cursor_within(score_data, offset)**len(score_data)
-        """
+                 TL;DR: look at all the cursor positions for score; What are the odds of you picking a random hit that has 
+                        a cursor position between an area of (-offset, -offset) and (offset, offset)?
+        """        
         positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
+        positions = NumpyUtils.inf_filter(positions)
+        positions = NumpyUtils.nan_filter(positions)
 
         mean_2d      = np.asarray(StdScoreData.cursor_pos_offset_mean(score_data))
         covariance   = np.cov(positions.T)
@@ -253,3 +276,40 @@ class StdScoreData():
         prob_less_than_pos = distribution.cdf(np.asarray([offset, offset]))
 
         return prob_less_than_pos - prob_less_than_neg
+
+
+    """
+    Creates a gaussian distribution model using avg and var of tap offsets and calculates the odds that all hits
+    are within the specified offset
+
+    Returns: probability all random values [X] are between -offset <= X <= offset
+             TL;DR: look at all the hits for scores; What are the odds all of them are between -offset and offset?
+    """
+    @staticmethod
+    def odds_all_tap_within(score_data, offset):
+        return StdScoreData.odds_some_tap_within(score_data, offset)**len(score_data)
+
+
+    """
+    Creates a 2D gaussian distribution model using avg and var of cursor 2D position offsets and uses it to calculates the odds 
+    that all cursor positions are within the specified distance from the center of all hitobject
+
+    Returns: probability all random values {[X, Y], ...} are between (-offset, -offset) <= (X, Y) <= (offset, offset)
+             TL;DR: look at all the cursor positions for score; What are the odds all of them are between an area 
+                    of (-offset, -offset) and (offset, offset)?
+    """
+    @staticmethod
+    def odds_all_cursor_within(score_data, offset):
+        return StdScoreData.odds_some_cursor_within(score_data, offset)**len(score_data)
+
+
+    """
+    Creates gaussian distribution models using tap offsets and cursor offsets for hits. That is used to calculate the odds
+    of the player consistently tapping and aiming within those boundaries for the entire play
+    """
+    @staticmethod
+    def odds_all_conditions_within(score_data, tap_offset, cursor_offset):
+        odds_all_tap_within    = StdScoreData.odds_all_tap_within(score_data, tap_offset)
+        odds_all_cursor_within = StdScoreData.odds_all_cursor_within(score_data, cursor_offset)
+
+        return odds_all_tap_within*odds_all_cursor_within
