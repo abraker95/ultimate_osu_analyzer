@@ -166,7 +166,7 @@ class MainWindow(QMainWindow):
 
         self.ipython_console.push_vars({ 'timeline' : self.timeline })
         self.ipython_console.push_vars({ 'get_beatmap' : self.map_manager.get_current_map })
-        # TODO: self.ipython_console.push_vars({ 'get_replays' : self.replay_manager.get_all })
+        self.ipython_console.push_vars({ 'get_replays' : lambda: self.replay_manager_switch_gui.get().get_replay_data() })
 
         self.ipython_console.push_vars({ 'add_layer_2d_data' : self.add_layer_2d_data })
         self.ipython_console.push_vars({ 'add_graph_2d_data' : self.add_graph_2d_data })

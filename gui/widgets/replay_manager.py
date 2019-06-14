@@ -84,6 +84,7 @@ class ReplayManager(QWidget):
     def update_gui(self):
         self.replay_list.setContextMenuPolicy(Qt.CustomContextMenu)
         self.replay_list.customContextMenuRequested.connect(self.__right_click_menu)
+        self.replay_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.replay_list.setRootIsDecorated(False)
         self.replay_list.setSortingEnabled(True)
 
@@ -106,56 +107,68 @@ class ReplayManager(QWidget):
         print('TODO: rmv replay')
 
 
+    def get_replay_data(self, start=None, end=None):
+        start = max(0, start) if start != None else 0
+        end   = min(self.replay_list.topLevelItemCount(), end) if end != None else self.replay_list.topLevelItemCount()
+
+        return [ self.replay_list.topLevelItem(i).get_replay_data() for i in range(start, end) ]
+
+
     def __right_click_menu(self, pos):
-        item = self.replay_list.itemAt(pos)
-        if item == None: return
-        
-        # Main menu items
-        set_visible_action = QAction('&Set only this visible')
-        set_visible_action.setStatusTip('Hides all other replay layers')
-        set_visible_action.triggered.connect(lambda _, item=item: self.__set_this_visible(item))
+        selected = self.replay_list.selectedItems()
+        if len(selected) == 0: return
 
-        # TODO: Figure out how to get available replay layers
-        # layer_menu = QMenu()
+        if len(selected) == 1:
+            item = selected[0]
 
-        locate_replay_action = QAction('&Locate Replay')
-        locate_replay_action.setStatusTip('Locates replay in file browser')
-        locate_replay_action.triggered.connect(lambda _, item=item: self.__locate_replay(item))
+            # Main menu items
+            set_visible_action = QAction('&Set only this visible')
+            set_visible_action.setStatusTip('Hides all other replay layers')
+            set_visible_action.triggered.connect(lambda _, item=item: self.__set_this_visible(item))
 
-        copy_replay_code_action = QAction('&Copy replay code to clipboard')
-        copy_replay_code_action.setStatusTip('Copies the code needed to access the replay to clipboard')
-        copy_replay_code_action.triggered.connect(lambda _, item=item: self.__replay_code_to_clipboard(item))
+            # TODO: Figure out how to get available replay layers
+            # layer_menu = QMenu()
 
-        # Graph menu items
-        create_score_offset_graph_action = QAction('&Create offset graph')
-        create_score_offset_graph_action.setStatusTip('Add an offset graph to the Graphs tab')
-        create_score_offset_graph_action.triggered.connect(lambda _, item=item: self.__create_score_offset_graph(item))
+            locate_replay_action = QAction('&Locate Replay')
+            locate_replay_action.setStatusTip('Locates replay in file browser')
+            locate_replay_action.triggered.connect(lambda _, item=item: self.__locate_replay(item))
 
-        create_cursor_velocity_graph_action = QAction('&Create cursor velocity graph')
-        create_cursor_velocity_graph_action.setStatusTip('Add a cursor velocity graph to the Graphs tab')
-        create_cursor_velocity_graph_action.triggered.connect(lambda _, item=item: self.__create_cursor_velocity_graph(item))
+            copy_replay_code_action = QAction('&Copy replay code to clipboard')
+            copy_replay_code_action.setStatusTip('Copies the code needed to access the replay to clipboard')
+            copy_replay_code_action.triggered.connect(lambda _, item=item: self.__replay_code_to_clipboard(item))
 
-        create_cursor_acceleration_graph_action = QAction('&Create cursor acceleration graph')
-        create_cursor_acceleration_graph_action.setStatusTip('Add a cursor acceleration graph to the Graphs tab')
-        create_cursor_acceleration_graph_action.triggered.connect(lambda _, item=item: self.__create_cursor_acceleration_graph(item))
+            # Graph menu items
+            create_score_offset_graph_action = QAction('&Create offset graph')
+            create_score_offset_graph_action.setStatusTip('Add an offset graph to the Graphs tab')
+            create_score_offset_graph_action.triggered.connect(lambda _, item=item: self.__create_score_offset_graph(item))
 
-        create_cursor_jerk_graph_action = QAction('&Create cursor jerk graph')
-        create_cursor_jerk_graph_action.setStatusTip('Add a cursor vjerkelocity graph to the Graphs tab')
-        create_cursor_jerk_graph_action.triggered.connect(lambda _, item=item: self.__create_cursor_jerk_graph(item))
+            create_cursor_velocity_graph_action = QAction('&Create cursor velocity graph')
+            create_cursor_velocity_graph_action.setStatusTip('Add a cursor velocity graph to the Graphs tab')
+            create_cursor_velocity_graph_action.triggered.connect(lambda _, item=item: self.__create_cursor_velocity_graph(item))
 
-        # Menu construction
-        menu = QMenu(self)
-        menu.addAction(set_visible_action)
-        menu.addAction(locate_replay_action)
-        menu.addAction(copy_replay_code_action)
-        
-        graph_submenu = menu.addMenu('Graphs')
-        graph_submenu.addAction(create_score_offset_graph_action)
-        graph_submenu.addAction(create_cursor_velocity_graph_action)
-        graph_submenu.addAction(create_cursor_acceleration_graph_action)
-        graph_submenu.addAction(create_cursor_jerk_graph_action)
+            create_cursor_acceleration_graph_action = QAction('&Create cursor acceleration graph')
+            create_cursor_acceleration_graph_action.setStatusTip('Add a cursor acceleration graph to the Graphs tab')
+            create_cursor_acceleration_graph_action.triggered.connect(lambda _, item=item: self.__create_cursor_acceleration_graph(item))
 
-        menu.exec(self.replay_list.mapToGlobal(pos))
+            create_cursor_jerk_graph_action = QAction('&Create cursor jerk graph')
+            create_cursor_jerk_graph_action.setStatusTip('Add a cursor vjerkelocity graph to the Graphs tab')
+            create_cursor_jerk_graph_action.triggered.connect(lambda _, item=item: self.__create_cursor_jerk_graph(item))
+
+            # Menu construction
+            menu = QMenu(self)
+            menu.addAction(set_visible_action)
+            menu.addAction(locate_replay_action)
+            menu.addAction(copy_replay_code_action)
+            
+            graph_submenu = menu.addMenu('Graphs')
+            graph_submenu.addAction(create_score_offset_graph_action)
+            graph_submenu.addAction(create_cursor_velocity_graph_action)
+            graph_submenu.addAction(create_cursor_acceleration_graph_action)
+            graph_submenu.addAction(create_cursor_jerk_graph_action)
+
+            menu.exec(self.replay_list.mapToGlobal(pos))
+        else:
+            print('TODO: multi select')
 
 
     def __set_this_visible(self, item):
@@ -167,7 +180,7 @@ class ReplayManager(QWidget):
 
 
     def __replay_code_to_clipboard(self, item):
-        print('TODO: __replay_code_to_clipboard')
+        QApplication.clipboard().setText('replay_data = get_replays()[' + str(self.replay_list.currentIndex().row()) + ']')
 
         
     def __create_score_offset_graph(self, item):
