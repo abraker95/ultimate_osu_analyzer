@@ -1,3 +1,4 @@
+import math
 import osrparse
 import lzma
 
@@ -141,6 +142,10 @@ class Replay(osrparse.replay.Replay):
 
         events = [ eventstring.split('|') for eventstring in datastring.split(',') ]
         self.play_data = [ ReplayEvent(int(event[0]), float(event[1]), float(event[2]), int(event[3])) for event in events if int(event[0]) != -12345 ]
+        
+        # Calculate number of keys used in the replay for mania
+        largest_key_event = max(self.play_data, key=lambda event: event.x)
+        self.mania_keys = int(math.log(largest_key_event.x, 2)/2)
         
 
     def __process_event_times(self):
