@@ -1,3 +1,4 @@
+from enum import Enum
 import numpy as np
 
 from misc.numpy_utils import NumpyUtils
@@ -7,6 +8,14 @@ from osu.local.hitobject.std.std import Std
 from analysis.osu.std.map_data import StdMapData
 from analysis.osu.std.replay_data import StdReplayData
 
+
+class StdScoreDataEnums(Enum):
+
+    TIME          = 0
+    POS           = 1
+    HIT_OFFSET    = 2
+    POS_OFFSET    = 3
+    HITOBJECT_IDX = 4
 
 
 '''
@@ -165,3 +174,22 @@ class StdScoreData():
 
         return np.asarray(score_data)
 
+
+    @staticmethod
+    def tap_offset_average(score_data):
+        return np.mean(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
+
+
+    @staticmethod
+    def tap_offset_variance(score_data):
+        return np.var(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
+
+
+    @staticmethod
+    def cursor_offset_average(score_data):
+        return np.mean(score_data[:, StdScoreDataEnums.POS_OFFSET.value])
+
+
+    @staticmethod
+    def cursor_offset_variance(score_data):
+        return np.var(score_data[:, StdScoreDataEnums.POS_OFFSET.value])
