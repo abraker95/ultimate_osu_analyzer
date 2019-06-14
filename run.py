@@ -35,6 +35,7 @@ from gui.objects.layer.layers.mania.raw_replay_layer import ManiaRawReplayLayer
 from gui.objects.layer.layers.mania.press_replay_layer import ManiaPressReplayLayer
 from gui.objects.layer.layers.mania.release_replay_layer import ManiaReleaseReplayLayer
 from gui.objects.layer.layers.mania.hold_replay_layer import ManiaHoldReplayLayer
+from gui.objects.layer.layers.mania.score_debug_layer import ManiaScoreDebugLayer
 
 from gui.objects.layer.layers.mania.hitobject_render_layer import HitobjectRenderLayer
 
@@ -56,6 +57,8 @@ from analysis.osu.std.score_metrics import StdScoreMetrics
 
 from analysis.osu.mania.map_data import ManiaMapData
 from analysis.osu.mania.map_metrics import ManiaMapMetrics
+from analysis.osu.mania.replay_data import ManiaReplayData
+from analysis.osu.mania.score_data import ManiaScoreData
 
 
 
@@ -180,6 +183,8 @@ class MainWindow(QMainWindow):
 
         self.ipython_console.push_vars({ 'ManiaMapData'    : ManiaMapData })
         self.ipython_console.push_vars({ 'ManiaMapMetrics' : ManiaMapMetrics })
+        self.ipython_console.push_vars({ 'ManiaReplayData' : ManiaReplayData })
+        self.ipython_console.push_vars({ 'ManiaScoreData'  : ManiaScoreData })
 
         #self.ipython_console.push_vars({ 'OsuApi'    : OsuApi })
         #self.ipython_console.push_vars({ 'OsuOnline' : OsuOnline })
@@ -306,6 +311,7 @@ class MainWindow(QMainWindow):
             #self.layer_manager_switch_gui.get().add_layer(ManiaPressReplayLayer((replay, num_columns), self.timeline.time_changed_event))
             #self.layer_manager_switch_gui.get().add_layer(ManiaReleaseReplayLayer((replay, num_columns), self.timeline.time_changed_event))
             self.layer_manager_switch_gui.get().add_layer(ManiaHoldReplayLayer((replay, num_columns), self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer(ManiaScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
 
         self.status_bar.showMessage('Replay applied. Check replay tab.')
 
