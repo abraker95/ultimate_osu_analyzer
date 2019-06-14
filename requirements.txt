@@ -1,4 +1,5 @@
 numpy
+scipy
 pyqtgraph
 osrparse
 pyqt5

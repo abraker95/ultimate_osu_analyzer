@@ -1,8 +1,10 @@
 from enum import Enum
 import numpy as np
+import scipy.stats
 
 from misc.numpy_utils import NumpyUtils
 from misc.geometry import get_distance
+from misc.math_utils import prob_not, prob_and, prob_or
 
 from osu.local.hitobject.std.std import Std
 from analysis.osu.std.map_data import StdMapData
@@ -20,9 +22,9 @@ class StdScoreDataEnums(Enum):
 
 '''
 [
-    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, pos_offset, hitobject_idx ],
-    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, pos_offset, hitobject_idx ],
-    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, pos_offset, hitobject_idx ],
+    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
+    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
+    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
     ...  N events
 ]
 '''
@@ -80,6 +82,7 @@ class StdScoreData():
 
         # Go through each hitobject
         for hitobject_idx in range(len(map_data)):
+            # Get first aimpoint in the hitobject
             aimpoint_time, aimpoint_cor = map_data[hitobject_idx][0]
 
             # To keep track of whether there was a tap that corresponded to this hitobject
@@ -113,7 +116,7 @@ class StdScoreData():
                 press_idx, press_time, release_idx, release_time = event_data[idx]
                 time_offset = press_time - aimpoint_time
 
-                cursor_cor = replay_data[int(press_idx)][1], replay_data[int(press_idx)][2]
+                cursor_cor = np.asarray([ replay_data[int(press_idx)][1], replay_data[int(press_idx)][2] ])
                 pos_offset = get_distance(cursor_cor, aimpoint_cor)
 
                 #score_data.append([ press_time, cursor_cor, offset, key_event_idx, len(event_data) ])
@@ -122,7 +125,7 @@ class StdScoreData():
                 is_in_neg_nothing_range = time_offset < -neg_nothing_range
                 if is_in_neg_nothing_range:
                     if StdScoreData.blank_miss:
-                        score_data.append([ press_time, cursor_cor, float('nan'), float('nan'), float('nan') ])
+                        score_data.append([ press_time, cursor_cor, float('nan'), (float('nan'), float('nan')), float('nan') ])
                     curr_key_event_idx = idx + 1  # consume event
                     continue                      # next key press
 
@@ -130,7 +133,7 @@ class StdScoreData():
                 is_in_pos_nothing_range = time_offset > pos_nothing_range
                 if is_in_pos_nothing_range:
                     if StdScoreData.blank_miss:
-                        score_data.append([ press_time, cursor_cor, float('nan'), float('nan'), float('nan') ])
+                        score_data.append([ press_time, cursor_cor, float('nan'), (float('nan'), float('nan')), float('nan') ])
                     curr_key_event_idx = idx + 1  # consume event
                     continue                      # next key press
 
@@ -138,7 +141,7 @@ class StdScoreData():
                 is_in_neg_miss_range = time_offset < -StdScoreData.neg_hit_range
                 if is_in_neg_miss_range:
                     if pos_offset < StdScoreData.hitobject_radius:
-                        score_data.append([ press_time, cursor_cor, float('-inf'), float('nan'), hitobject_idx ])
+                        score_data.append([ press_time, cursor_cor, float('-inf'), (float('nan'), float('nan')), hitobject_idx ])
                         curr_key_event_idx    = idx + 1      # consume event
                         is_hitobject_consumed = True; break  # consume hitobject
 
@@ -146,13 +149,13 @@ class StdScoreData():
                 is_in_pos_miss_range = time_offset > StdScoreData.pos_hit_range
                 if is_in_pos_miss_range:
                     if pos_offset < StdScoreData.hitobject_radius:
-                        score_data.append([ press_time, cursor_cor, float('inf'), float('nan'), hitobject_idx ])
+                        score_data.append([ press_time, cursor_cor, float('inf'), (float('nan'), float('nan')), hitobject_idx ])
                         curr_key_event_idx    = idx + 1      # consume event
                         is_hitobject_consumed = True; break  # consume hitobject
 
                 # If a tap is anything else, it's a hit if on circle
                 if pos_offset < StdScoreData.hitobject_radius:
-                    score_data.append([ press_time, cursor_cor, time_offset, round(pos_offset, 3), hitobject_idx ])
+                    score_data.append([ press_time, cursor_cor, time_offset, cursor_cor - aimpoint_cor, hitobject_idx ])
 
                     if not StdScoreData.lazy_sliders:
                         # TODO: Handle sliders here
@@ -170,26 +173,77 @@ class StdScoreData():
             # The player never tapped this hitobject. 
             if not is_hitobject_consumed:
                 idx = min(curr_key_event_idx, len(event_data) - 1)
-                score_data.append([ aimpoint_time, aimpoint_cor, float(StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range), float('nan'), hitobject_idx ])
+                score_data.append([ aimpoint_time, aimpoint_cor, float(StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range), (float('nan'), float('nan')), hitobject_idx ])
 
         return np.asarray(score_data)
 
 
     @staticmethod
-    def tap_offset_average(score_data):
+    def tap_offset_mean(score_data):
         return np.mean(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
 
 
     @staticmethod
-    def tap_offset_variance(score_data):
+    def tap_offset_var(score_data):
         return np.var(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
 
 
     @staticmethod
-    def cursor_offset_average(score_data):
-        return np.mean(score_data[:, StdScoreDataEnums.POS_OFFSET.value])
+    def tap_offset_stdev(score_data):
+        return np.std(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
 
 
     @staticmethod
-    def cursor_offset_variance(score_data):
-        return np.var(score_data[:, StdScoreDataEnums.POS_OFFSET.value])
+    def cursor_pos_offset_mean(score_data):
+        mean_x = np.mean(score_data[:, StdScoreDataEnums.POS_OFFSET.value][0])
+        mean_y = np.mean(score_data[:, StdScoreDataEnums.POS_OFFSET.value][1])
+        return (mean_x, mean_y)
+
+
+    @staticmethod
+    def cursor_pos_offset_var(score_data):
+        var_x = np.var(score_data[:, StdScoreDataEnums.POS_OFFSET.value][0])
+        var_y = np.var(score_data[:, StdScoreDataEnums.POS_OFFSET.value][1])
+
+        return (var_x, var_y)
+
+
+    @staticmethod
+    def cursor_pos_offset_stdev(score_data):
+        stdev_x = np.std(score_data[:, StdScoreDataEnums.POS_OFFSET.value][0])
+        stdev_y = np.std(score_data[:, StdScoreDataEnums.POS_OFFSET.value][1])
+
+        return (stdev_x, stdev_y)
+
+
+    @staticmethod
+    def odds_all_tap_within(score_data, offset):
+        """
+        Creates a gaussian distribution using avg and var of tap offsets and calculates the odds that all of the hits 
+        are within the specified offset
+        """
+        mean  = StdScoreData.tap_offset_mean(score_data)
+        stdev = StdScoreData.tap_offset_stdev(score_data)
+
+        prob_less_than_equal    = scipy.stats.norm.cdf(-offset, loc=mean, scale=stdev)
+        prob_greater_then_equal = 1 - scipy.stats.norm.cdf(offset, loc=mean, scale=stdev)
+
+        return 1 - prob_or(prob_less_than_equal, prob_greater_then_equal)
+
+
+    @staticmethod
+    def odds_all_cursor_within(score_data, offset):
+        """
+        Creates a gaussian distribution using avg and var of cursor 2D position offsets and uses it to calculates the odds 
+        that all of the cursor positions are within the specified distance from the center of all hitobjects
+        """
+        positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
+
+        mean_2d      = np.asarray(StdScoreData.cursor_pos_offset_mean(score_data))
+        covariance   = np.cov(positions.T)
+        distribution = scipy.stats.multivariate_normal(mean_2d, covariance)
+
+        prob_less_than_equal    = distribution.cdf(np.asarray([-offset, -offset]))
+        prob_greater_then_equal = 1 - distribution.cdf(np.asarray([offset, offset]))
+
+        return 1 - prob_or(prob_less_than_equal, prob_greater_then_equal)

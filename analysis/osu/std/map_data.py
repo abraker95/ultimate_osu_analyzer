@@ -34,7 +34,7 @@ class StdMapData():
         
         elif std_hitobject.is_hitobject_type(Hitobject.SLIDER):
             for aimpoint_time in std_hitobject.get_aimpoint_times():
-                yield [ aimpoint_time, (std_hitobject.time_to_pos(aimpoint_time).x, std_hitobject.time_to_pos(aimpoint_time).y) ]
+                yield [ aimpoint_time, np.asarray([ std_hitobject.time_to_pos(aimpoint_time).x, std_hitobject.time_to_pos(aimpoint_time).y ]) ]
 
     
     @staticmethod

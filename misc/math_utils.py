@@ -109,4 +109,8 @@ def find(val_list, val, selector=None):
         else:                   end   = mid - 1
         mid = int((start + end) / 2)
 
+
+def prob_not(x):    return 1.0 - x
+def prob_and(x, y): return x*y
+def prob_or(x, y):  return (x + y) - x*y
         
