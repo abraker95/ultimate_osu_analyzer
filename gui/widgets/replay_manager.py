@@ -28,10 +28,14 @@ class Column(Enum):
 
 class ReplayManagerItem(QTreeWidgetItem):
 
-    def __init__(self, replay, columns):
-        QTreeWidgetItem.__init__(self, columns)
+    def __init__(self, replay):
         self.replay      = replay
         self.replay_data = None
+
+        columns = (replay.player_name, replay.get_mods_name(), str(replay.score), str(replay.max_combo), str(replay.get_acc()),
+                    str(replay.number_300s + replay.gekis), str(replay.number_100s + replay.katus), str(replay.number_50s), str(replay.misses))
+
+        QTreeWidgetItem.__init__(self, columns)
 
 
     def __lt__(self, other):
@@ -53,7 +57,7 @@ class ReplayManagerItem(QTreeWidgetItem):
             if   self.replay.game_mode == GameMode.Standard:     self.replay_data = StdReplayData.get_event_data(self.replay.play_data)
             #elif self.replay.game_mode == GameMode.Taiko:        self.replay_data = TaikoReplayData.get_event_data(self.replay.play_data)
             #elif self.replay.game_mode == GameMode.CatchTheBeat: self.replay_data = CatchReplayData.get_event_data(self.replay.play_data)
-            #elif self.replay.game_mode == GameMode.Osumania:     self.replay_data = ManiaReplayData.get_replay_data(self.replay.play_data, columns)
+            elif self.replay.game_mode == GameMode.Osumania:     self.replay_data = ManiaReplayData.get_replay_data(self.replay.play_data, self.replay.mania_keys)
             else:
                 RuntimeError('Unsupported gamemode: ' + str(self.replay.game_mode))
 
@@ -95,9 +99,7 @@ class ReplayManager(QWidget):
 
 
     def add_replay(self, replay):
-        columns = (replay.player_name, replay.get_mods_name(), str(replay.score), str(replay.max_combo), str(replay.get_acc()),
-                   str(replay.number_300s + replay.gekis), str(replay.number_100s + replay.katus), str(replay.number_50s), str(replay.misses))
-        self.replay_list.addTopLevelItem(ReplayManagerItem(replay, columns))
+        self.replay_list.addTopLevelItem(ReplayManagerItem(replay))
 
         for i in range(Column.NUM_COLS.value):
             self.replay_list.resizeColumnToContents(i)
@@ -189,9 +191,27 @@ class ReplayManager(QWidget):
 
 
     def __score_code_to_clipboard(self, item):
+        gamemode = item.replay.game_mode
+
+        if gamemode == GameMode.Standard:
+            map_data   = 'StdMapData.get_aimpoint_data'
+            score_data = 'StdScoreData'
+        elif gamemode == GameMode.Taiko:
+            map_data   = 'TaikoMapData.get_map_data'
+            score_data = 'TaikoScoreData'
+        elif gamemode == GameMode.CatchTheBeat:
+            map_data   = 'CatchMapData.get_map_data'
+            score_data = 'CatchscoreData'
+        elif gamemode == GameMode.Osumania:
+            map_data   = 'ManiaMapData.get_hitobject_data'
+            score_data = 'ManiaScoreData'
+        else:
+            RuntimeError('Unsupported gamemode')
+
         replay_data_code = 'get_replays()[' + str(self.replay_list.currentIndex().row()) + ']'
-        map_data_code    = 'StdMapData.get_aimpoint_data(get_beatmap().hitobjects)'
-        score_data_code  = 'score_data = StdScoreData.get_score_data(' + replay_data_code + ', ' + map_data_code + ')'
+        map_data_code    = map_data + '(get_beatmap().hitobjects)'
+        score_data_code  = 'score_data = ' + score_data + '.get_score_data(' + replay_data_code + ', ' + map_data_code + ')'
+        
         QApplication.clipboard().setText(score_data_code)
 
         
