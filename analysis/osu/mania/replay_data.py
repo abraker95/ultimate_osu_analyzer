@@ -30,7 +30,7 @@ class ManiaReplayData():
                     press_states[column] = replay_event.t
 
                 if press_states[column] != None and not is_key_press:
-                    event_data[column].append((press_states[column], replay_event.t))
+                    event_data[column].append(np.asarray([ press_states[column], replay_event.t ]))
                     press_states[column] = None
 
         return event_data
