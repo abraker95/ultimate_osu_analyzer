@@ -221,14 +221,17 @@ class StdScoreData():
         """
         Creates a gaussian distribution using avg and var of tap offsets and calculates the odds that all of the hits 
         are within the specified offset
+
+        Returns: probability one random value [X] is between -offset <= X <= offset
+                 To calculate the odds of all taps occuring within offset, do odds_all_tap_within(score_data, offset)**len(score_data)
         """
         mean  = StdScoreData.tap_offset_mean(score_data)
         stdev = StdScoreData.tap_offset_stdev(score_data)
 
-        prob_less_than_equal    = scipy.stats.norm.cdf(-offset, loc=mean, scale=stdev)
-        prob_greater_then_equal = 1 - scipy.stats.norm.cdf(offset, loc=mean, scale=stdev)
+        prob_less_than_neg = scipy.stats.norm.cdf(-offset, loc=mean, scale=stdev)
+        prob_less_than_pos = scipy.stats.norm.cdf(offset, loc=mean, scale=stdev)
 
-        return 1 - prob_or(prob_less_than_equal, prob_greater_then_equal)
+        return prob_less_than_pos - prob_less_than_neg
 
 
     @staticmethod
@@ -236,6 +239,9 @@ class StdScoreData():
         """
         Creates a gaussian distribution using avg and var of cursor 2D position offsets and uses it to calculates the odds 
         that all of the cursor positions are within the specified distance from the center of all hitobjects
+
+        Returns: probability one random value [X, Y] is between (-offset, -offset) <= (X, Y) <= (offset, offset)
+                 To calculate the odds of all cursor positions occuring within offset, do odds_all_cursor_within(score_data, offset)**len(score_data)
         """
         positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
 
@@ -243,7 +249,7 @@ class StdScoreData():
         covariance   = np.cov(positions.T)
         distribution = scipy.stats.multivariate_normal(mean_2d, covariance)
 
-        prob_less_than_equal    = distribution.cdf(np.asarray([-offset, -offset]))
-        prob_greater_then_equal = 1 - distribution.cdf(np.asarray([offset, offset]))
+        prob_less_than_neg = distribution.cdf(np.asarray([-offset, -offset]))
+        prob_less_than_pos = distribution.cdf(np.asarray([offset, offset]))
 
-        return 1 - prob_or(prob_less_than_equal, prob_greater_then_equal)
+        return prob_less_than_pos - prob_less_than_neg
