@@ -182,13 +182,9 @@ class StdScoreData():
     def tap_offset_mean(score_data):
         hit_offsets = score_data[:, StdScoreDataEnums.HIT_OFFSET.value]
         
-        pos_inf_idx_filter = np.where(hit_offsets == float('inf'))
-        hit_offsets[pos_inf_idx_filter] = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
-
-        neg_inf_idx_filter = np.where(hit_offsets == float('-inf'))
-        hit_offsets[neg_inf_idx_filter] = -(StdScoreData.neg_hit_range + StdScoreData.neg_hit_miss_range)
-
-        hit_offsets = NumpyUtils.nan_filter(hit_offsets)
+        hit_offsets[hit_offsets == float('inf')]  = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
+        hit_offsets[hit_offsets == float('-inf')] = -(StdScoreData.neg_hit_range + StdScoreData.neg_hit_miss_range)
+        hit_offsets = hit_offsets[~np.isnan(hit_offsets.astype(float))]
 
         return np.mean(hit_offsets)
 
@@ -197,13 +193,9 @@ class StdScoreData():
     def tap_offset_var(score_data):
         hit_offsets = score_data[:, StdScoreDataEnums.HIT_OFFSET.value]
         
-        pos_inf_idx_filter = np.where(hit_offsets == float('inf'))
-        hit_offsets[pos_inf_idx_filter] = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
-
-        neg_inf_idx_filter = np.where(hit_offsets == float('-inf'))
-        hit_offsets[neg_inf_idx_filter] = -(StdScoreData.neg_hit_range + StdScoreData.neg_hit_miss_range)
-
-        hit_offsets = NumpyUtils.nan_filter(hit_offsets)
+        hit_offsets[hit_offsets == float('inf')]  = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
+        hit_offsets[hit_offsets == float('-inf')] = -(StdScoreData.neg_hit_range + StdScoreData.neg_hit_miss_range)
+        hit_offsets = hit_offsets[~np.isnan(hit_offsets.astype(float))]
 
         return np.var(hit_offsets)
 
@@ -212,13 +204,9 @@ class StdScoreData():
     def tap_offset_stdev(score_data):
         hit_offsets = score_data[:, StdScoreDataEnums.HIT_OFFSET.value]
         
-        pos_inf_idx_filter = np.where(hit_offsets == float('inf'))
-        hit_offsets[pos_inf_idx_filter] = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
-
-        neg_inf_idx_filter = np.where(hit_offsets == float('-inf'))
-        hit_offsets[neg_inf_idx_filter] = -(StdScoreData.neg_hit_range + StdScoreData.neg_hit_miss_range)
-
-        hit_offsets = NumpyUtils.nan_filter(hit_offsets)
+        hit_offsets[hit_offsets == float('inf')]  = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
+        hit_offsets[hit_offsets == float('-inf')] = -(StdScoreData.neg_hit_range + StdScoreData.neg_hit_miss_range)
+        hit_offsets = hit_offsets[~np.isnan(hit_offsets.astype(float))]
 
         return np.std(hit_offsets)
 
@@ -226,18 +214,33 @@ class StdScoreData():
     @staticmethod
     def cursor_pos_offset_mean(score_data):
         positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
+        if not all(np.isnan(positions.flatten())):
+            nan_mask = np.isnan(positions)
+            nan_mask = ~np.logical_or(nan_mask[:,0], nan_mask[:,1])
+            positions = positions[nan_mask]
+
         return np.mean(positions, axis=0)
 
 
     @staticmethod
     def cursor_pos_offset_var(score_data):
         positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
+        if not all(np.isnan(positions.flatten())):
+            nan_mask = np.isnan(positions)
+            nan_mask = ~np.logical_or(nan_mask[:,0], nan_mask[:,1])
+            positions = positions[nan_mask]
+
         return np.var(positions, axis=0)
 
 
     @staticmethod
     def cursor_pos_offset_stdev(score_data):
         positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
+        if not all(np.isnan(positions.flatten())):
+            nan_mask = np.isnan(positions)
+            nan_mask = ~np.logical_or(nan_mask[:,0], nan_mask[:,1])
+            positions = positions[nan_mask]
+
         return np.std(positions, axis=0)
 
 
@@ -271,9 +274,11 @@ class StdScoreData():
                         a cursor position between an area of (-offset, -offset) and (offset, offset)?
         """        
         positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
-        positions = NumpyUtils.nan_filter(positions)
-
-        if len(positions) == 0: return np.nan
+        if not all(np.isnan(positions.flatten())):
+            nan_mask = np.isnan(positions)
+            nan_mask = ~np.logical_or(nan_mask[:,0], nan_mask[:,1])
+            positions = positions[nan_mask]
+        else: return np.nan
 
         mean_2d = StdScoreData.cursor_pos_offset_mean(score_data)
         if any(np.isnan(mean_2d)): return np.nan
