@@ -35,6 +35,18 @@ class NumpyUtils():
         except: return None
 
 
+    @staticmethod
+    def inf_filter(lst):
+        inf_idx_filter = np.where(np.isfinite(lst.astype(np.float64)))
+        return lst[inf_idx_filter]
+
+
+    @staticmethod
+    def nan_filter(lst):
+        inf_idx_filter = np.where(lst != np.nan)
+        return lst[inf_idx_filter]
+
+
     # Thanks https://gist.github.com/alimanfoo/c5977e87111abe8127453b21204c1065
     @staticmethod
     def find_runs(lst):

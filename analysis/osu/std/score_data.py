@@ -125,7 +125,7 @@ class StdScoreData():
                 is_in_neg_nothing_range = time_offset < -neg_nothing_range
                 if is_in_neg_nothing_range:
                     if StdScoreData.blank_miss:
-                        score_data.append([ press_time, cursor_cor, float('nan'), (float('nan'), float('nan')), float('nan') ])
+                        score_data.append([ press_time, cursor_cor, np.nan, (np.nan, np.nan), np.nan ])
                     curr_key_event_idx = idx + 1  # consume event
                     continue                      # next key press
 
@@ -133,7 +133,7 @@ class StdScoreData():
                 is_in_pos_nothing_range = time_offset > pos_nothing_range
                 if is_in_pos_nothing_range:
                     if StdScoreData.blank_miss:
-                        score_data.append([ press_time, cursor_cor, float('nan'), (float('nan'), float('nan')), float('nan') ])
+                        score_data.append([ press_time, cursor_cor, np.nan, (np.nan, np.nan), np.nan ])
                     curr_key_event_idx = idx + 1  # consume event
                     continue                      # next key press
 
@@ -141,7 +141,7 @@ class StdScoreData():
                 is_in_neg_miss_range = time_offset < -StdScoreData.neg_hit_range
                 if is_in_neg_miss_range:
                     if pos_offset < StdScoreData.hitobject_radius:
-                        score_data.append([ press_time, cursor_cor, float('-inf'), (float('nan'), float('nan')), hitobject_idx ])
+                        score_data.append([ press_time, cursor_cor, float('-inf'), (np.nan, np.nan), hitobject_idx ])
                         curr_key_event_idx    = idx + 1      # consume event
                         is_hitobject_consumed = True; break  # consume hitobject
 
@@ -149,7 +149,7 @@ class StdScoreData():
                 is_in_pos_miss_range = time_offset > StdScoreData.pos_hit_range
                 if is_in_pos_miss_range:
                     if pos_offset < StdScoreData.hitobject_radius:
-                        score_data.append([ press_time, cursor_cor, float('inf'), (float('nan'), float('nan')), hitobject_idx ])
+                        score_data.append([ press_time, cursor_cor, float('inf'), (np.nan, np.nan), hitobject_idx ])
                         curr_key_event_idx    = idx + 1      # consume event
                         is_hitobject_consumed = True; break  # consume hitobject
 
@@ -173,14 +173,21 @@ class StdScoreData():
             # The player never tapped this hitobject. 
             if not is_hitobject_consumed:
                 idx = min(curr_key_event_idx, len(event_data) - 1)
-                score_data.append([ aimpoint_time, aimpoint_cor, float(StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range), (float('nan'), float('nan')), hitobject_idx ])
+                score_data.append([ aimpoint_time, aimpoint_cor, float(StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range), (np.nan, np.nan), hitobject_idx ])
 
         return np.asarray(score_data)
 
 
     @staticmethod
     def tap_offset_mean(score_data):
-        hit_offsets = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
+        hit_offsets = score_data[:, StdScoreDataEnums.HIT_OFFSET.value]
+        
+        pos_inf_idx_filter = np.where(hit_offsets == float('inf'))
+        hit_offsets[pos_inf_idx_filter] = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
+
+        neg_inf_idx_filter = np.where(hit_offsets == float('-inf'))
+        hit_offsets[neg_inf_idx_filter] = -(StdScoreData.neg_hit_range + StdScoreData.neg_hit_miss_range)
+
         hit_offsets = NumpyUtils.nan_filter(hit_offsets)
 
         return np.mean(hit_offsets)
@@ -188,7 +195,14 @@ class StdScoreData():
 
     @staticmethod
     def tap_offset_var(score_data):
-        hit_offsets = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
+        hit_offsets = score_data[:, StdScoreDataEnums.HIT_OFFSET.value]
+        
+        pos_inf_idx_filter = np.where(hit_offsets == float('inf'))
+        hit_offsets[pos_inf_idx_filter] = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
+
+        neg_inf_idx_filter = np.where(hit_offsets == float('-inf'))
+        hit_offsets[neg_inf_idx_filter] = -(StdScoreData.neg_hit_range + StdScoreData.neg_hit_miss_range)
+
         hit_offsets = NumpyUtils.nan_filter(hit_offsets)
 
         return np.var(hit_offsets)
@@ -196,7 +210,14 @@ class StdScoreData():
 
     @staticmethod
     def tap_offset_stdev(score_data):
-        hit_offsets = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.HIT_OFFSET.value])
+        hit_offsets = score_data[:, StdScoreDataEnums.HIT_OFFSET.value]
+        
+        pos_inf_idx_filter = np.where(hit_offsets == float('inf'))
+        hit_offsets[pos_inf_idx_filter] = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
+
+        neg_inf_idx_filter = np.where(hit_offsets == float('-inf'))
+        hit_offsets[neg_inf_idx_filter] = -(StdScoreData.neg_hit_range + StdScoreData.neg_hit_miss_range)
+
         hit_offsets = NumpyUtils.nan_filter(hit_offsets)
 
         return np.std(hit_offsets)
@@ -204,35 +225,20 @@ class StdScoreData():
 
     @staticmethod
     def cursor_pos_offset_mean(score_data):
-        pos_x = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.POS_OFFSET.value][0])
-        pos_y = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.POS_OFFSET.value][1])
-
-        pos_x = NumpyUtils.nan_filter(pos_x)
-        pos_y = NumpyUtils.nan_filter(pos_y)
-
-        return (np.mean(pos_x), np.mean(pos_y))
+        positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
+        return np.mean(positions, axis=0)
 
 
     @staticmethod
     def cursor_pos_offset_var(score_data):
-        pos_x = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.POS_OFFSET.value][0])
-        pos_y = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.POS_OFFSET.value][1])
-
-        pos_x = NumpyUtils.nan_filter(pos_x)
-        pos_y = NumpyUtils.nan_filter(pos_y)
-
-        return (np.var(pos_x), np.var(pos_y))
+        positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
+        return np.var(positions, axis=0)
 
 
     @staticmethod
     def cursor_pos_offset_stdev(score_data):
-        pos_x = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.POS_OFFSET.value][0])
-        pos_y = NumpyUtils.inf_filter(score_data[:, StdScoreDataEnums.POS_OFFSET.value][1])
-
-        pos_x = NumpyUtils.nan_filter(pos_x)
-        pos_y = NumpyUtils.nan_filter(pos_y)
-
-        return (np.std(pos_x), np.std(pos_y))
+        positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
+        return np.std(positions, axis=0)
 
 
     @staticmethod
@@ -265,10 +271,13 @@ class StdScoreData():
                         a cursor position between an area of (-offset, -offset) and (offset, offset)?
         """        
         positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
-        positions = NumpyUtils.inf_filter(positions)
         positions = NumpyUtils.nan_filter(positions)
 
-        mean_2d      = np.asarray(StdScoreData.cursor_pos_offset_mean(score_data))
+        if len(positions) == 0: return np.nan
+
+        mean_2d = StdScoreData.cursor_pos_offset_mean(score_data)
+        if any(np.isnan(mean_2d)): return np.nan
+
         covariance   = np.cov(positions.T)
         distribution = scipy.stats.multivariate_normal(mean_2d, covariance)
 
