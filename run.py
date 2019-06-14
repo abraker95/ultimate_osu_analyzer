@@ -48,10 +48,11 @@ from gui.widgets.std_settings import StdSettingsGui
 from gui.widgets.mania_settings import ManiaSettingsGui
 
 from analysis.osu.std.map_data import StdMapData
+from analysis.osu.std.map_metrics import StdMapMetrics
 from analysis.osu.std.replay_data import StdReplayData
 from analysis.osu.std.replay_metrics import StdReplayMetrics
 from analysis.osu.std.score_data import StdScoreData
-from analysis.osu.std.map_metrics import StdMapMetrics
+from analysis.osu.std.score_metrics import StdScoreMetrics
 
 from analysis.osu.mania.map_data import ManiaMapData
 from analysis.osu.mania.map_metrics import ManiaMapMetrics
@@ -171,10 +172,11 @@ class MainWindow(QMainWindow):
         self.ipython_console.push_vars({ 'add_layer_2d_data' : self.add_layer_2d_data })
         self.ipython_console.push_vars({ 'add_graph_2d_data' : self.add_graph_2d_data })
 
-        self.ipython_console.push_vars({ 'StdMapData'    : StdMapData })
-        self.ipython_console.push_vars({ 'StdReplayData' : StdReplayData })
-        self.ipython_console.push_vars({ 'StdScoreData'  : StdScoreData })
-        self.ipython_console.push_vars({ 'StdMapMetrics' : StdMapMetrics })
+        self.ipython_console.push_vars({ 'StdMapData'      : StdMapData })
+        self.ipython_console.push_vars({ 'StdMapMetrics'   : StdMapMetrics })
+        self.ipython_console.push_vars({ 'StdReplayData'   : StdReplayData })
+        self.ipython_console.push_vars({ 'StdScoreData'    : StdScoreData })
+        self.ipython_console.push_vars({ 'StdScoreMetrics' : StdScoreMetrics })
 
         self.ipython_console.push_vars({ 'ManiaMapData'    : ManiaMapData })
         self.ipython_console.push_vars({ 'ManiaMapMetrics' : ManiaMapMetrics })

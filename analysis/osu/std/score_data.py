@@ -179,6 +179,14 @@ class StdScoreData():
 
 
     @staticmethod
+    def press_interval_mean(score_data):
+        # TODO need to put in release offset into score_data
+        # TODO need to go through hitobjects and filter out hold notes
+        #  
+        pass
+
+
+    @staticmethod
     def tap_offset_mean(score_data):
         hit_offsets = score_data[:, StdScoreDataEnums.HIT_OFFSET.value]
         
@@ -319,7 +327,7 @@ class StdScoreData():
 
     """
     Creates gaussian distribution models using tap offsets and cursor offsets for hits. That is used to calculate the odds
-    of the player consistently tapping and aiming within those boundaries for the entire play
+    of the player consistently tapping and aiming within those boundaries for the entire play. Be weary of survivorship bias.
     """
     @staticmethod
     def odds_all_conditions_within(score_data, tap_offset, cursor_offset):
