@@ -244,3 +244,16 @@ class ManiaScoreData():
     @staticmethod
     def odds_all_tap_within(score_data, offset):
         return ManiaScoreData.odds_some_tap_within(score_data, offset)**len(np.vstack(score_data))
+
+    
+    """
+    Creates a gaussian distribution model using avg and var of tap offsets and calculates the odds that all hits
+    are within the specified offset after the specified number of trials
+
+    Returns: probability all random values [X] are between -offset <= X <= offset after trial N
+             TL;DR: look at all the hits for scores; What are the odds all of them are between -offset and offset during any of the number
+                    of attempts specified?
+    """
+    @staticmethod
+    def odds_all_tap_within_trials(score_data, offset, trials):
+        return prob_trials(ManiaScoreData.odds_all_tap_within(score_data, offset), trials)
