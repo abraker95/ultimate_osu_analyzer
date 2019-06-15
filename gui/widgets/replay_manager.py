@@ -31,9 +31,19 @@ class ReplayManagerItem(QTreeWidgetItem):
     def __init__(self, replay):
         self.replay      = replay
         self.replay_data = None
-
-        columns = (replay.player_name, replay.get_mods_name(), str(replay.score), str(replay.max_combo), str(replay.get_acc()),
-                    str(replay.number_300s + replay.gekis), str(replay.number_100s + replay.katus), str(replay.number_50s), str(replay.misses))
+        
+        if self.replay.game_mode == GameMode.Standard: 
+            columns = (replay.player_name, replay.get_mods_name(), str(replay.score), str(replay.max_combo), str(replay.get_acc()),
+                        str(replay.number_300s + replay.gekis), str(replay.number_100s + replay.katus), str(replay.number_50s), str(replay.misses))
+        #elif self.replay.game_mode == GameMode.Taiko:        
+        #    columns = ()
+        #elif self.replay.game_mode == GameMode.CatchTheBeat:
+        #    columns = ()
+        elif self.replay.game_mode == GameMode.Osumania:    
+             columns = (replay.player_name, replay.get_mods_name(), str(replay.score), str(replay.max_combo), str(replay.get_acc()),
+                        str(replay.gekis), str(replay.number_300s), str(replay.katus), str(replay.number_100s), str(replay.number_50s), str(replay.misses))
+        else:
+            RuntimeError('Unsupported gamemode: ' + str(self.replay.game_mode))
 
         QTreeWidgetItem.__init__(self, columns)
 
@@ -92,13 +102,21 @@ class ReplayManager(QWidget):
         self.replay_list.setRootIsDecorated(False)
         self.replay_list.setSortingEnabled(True)
 
-        columns = ('player', 'mods', 'score', 'combo', 'acc', '300', '100', '50', 'miss')
-        self.replay_list.setHeaderLabels(columns)
         self.replay_list.header().setStretchLastSection(False)
         self.replay_list.header().setSectionResizeMode(QHeaderView.ResizeToContents)
 
 
     def add_replay(self, replay):
+        if self.replay_list.topLevelItemCount() == 0:
+            if   replay.game_mode == GameMode.Standard: columns = ('player', 'mods', 'score', 'combo', 'acc', '300', '100', '50', 'miss')
+            #elif self.replay.game_mode == GameMode.Taiko:        self.replay_data = TaikoReplayData.get_event_data(self.replay.play_data)
+            #elif self.replay.game_mode == GameMode.CatchTheBeat: self.replay_data = CatchReplayData.get_event_data(self.replay.play_data)
+            elif replay.game_mode == GameMode.Osumania: columns = ('player', 'mods', 'score', 'combo', 'acc', 'MAX', '300', '200', '100', '50', 'miss')
+            else:
+                RuntimeError('Unsupported gamemode: ' + str(replay.game_mode))
+            
+            self.replay_list.setHeaderLabels(columns)
+
         self.replay_list.addTopLevelItem(ReplayManagerItem(replay))
 
         for i in range(Column.NUM_COLS.value):
@@ -175,7 +193,19 @@ class ReplayManager(QWidget):
 
             menu.exec(self.replay_list.mapToGlobal(pos))
         else:
-            print('TODO: multi select')
+            probabilistic_analysis_action = QAction('&Probabilistic analysis')
+            probabilistic_analysis_action.setStatusTip('Calculate odds of players hitting hitobject')
+            probabilistic_analysis_action.triggered.connect(lambda _, item=item: self.__probabilistic_analysis(selected))
+
+            menu = QMenu(self)
+            menu.addAction(probabilistic_analysis_action)
+
+            # TODO: Mass toggle visibility
+            # TODO: Replay code range
+            # TODO: Average of replays for graphs
+            # TODO: probabilistic analysis
+
+            menu.exec(self.replay_list.mapToGlobal(pos))
 
 
     def __set_this_visible(self, item):
@@ -233,3 +263,11 @@ class ReplayManager(QWidget):
     def __create_cursor_jerk_graph(self, item):
         replay_data = item.get_replay_data()
         CmdOsu.create_cursor_jerk_graph(replay_data)
+
+
+    def __probabilistic_analysis(self, items):
+        # TODO: UI to select 
+
+        #replay_data = item.get_replay_data()
+        #CmdOsu.create_cursor_acceleration_graph(replay_data)
+        pass
