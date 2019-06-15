@@ -5,7 +5,7 @@ import scipy.stats
 from osu.local.hitobject.mania.mania import Mania
 from analysis.osu.mania.replay_data import ManiaReplayData
 from misc.numpy_utils import NumpyUtils
-
+from misc.math_utils import prob_trials
 
 
 class ManiaScoreDataEnums(Enum):
