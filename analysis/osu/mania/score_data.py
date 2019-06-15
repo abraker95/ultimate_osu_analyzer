@@ -1,6 +1,7 @@
 from enum import Enum
 import numpy as np
 import scipy.stats
+import math
 
 from osu.local.hitobject.mania.mania import Mania
 from analysis.osu.mania.replay_data import ManiaReplayData
@@ -216,6 +217,14 @@ class ManiaScoreData():
 
 
     @staticmethod
+    def model_offset_prob(mean, stdev, offset):
+        prob_less_than_neg = scipy.stats.norm.cdf(-offset, loc=mean, scale=stdev)
+        prob_less_than_pos = scipy.stats.norm.cdf(offset, loc=mean, scale=stdev)
+
+        return prob_less_than_pos - prob_less_than_neg
+
+
+    @staticmethod
     def odds_some_tap_within(score_data, offset):
         """
         Creates a gaussian distribution model using avg and var of tap offsets and calculates the odds that some hit
@@ -228,32 +237,130 @@ class ManiaScoreData():
         mean  = ManiaScoreData.tap_offset_mean(score_data)
         stdev = ManiaScoreData.tap_offset_stdev(score_data)
 
-        prob_less_than_neg = scipy.stats.norm.cdf(-offset, loc=mean, scale=stdev)
-        prob_less_than_pos = scipy.stats.norm.cdf(offset, loc=mean, scale=stdev)
-
-        return prob_less_than_pos - prob_less_than_neg
+        return ManiaScoreData.model_offset_prob(mean, stdev, offset)
 
 
-    """
-    Creates a gaussian distribution model using avg and var of tap offsets and calculates the odds that all hits
-    are within the specified offset
-
-    Returns: probability all random values [X] are between -offset <= X <= offset
-             TL;DR: look at all the hits for scores; What are the odds all of them are between -offset and offset?
-    """
     @staticmethod
-    def odds_all_tap_within(score_data, offset):
+    def odds_all_tap_within(score_data, offset):    
+        """
+        Creates a gaussian distribution model using avg and var of tap offsets and calculates the odds that all hits
+        are within the specified offset
+
+        Returns: probability all random values [X] are between -offset <= X <= offset
+                TL;DR: look at all the hits for scores; What are the odds all of them are between -offset and offset?
+        """
         return ManiaScoreData.odds_some_tap_within(score_data, offset)**len(np.vstack(score_data))
 
     
-    """
-    Creates a gaussian distribution model using avg and var of tap offsets and calculates the odds that all hits
-    are within the specified offset after the specified number of trials
-
-    Returns: probability all random values [X] are between -offset <= X <= offset after trial N
-             TL;DR: look at all the hits for scores; What are the odds all of them are between -offset and offset during any of the number
-                    of attempts specified?
-    """
     @staticmethod
     def odds_all_tap_within_trials(score_data, offset, trials):
+        """
+        Creates a gaussian distribution model using avg and var of tap offsets and calculates the odds that all hits
+        are within the specified offset after the specified number of trials
+
+        Returns: probability all random values [X] are between -offset <= X <= offset after trial N
+                TL;DR: look at all the hits for scores; What are the odds all of them are between -offset and offset during any of the number
+                        of attempts specified?
+        """
         return prob_trials(ManiaScoreData.odds_all_tap_within(score_data, offset), trials)
+
+
+    @staticmethod
+    def model_ideal_acc(mean, stdev, num_notes, score_point_judgements=None):
+        """
+        Set for OD8
+        """
+        prob_less_than_max  = ManiaScoreData.model_offset_prob(mean, stdev, 16.5)
+        prob_less_than_300  = ManiaScoreData.model_offset_prob(mean, stdev, 40.5)
+        prob_less_than_200  = ManiaScoreData.model_offset_prob(mean, stdev, 73.5)
+        prob_less_than_100  = ManiaScoreData.model_offset_prob(mean, stdev, 103.5)
+        prob_less_than_50   = ManiaScoreData.model_offset_prob(mean, stdev, 127.5)
+
+        prob_max  = prob_less_than_max
+        prob_300  = prob_less_than_300 - prob_max
+        prob_200  = prob_less_than_200 - prob_less_than_300
+        prob_100  = prob_less_than_100 - prob_less_than_200
+        prob_50   = prob_less_than_50 - prob_less_than_100
+        prob_miss = 1 - prob_less_than_50
+
+        total_points_of_hits = (prob_50*50 + prob_100*100 + prob_200*200 + prob_300*300 + prob_max*300)*(num_notes - num_notes*prob_miss)
+
+        return total_points_of_hits / (num_notes * 300)
+
+
+    @staticmethod
+    def model_ideal_acc_data(score_data, score_point_judgements=None):
+        """
+        Set for OD8
+        """
+        mean      = ManiaScoreData.tap_offset_mean(score_data)
+        stdev     = ManiaScoreData.tap_offset_stdev(score_data)
+        num_notes = len(np.vstack(score_data))
+
+        return ManiaScoreData.model_ideal_acc(mean, stdev, num_notes, score_point_judgements)
+
+
+    @staticmethod
+    def model_num_hits(mean, stdev, num_notes):
+        # Calculate probabilities of hits being within offset of the resultant gaussian distribution
+        prob_less_than_max  = ManiaScoreData.model_offset_prob(mean, stdev, 16.5)
+        prob_less_than_300  = ManiaScoreData.model_offset_prob(mean, stdev, 40.5)
+        prob_less_than_200  = ManiaScoreData.model_offset_prob(mean, stdev, 73.5)
+        prob_less_than_100  = ManiaScoreData.model_offset_prob(mean, stdev, 103.5)
+        prob_less_than_50   = ManiaScoreData.model_offset_prob(mean, stdev, 127.5)
+
+        prob_max  = prob_less_than_max
+        prob_300  = prob_less_than_300 - prob_max
+        prob_200  = prob_less_than_200 - prob_less_than_300
+        prob_100  = prob_less_than_100 - prob_less_than_200
+        prob_50   = prob_less_than_50 - prob_less_than_100
+        prob_miss = 1 - prob_less_than_50
+
+        # Get num of hitobjects that ideally would occur based on the gaussian distribution
+        num_max  = prob_max*num_notes
+        num_300  = prob_300*num_notes
+        num_200  = prob_200*num_notes
+        num_100  = prob_100*num_notes
+        num_50   = prob_50*num_notes
+        num_miss = prob_miss*num_notes
+
+        return num_max, num_300, num_200, num_100, num_50, num_miss
+
+
+    @staticmethod
+    def odds_acc(score_data, target_acc):
+        num_notes = len(np.vstack(score_data))
+        mean      = ManiaScoreData.tap_offset_mean(score_data)
+
+        def get_stdev_from_acc(acc):
+            stdev    = ManiaScoreData.tap_offset_stdev(score_data)
+            curr_acc = ManiaScoreData.model_ideal_acc_data(score_data)
+
+            cost = round(acc, 3) - round(curr_acc, 3)
+            rate = 1
+
+            while cost != 0:
+                stdev -= cost*rate
+
+                curr_acc = ManiaScoreData.model_ideal_acc(mean, stdev, num_notes)
+                cost = round(acc, 3) - round(curr_acc, 3)
+
+            return stdev
+
+        # Fit a normal distribution to the desired acc
+        stdev = get_stdev_from_acc(target_acc)
+
+        # Get the number of resultant hits from that distribution
+        num_max, num_300, num_200, num_100, num_50, num_miss = ManiaScoreData.model_num_hits(mean, stdev, num_notes)
+
+        # Get the stdev of of the replay data
+        stdev = ManiaScoreData.tap_offset_stdev(score_data)
+
+        # Get probabilites the numbeer of score points are within hit window based on replay
+        prob_less_than_max = scipy.stats.binom.sf(num_max - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 16.5))
+        prob_less_than_300 = scipy.stats.binom.sf(num_300 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 40.5))
+        prob_less_than_200 = scipy.stats.binom.sf(num_200 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 73.5))
+        prob_less_than_100 = scipy.stats.binom.sf(num_100 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 103.5))
+        prob_less_than_50  = scipy.stats.binom.sf(num_50 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 127.5))
+
+        return prob_less_than_max*prob_less_than_300*prob_less_than_200*prob_less_than_100*prob_less_than_50
