@@ -1,5 +1,6 @@
 import sys
 import time
+import numpy as np
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -52,13 +53,13 @@ from analysis.osu.std.map_data import StdMapData
 from analysis.osu.std.map_metrics import StdMapMetrics
 from analysis.osu.std.replay_data import StdReplayData
 from analysis.osu.std.replay_metrics import StdReplayMetrics
-from analysis.osu.std.score_data import StdScoreData
+from analysis.osu.std.score_data import StdScoreData, StdScoreDataEnums
 from analysis.osu.std.score_metrics import StdScoreMetrics
 
 from analysis.osu.mania.map_data import ManiaMapData
 from analysis.osu.mania.map_metrics import ManiaMapMetrics
 from analysis.osu.mania.replay_data import ManiaReplayData
-from analysis.osu.mania.score_data import ManiaScoreData
+from analysis.osu.mania.score_data import ManiaScoreData, ManiaScoreDataEnums
 
 
 
@@ -453,11 +454,25 @@ class MainWindow(QMainWindow):
     def create_score_offset_graph(self, replay_data):
         self.status_bar.showMessage('Creating replay hit offsets graph')
 
+        gamemode = self.map_manager.get_current_map().gamemode
         hitobjects = self.map_manager.get_current_map().hitobjects
-        aimpoint_data = StdMapData.get_aimpoint_data(hitobjects)
 
-        score_data = StdScoreData.get_score_data(replay_data, aimpoint_data)
-        times, offsets = score_data[:,0], score_data[:,2]
+        if gamemode == Beatmap.GAMEMODE_OSU:
+            aimpoint_data = StdMapData.get_aimpoint_data(hitobjects)
+            score_data = StdScoreData.get_score_data(replay_data, aimpoint_data)
+            times, offsets = score_data[:,StdScoreDataEnums.TIME.value], score_data[:,StdScoreDataEnums.HIT_OFFSET.value]
+        #elif gamemode == Beatmap.GAMEMODE_TAIKO: 
+        #    score_data = StdScoreData.get_score_data(replay_data, aimpoint_data)
+        #elif gamemode == Beatmap.GAMEMODE_CATCH: 
+        #    score_data = StdScoreData.get_score_data(replay_data, aimpoint_data)
+        elif gamemode == Beatmap.GAMEMODE_MANIA: 
+            map_data = ManiaMapData.get_hitobject_data(hitobjects)
+            score_data = np.vstack(ManiaScoreData.get_score_data(replay_data, map_data))
+            score_data = score_data[np.argsort(score_data[:,0])]
+            times, offsets = score_data[:,ManiaScoreDataEnums.TIME.value], score_data[:,ManiaScoreDataEnums.HIT_OFFSET.value]
+        else:
+            RuntimeError('Unsupported gamemode')
+        
         self.add_graph_2d_data('replay hit offsets', (times, offsets), temporal=True, plot_type=Data2DGraph.SCATTER_PLOT)
 
         self.status_bar.showMessage('Created replay hit offsets graph. Check graphs tab.')
