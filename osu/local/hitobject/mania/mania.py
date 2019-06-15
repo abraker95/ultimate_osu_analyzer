@@ -89,6 +89,13 @@ class Mania():
         return (all_time_range[0], all_time_range[1])
 
 
+    @staticmethod
+    def get_acc_from_hits(num_300_hits, num_200_hits, num_100_hits, num_50_hits, num_misses):
+        score_hits  = 50*num_50_hits + 100*num_100_hits + 200*num_200_hits + 300*num_300_hits
+        score_total = 300*(num_misses + num_50_hits + num_100_hits + num_200_hits + num_300_hits)
+        return score_hits/score_total
+
+
     # Returns the key column based on the xpos of the note and the number of keys there are
     @staticmethod
     def get_column(x_pos, columns):

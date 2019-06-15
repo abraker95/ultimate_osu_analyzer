@@ -3,6 +3,8 @@ import osrparse
 import lzma
 
 from osu.local.hitobject.std.std import Std
+from osu.local.hitobject.mania.mania import Mania
+
 from osrparse.replay import ReplayEvent
 from osrparse.enums import GameMode
 from osu.local.enums import Mod
@@ -46,9 +48,7 @@ class Replay(osrparse.replay.Replay):
             pass
 
         if self.game_mode == GameMode.Osumania:
-            acc = -1
-            # TODO
-            pass
+            acc = 100*Mania.get_acc_from_hits(self.number_300s + self.gekis, self.katus, self.number_100s, self.number_50s, self.misses)
 
         return round(acc, 3)
 
