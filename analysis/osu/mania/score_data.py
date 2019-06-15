@@ -356,7 +356,7 @@ class ManiaScoreData():
         # Get the stdev of of the replay data
         stdev = ManiaScoreData.tap_offset_stdev(score_data)
 
-        # Get probabilites the numbeer of score points are within hit window based on replay
+        # Get probabilites the number of score points are within hit window based on replay
         prob_less_than_max = scipy.stats.binom.sf(num_max - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 16.5))
         prob_less_than_300 = scipy.stats.binom.sf(num_300 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 40.5))
         prob_less_than_200 = scipy.stats.binom.sf(num_200 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 73.5))
