@@ -248,11 +248,11 @@ class MainWindow(QMainWindow):
 
         # TODO: Adding layers will be one of things analysis manager does
         if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
-            self.layer_manager_switch_gui.get().add_layer(HitobjectOutlineLayer(beatmap, self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer(HitobjectAimpointLayer(beatmap, self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer('map', HitobjectOutlineLayer(beatmap, self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer('map', HitobjectAimpointLayer(beatmap, self.timeline.time_changed_event))
 
         if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
-            self.layer_manager_switch_gui.get().add_layer(HitobjectRenderLayer(beatmap, self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer('map', HitobjectRenderLayer(beatmap, self.timeline.time_changed_event))
 
         self.graph_manager_switch_gui.add(beatmap.metadata.name, GraphManager())
         self.graph_manager_switch_gui.switch(beatmap.metadata.name)
@@ -301,18 +301,20 @@ class MainWindow(QMainWindow):
         self.replay_manager_switch_gui.get().add_replay(replay)
 
         # TODO: Adding layers will be one of things analysis manager does
+        group = 'replay.' + str(replay.player_name)
+
         if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
-            self.layer_manager_switch_gui.get().add_layer(StdReplayCursorLayer(replay, self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer(StdReplayHoldLayer(replay, self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer(StdScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer(group, StdReplayCursorLayer(replay, self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer(group, StdReplayHoldLayer(replay, self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer(group, StdScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
 
         if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
             num_columns = beatmap.difficulty.cs
-            #self.layer_manager_switch_gui.get().add_layer(ManiaRawReplayLayer((replay, num_columns), self.timeline.time_changed_event))
-            #self.layer_manager_switch_gui.get().add_layer(ManiaPressReplayLayer((replay, num_columns), self.timeline.time_changed_event))
-            #self.layer_manager_switch_gui.get().add_layer(ManiaReleaseReplayLayer((replay, num_columns), self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer(ManiaHoldReplayLayer((replay, num_columns), self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer(ManiaScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
+            #self.layer_manager_switch_gui.get().add_layer(group, ManiaRawReplayLayer((replay, num_columns), self.timeline.time_changed_event))
+            #self.layer_manager_switch_gui.get().add_layer(group, ManiaPressReplayLayer((replay, num_columns), self.timeline.time_changed_event))
+            #self.layer_manager_switch_gui.get().add_layer(group, ManiaReleaseReplayLayer((replay, num_columns), self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer(group, ManiaHoldReplayLayer((replay, num_columns), self.timeline.time_changed_event))
+            self.layer_manager_switch_gui.get().add_layer(group, ManiaScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
 
         self.status_bar.showMessage('Replay applied. Check replay tab.')
 
