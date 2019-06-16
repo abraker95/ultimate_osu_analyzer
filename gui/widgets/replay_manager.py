@@ -195,10 +195,15 @@ class ReplayManager(QWidget):
         else:
             probabilistic_analysis_action = QAction('&Probabilistic analysis')
             probabilistic_analysis_action.setStatusTip('Calculate odds of players hitting hitobject')
-            probabilistic_analysis_action.triggered.connect(lambda _, item=item: self.__probabilistic_analysis(selected))
+            probabilistic_analysis_action.triggered.connect(lambda _, item=selected: self.__probabilistic_analysis(selected))
+
+            copy_per_hitobject_score_code_action = QAction('&Copy per-hitobject score code to clipboard')
+            copy_per_hitobject_score_code_action.setStatusTip('Copies the code needed to access the per-hitobject scores to clipboard')
+            copy_per_hitobject_score_code_action.triggered.connect(lambda _, item=selected: self.__per_hitobject_score_code_to_clipboard(selected))
 
             menu = QMenu(self)
-            menu.addAction(probabilistic_analysis_action)
+            #menu.addAction(probabilistic_analysis_action)
+            menu.addAction(copy_per_hitobject_score_code_action)
 
             # TODO: Mass toggle visibility
             # TODO: Replay code range
@@ -243,6 +248,33 @@ class ReplayManager(QWidget):
         score_data_code  = 'score_data = ' + score_data + '.get_score_data(' + replay_data_code + ', ' + map_data_code + ')'
         
         QApplication.clipboard().setText(score_data_code)
+
+
+    def __per_hitobject_score_code_to_clipboard(self, items):
+        gamemode = items[0].replay.game_mode
+
+        if gamemode == GameMode.Standard:
+            map_data           = 'StdMapData.get_aimpoint_data(get_beatmap().hitobjects)'
+            score_data         = '[ StdScoreData.get_score_data(get_replays()[i],' + map_data + ') for i in range(' + str(len(items)) + ') ]'
+            per_hitobject_data = 'StdScoreMetrics.get_per_hitobject_score_data(' + score_data + ')'
+        elif gamemode == GameMode.Taiko:
+            map_data           = 'TaikoMapData.get_map_data(get_beatmap().hitobjects)'
+            score_data         = '[ TaikoScoreData.get_score_data(get_replays()[i], ' + map_data + ') for i in range(' + str(len(items)) + ') ]'
+            per_hitobject_data = 'TaikoScoreMetrics.get_per_hitobject_score_data(' + score_data + ')'
+        elif gamemode == GameMode.CatchTheBeat:
+            map_data           = 'CatchMapData.get_map_data(get_beatmap().hitobjects)'
+            score_data         = '[ CatchscoreData.get_score_data(get_replays()[i], ' + map_data + ') for i in range(' + str(len(items)) + ') ]'
+            per_hitobject_data = 'CatchScoreMetrics.get_per_hitobject_score_data(' + score_data + ')'
+        elif gamemode == GameMode.Osumania:
+            map_data           = 'ManiaMapData.get_hitobject_data(get_beatmap().hitobjects)'
+            score_data         = '[ ManiaScoreData.get_score_data(get_replays()[i], ' + map_data + ') for i in range(' + str(len(items)) + ') ]'
+            per_hitobject_data = 'ManiaScoreMetrics.get_per_hitobject_score_data(' + score_data + ')'
+        else:
+            RuntimeError('Unsupported gamemode')
+
+        per_hitobject_data = 'per_hitobject_data = ' + per_hitobject_data
+        
+        QApplication.clipboard().setText(per_hitobject_data)
 
         
     def __create_score_offset_graph(self, item):
