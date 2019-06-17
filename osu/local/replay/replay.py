@@ -141,7 +141,11 @@ class Replay(osrparse.replay.Replay):
         self.offset = offset_end
 
         events = [ eventstring.split('|') for eventstring in datastring.split(',') ]
-        self.play_data = [ ReplayEvent(int(event[0]), float(event[1]), float(event[2]), int(event[3])) for event in events if int(event[0]) != -12345 ]
+
+        if self.game_mode == GameMode.Standard and Mod.HardRock in self.mod_combination:
+            self.play_data = [ ReplayEvent(int(event[0]), float(event[1]), Std.PLAYFIELD_HEIGHT - float(event[2]), int(event[3])) for event in events if int(event[0]) != -12345 ]
+        else:
+            self.play_data = [ ReplayEvent(int(event[0]), float(event[1]), float(event[2]), int(event[3])) for event in events if int(event[0]) != -12345 ]
         
         if self.game_mode == GameMode.Osumania:
             # Calculate number of keys used in the replay for mania
