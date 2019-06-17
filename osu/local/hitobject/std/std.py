@@ -10,20 +10,28 @@ from misc.callback import callback
 
 class StdSettings():
 
-    viewable_time_interval = 1000                                # ms
-    cursor_radius          = 1.5                                 # osu!px
-    cursor_thickness       = 1                                   # osu!px
-    cursor_color           = QColor(0, 200, 0, 255)              # rgba
-    k1_color               = QColor.fromHsl(32,  255, 128, 255)  # rgba
-    k2_color               = QColor.fromHsl(180, 255, 96,  255)  # rgba
-    m1_color               = QColor.fromHsl(0,   255, 128, 255)  # rgba
-    m2_color               = QColor.fromHsl(120, 255, 96,  255)  # rgba
+    view_time_back   = 1000                                # ms
+    view_time_ahead  = 0                                   # ms
+    cursor_radius    = 1.5                                 # osu!px
+    cursor_thickness = 1                                   # osu!px
+    cursor_color     = QColor(0, 200, 0, 255)              # rgba
+    k1_color         = QColor.fromHsl(32,  255, 128, 255)  # rgba
+    k2_color         = QColor.fromHsl(180, 255, 96,  255)  # rgba
+    m1_color         = QColor.fromHsl(0,   255, 128, 255)  # rgba
+    m2_color         = QColor.fromHsl(120, 255, 96,  255)  # rgba
 
     @staticmethod
     @callback
-    def set_viewable_time_interval(viewable_time_interval):
-        StdSettings.viewable_time_interval = viewable_time_interval
-        StdSettings.set_viewable_time_interval.emit()
+    def set_view_time_back(view_time_back):
+        StdSettings.view_time_back = view_time_back
+        StdSettings.set_view_time_back.emit()
+
+
+    @staticmethod
+    @callback
+    def set_view_time_ahead(view_time_ahead):
+        StdSettings.view_time_ahead = view_time_ahead
+        StdSettings.set_view_time_ahead.emit()
 
 
     @staticmethod

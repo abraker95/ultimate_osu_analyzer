@@ -38,8 +38,8 @@ class StdReplayHoldLayer(Layer, Temporal):
         ratio_x = widget.width()/Std.PLAYFIELD_WIDTH
         ratio_y = widget.height()/Std.PLAYFIELD_HEIGHT
 
-        start_idx = StdReplayData.get_idx_time(self.event_data, self.time - StdSettings.viewable_time_interval)
-        end_idx   = StdReplayData.get_idx_time(self.event_data, self.time)
+        start_idx = StdReplayData.get_idx_time(self.event_data, self.time - StdSettings.view_time_back)
+        end_idx   = StdReplayData.get_idx_time(self.event_data, self.time + StdSettings.view_time_ahead )
 
         for prev_event, curr_event in zip(self.event_data[start_idx:end_idx - 1], self.event_data[start_idx + 1:end_idx]):
             prev_pos_x, curr_pos_x = prev_event[StdReplayData.XPOS]*ratio_x, curr_event[StdReplayData.XPOS]*ratio_x

@@ -31,7 +31,8 @@ class StdScoreDebugLayer(Layer, Temporal):
         time_updater.connect(self.time_changed)
         self.time_changed.connect(lambda time: self.layer_changed())
 
-        StdSettings.set_viewable_time_interval.connect(self.layer_changed)
+        StdSettings.set_view_time_back.connect(self.layer_changed)
+        StdSettings.set_view_time_ahead.connect(self.layer_changed)
 
 
     def paint(self, painter, option, widget):
@@ -43,8 +44,8 @@ class StdScoreDebugLayer(Layer, Temporal):
 
         painter.setPen(QColor(255, 0, 0, 255))
 
-        start_idx = find(self.score_data, self.time - StdSettings.viewable_time_interval, selector=lambda event: event[0])
-        end_idx   = find(self.score_data, self.time, selector=lambda event: event[0])
+        start_idx = find(self.score_data, self.time - StdSettings.view_time_back, selector=lambda event: event[0])
+        end_idx   = find(self.score_data, self.time + StdSettings.view_time_ahead, selector=lambda event: event[0])
         end_idx   = min(end_idx + 1, len(self.score_data))
 
         for score in self.score_data[start_idx:end_idx]:

@@ -20,17 +20,19 @@ class StdSettingsGui(QWidget):
         self.layout       = QVBoxLayout()
         self.color_layout = QHBoxLayout()
 
-        self.viewable_time_interval = EditableValueField(100, 10000, 'Viewable time interval (ms): ')
-        self.cursor_radius          = EditableValueField(1, 10,    'Cursor radius (px): ')
-        self.cursor_thickness       = EditableValueField(1, 10,    'Cursor thickness (px): ')
-        self.color_pick             = QLabel('Picking color for: ')
-        self.color_selector         = QColorDialog()
+        self.view_time_back   = EditableValueField(0, 5000, 'View time backward (ms): ')
+        self.view_time_ahead  = EditableValueField(0, 5000, 'View time forward (ms): ')
+        self.cursor_radius    = EditableValueField(1, 10,   'Cursor radius (px): ')
+        self.cursor_thickness = EditableValueField(1, 10,   'Cursor thickness (px): ')
+        
+        self.color_pick          = QLabel('Picking color for: ')
+        self.color_selector      = QColorDialog()
+        self.cursor_color_select = QPushButton('Cursor color')
 
-        self.cursor_color_select    = QPushButton('Cursor color')
-        self.k1_color_select        = QPushButton('K1 color')
-        self.k2_color_select        = QPushButton('K2 color')
-        self.m1_color_select        = QPushButton('M1 color')
-        self.m2_color_select        = QPushButton('M2 color')
+        self.k1_color_select     = QPushButton('K1 color')
+        self.k2_color_select     = QPushButton('K2 color')
+        self.m1_color_select     = QPushButton('M1 color')
+        self.m2_color_select     = QPushButton('M2 color')
 
 
     def construct_gui(self):
@@ -42,7 +44,8 @@ class StdSettingsGui(QWidget):
         self.color_layout.addWidget(self.m1_color_select)
         self.color_layout.addWidget(self.m2_color_select)
 
-        self.layout.addWidget(self.viewable_time_interval)
+        self.layout.addWidget(self.view_time_back)
+        self.layout.addWidget(self.view_time_ahead)
         self.layout.addWidget(self.cursor_radius)
         self.layout.addWidget(self.cursor_thickness)
         self.layout.addWidget(self.color_pick)
@@ -55,13 +58,15 @@ class StdSettingsGui(QWidget):
         self.m1_color_select.clicked.connect(self.__set_m2_color_select_active)
         self.m2_color_select.clicked.connect(self.__set_m2_color_select_active)
 
-        self.viewable_time_interval.value_changed.connect(StdSettings.set_viewable_time_interval, inst=self.viewable_time_interval)
+        self.view_time_back.value_changed.connect(StdSettings.set_view_time_back, inst=self.view_time_back)
+        self.view_time_ahead.value_changed.connect(StdSettings.set_view_time_ahead, inst=self.view_time_ahead)
         self.cursor_radius.value_changed.connect(StdSettings.set_cursor_radius, inst=self.cursor_radius)
         self.cursor_thickness.value_changed.connect(StdSettings.set_cursor_thickness, inst=self.cursor_thickness)
 
 
     def update_gui(self):
-        self.viewable_time_interval.set_val(StdSettings.viewable_time_interval)
+        self.view_time_back.set_val(StdSettings.view_time_back)
+        self.view_time_ahead.set_val(StdSettings.view_time_ahead)
         self.cursor_radius.set_val(StdSettings.cursor_radius)
         self.cursor_thickness.set_val(StdSettings.cursor_thickness)
         
