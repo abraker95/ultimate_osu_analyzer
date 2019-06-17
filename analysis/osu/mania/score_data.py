@@ -358,9 +358,9 @@ class ManiaScoreData():
 
         # Get probabilites the number of score points are within hit window based on replay
         prob_less_than_max = scipy.stats.binom.sf(num_max - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 16.5))
-        prob_less_than_300 = scipy.stats.binom.sf(num_300 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 40.5))
-        prob_less_than_200 = scipy.stats.binom.sf(num_200 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 73.5))
-        prob_less_than_100 = scipy.stats.binom.sf(num_100 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 103.5))
-        prob_less_than_50  = scipy.stats.binom.sf(num_50 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 127.5))
+        prob_less_than_300 = scipy.stats.binom.sf(num_max + num_300 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 40.5))
+        prob_less_than_200 = scipy.stats.binom.sf(num_max + num_300 + num_200 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 73.5))
+        prob_less_than_100 = scipy.stats.binom.sf(num_max + num_300 + num_200 + num_100 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 103.5))
+        prob_less_than_50  = scipy.stats.binom.sf(num_max + num_300 + num_200 + num_100 + num_50 - 1, num_notes, ManiaScoreData.model_offset_prob(mean, stdev, 127.5))
 
         return prob_less_than_max*prob_less_than_300*prob_less_than_200*prob_less_than_100*prob_less_than_50
