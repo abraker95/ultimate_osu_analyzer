@@ -6,7 +6,6 @@ from misc.numpy_utils import NumpyUtils
 from osu.local.beatmap.beatmap import Beatmap
 
 from analysis.osu.std.map_data import StdMapData
-from analysis.metrics.metric import Metric
 
 
 
@@ -16,7 +15,6 @@ class StdMapMetrics():
     Raw metrics
     '''
     @staticmethod
-    #@Metric(Beatmap.GAMEMODE_OSU, 'tapping intervals', 1, 2)
     def calc_tapping_intervals(hitobject_data=[]):
         start_times = StdMapData.start_times(hitobject_data)
 
@@ -48,7 +46,6 @@ class StdMapMetrics():
 
     
     @staticmethod
-    #@Metric(Beatmap.GAMEMODE_OSU, 'velocity', 1, 2)
     def calc_velocity(hitobject_data=[]):
         all_times     = StdMapData.all_times(hitobject_data)
         all_positions = StdMapData.all_positions(hitobject_data)
@@ -82,7 +79,6 @@ class StdMapMetrics():
 
 
     @staticmethod
-    #@Metric(Beatmap.GAMEMODE_OSU, 'angles', 1, 2)
     def calc_angles(hitobject_data=[]):
         all_times     = StdMapData.all_times(hitobject_data)
         all_positions = StdMapData.all_positions(hitobject_data)
@@ -95,8 +91,8 @@ class StdMapMetrics():
 
 
     @staticmethod
-    #@Metric(Beatmap.GAMEMODE_OSU, 'acceleration', 1, 2)
-    def calc_acceleration(hitobjects):
+    def calc_acceleration(hitobject_data=[]):
+        pass
         pass
         
 
@@ -112,7 +108,6 @@ class StdMapMetrics():
     Advanced metrics
     '''
     @staticmethod
-    #@Metric(Beatmap.GAMEMODE_OSU, 'rhythmic complexity', 1, 2)
     def calc_rhythmic_complexity(hitobject_data=[]):
         def calc_harmonic(prev_note_interval, curr_note_interval, target_time, v_scale):
             if prev_note_interval == 0: print('WARNING: 0 note interval detected at ', target_time, ' ms')
