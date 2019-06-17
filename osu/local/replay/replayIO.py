@@ -1,4 +1,5 @@
 import osrparse
+import os
 from osu.local.replay.replay import Replay
 
 
@@ -38,5 +39,9 @@ class ReplayIO():
     """
     @staticmethod
     def save_replay(replay_data, filepath):
+        path = os.path.dirname(filepath)
+        if not os.path.exists(path):
+            os.makedirs(path)
+            
         with open(filepath, 'wb') as f:
             f.write(replay_data)
