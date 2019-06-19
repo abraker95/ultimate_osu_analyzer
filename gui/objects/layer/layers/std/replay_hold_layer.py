@@ -29,7 +29,8 @@ class StdReplayHoldLayer(Layer, Temporal):
         StdSettings.set_k2_color.connect(self.layer_changed)
         StdSettings.set_m1_color.connect(self.layer_changed)
         StdSettings.set_m2_color.connect(self.layer_changed)
-        StdSettings.set_viewable_time_interval.connect(self.layer_changed)
+        StdSettings.set_view_time_back.connect(self.layer_changed)
+        StdSettings.set_view_time_ahead.connect(self.layer_changed)
 
 
     def paint(self, painter, option, widget):
