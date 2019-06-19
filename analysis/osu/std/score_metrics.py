@@ -6,7 +6,7 @@ from misc.numpy_utils import NumpyUtils
 from misc.geometry import get_distance
 from misc.math_utils import prob_not, prob_and, prob_or
 
-from analysis.osu.std.score_data import StdScoreData
+from analysis.osu.std.score_data import StdScoreData, StdScoreDataEnums
 
 
 class StdScoreMetrics():
@@ -52,51 +52,22 @@ class StdScoreMetrics():
 
 
     @staticmethod
-    def odds_all_players_tap_hitobject_within(per_hitobject_score_data, hitobject_idx, offset):
-        return StdScoreData.odds_all_tap_within(per_hitobject_score_data[hitobject_idx], offset)
+    def get_percent_below_offset(per_hitobject_score_data, hitobject_idx, offset):
+        hit_offsets = per_hitobject_score_data[hitobject_idx][:, StdScoreDataEnums.HIT_OFFSET.value]
+        hit_offsets_below_offset = hit_offsets[abs(hit_offsets) < offset]
+
+        return len(hit_offsets_below_offset)/len(hit_offsets)
 
 
     @staticmethod
-    def odds_all_players_cursor_hitobject_within(per_hitobject_score_data, hitobject_idx, offset):
-        return StdScoreData.odds_all_cursor_within(per_hitobject_score_data[hitobject_idx], offset)
-
-    
-    @staticmethod 
-    def odds_all_players_condition_hitobject_within(per_hitobject_score_data, hitobject_idx, tap_offset, cursor_offset):
-        return StdScoreData.odds_all_conditions_within(per_hitobject_score_data[hitobject_idx], tap_offset, cursor_offset)
-
-
-    @staticmethod
-    def trans_odds_players_taps(per_hitobject_score_data, offset):
+    def trans_percent_players_taps(per_hitobject_score_data, offset):
         """
         Gives the percent of players tapping within the specified offset for each hitobject
         """
-        times = per_hitobject_score_data[:,0,0]
-        odds  = [ StdScoreMetrics.odds_all_players_tap_hitobject_within(per_hitobject_score_data, i, offset) for i in range(len(per_hitobject_score_data)) ]
+        times   = per_hitobject_score_data[:,0,0]
+        percent = [ StdScoreMetrics.get_percent_below_offset(per_hitobject_score_data, i, offset) for i in range(len(per_hitobject_score_data)) ]
 
-        return times, np.asarray(odds)
-
-
-    @staticmethod
-    def trans_odds_players_aim(per_hitobject_score_data, offset):
-        """
-        Gives the percent of players aiming within the specified offset for each hitobject
-        """
-        times = per_hitobject_score_data[:,0,0]
-        odds  = [ StdScoreMetrics.odds_all_players_cursor_hitobject_within(per_hitobject_score_data, i, offset) for i in range(len(per_hitobject_score_data)) ]
-
-        return times, np.asarray(odds)
-
-
-    @staticmethod
-    def trans_odds_players_condition(per_hitobject_score_data, tap_offset, cursor_offset):
-        """
-        Gives the percent of players tapping and aiming within the specified offset for each hitobject
-        """
-        times = per_hitobject_score_data[:,0,0]
-        odds  = [ StdScoreMetrics.odds_all_players_condition_hitobject_within(per_hitobject_score_data, i, tap_offset, cursor_offset) for i in range(len(per_hitobject_score_data)) ]
-
-        return times, np.asarray(odds)
+        return times, np.asarray(percent)
 
 
     @staticmethod
@@ -104,25 +75,19 @@ class StdScoreMetrics():
         """
         Solves for the tapping offset for the note that 50% of players are able to do
         """
-        print('solving for ', hitobject_idx)
+        offset         = 0
+        target_percent = min(max(0.0, target_percent), 1.0)
+        curr_percent   = StdScoreMetrics.get_percent_below_offset(per_hitobject_score_data, hitobject_idx, offset)
 
-        offset       = 50
-        curr_percent = StdScoreMetrics.odds_all_players_tap_hitobject_within(per_hitobject_score_data, hitobject_idx, offset)
-
-        cost = round(target_percent, 3) - round(curr_percent, 3)
-        rate = 5
-
-        while cost != 0:
-            offset += cost*rate
-
-            curr_percent = StdScoreMetrics.odds_all_players_tap_hitobject_within(per_hitobject_score_data, hitobject_idx, offset)
-            cost = round(target_percent, 3) - round(curr_percent, 3)
+        while curr_percent < target_percent:
+            curr_percent = StdScoreMetrics.get_percent_below_offset(per_hitobject_score_data, hitobject_idx, offset)
+            offset += 1
 
         return offset
 
 
     @staticmethod
-    def trans_solve_for_hit_offset(per_hitobject_score_data, target_percent):
+    def trans_solve_for_hit_offset(per_hitobject_score_data):
         """
         Solves for the tapping offset for the note that 50% of players are able to do
         """
