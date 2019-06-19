@@ -37,9 +37,12 @@ class OsuOnline():
             else: raise Exception('Unknown gamemode: ' + str(gamemode))
         
         url = 'https://osu.ppy.sh/beatmaps/' + str(beatmap_id) + '/scores?type=global&mode=' + str(gamemode)
-        response = urllib.request.urlopen(url)
-        data     = json.loads(response.read())
+        try: response = urllib.request.urlopen(url)
+        except urllib.error.HTTPError as e:
+            print('Error opening ' + url + '\n' + str(e))
+            return
 
+        data = json.loads(response.read())
         return data['scores']
 
 
