@@ -67,9 +67,35 @@ def get_angle(pos_a, pos_b, pos_c):
     if mag == 0: return float('nan')       # Happens when notes are directly stacked on top of each other
 
     dot = ab.dot(cb)
-    if abs(dot/mag) > 1: mag = round(mag)  # Precision calc errors may make it a very fractional amount smaller
+    if abs(dot/mag) > 1:
+        # Precision calc errors may make it a very fractional amount smaller 
+        mag = round(mag, 3)
+        dot = round(dot, 3)
 
     try: return math.acos(dot/mag)
+    except:
+        print('mag = ', mag, '\nab.dot(cb) = ', dot, '\npos_a = ', pos_a, '\npos_b = ', pos_b, '\npos_c = ', pos_c)
+        raise
+
+
+def get_absolute_angle(pos_a, pos_b):
+    theta = math.atan(pos_a.slope(pos_b))
+    a = math.pi * parity(pos_b.x - pos_a.x)
+    return theta - a - 2*math.pi*parity(theta - a/2)
+
+    
+def intersect(a, ta, b, tb):
+    des = tb.x*ta.y - tb.y*ta.x
+    if abs(des) < 0.00001: return None
+
+    u = ((b.y - a.y)*ta.x + (a.x - b.x)*ta.y) / des
+    b.x += tb.x*u
+    b.y += tb.y*u
+
+    return b
+
+
+    try: return math.acos(round(dot, 3)/round(mag, 3))
     except:
         print('mag = ', mag, '\nab.dot(cb) = ', dot, '\npos_a = ', pos_a, '\npos_b = ', pos_b, '\npos_c = ', pos_c)
         raise
