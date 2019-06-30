@@ -176,11 +176,12 @@ class MainWindow(QMainWindow):
         self.ipython_console.push_vars({ 'add_layer_2d_data' : self.add_layer_2d_data })
         self.ipython_console.push_vars({ 'add_graph_2d_data' : self.add_graph_2d_data })
 
-        self.ipython_console.push_vars({ 'StdMapData'      : StdMapData })
-        self.ipython_console.push_vars({ 'StdMapMetrics'   : StdMapMetrics })
-        self.ipython_console.push_vars({ 'StdReplayData'   : StdReplayData })
-        self.ipython_console.push_vars({ 'StdScoreData'    : StdScoreData })
-        self.ipython_console.push_vars({ 'StdScoreMetrics' : StdScoreMetrics })
+        self.ipython_console.push_vars({ 'StdMapData'       : StdMapData })
+        self.ipython_console.push_vars({ 'StdMapMetrics'    : StdMapMetrics })
+        self.ipython_console.push_vars({ 'StdReplayData'    : StdReplayData })
+        self.ipython_console.push_vars({ 'StdReplayMetrics' : StdReplayMetrics })
+        self.ipython_console.push_vars({ 'StdScoreData'     : StdScoreData })
+        self.ipython_console.push_vars({ 'StdScoreMetrics'  : StdScoreMetrics })
 
         self.ipython_console.push_vars({ 'ManiaMapData'    : ManiaMapData })
         self.ipython_console.push_vars({ 'ManiaMapMetrics' : ManiaMapMetrics })
