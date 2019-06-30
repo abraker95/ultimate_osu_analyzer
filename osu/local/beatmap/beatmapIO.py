@@ -491,6 +491,9 @@ class BeatmapIO():
             for beat_time in range(hitobject.time, hitobject.end_time, int(ms_per_beat)):
                 hitobject.tick_times.append(beat_time)
 
+            if hitobject.tick_times[-1] != hitobject.end_time:
+                hitobject.tick_times.append(hitobject.end_time)
+
 
     @staticmethod
     def __process_columns(beatmap):
