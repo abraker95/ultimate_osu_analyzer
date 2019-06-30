@@ -2,40 +2,50 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from analysis.osu.std.map_data import MapData
-from analysis.osu.std.map_metrics import MapMetrics
+from analysis.osu.std.map_data import StdMapData
+from analysis.osu.std.map_metrics import StdMapMetrics
 
-from misc.pos import Pos
+from osu.local.hitobject.std.std import Std, StdSettings
+
+from misc.math_utils import *
 from misc.numpy_utils import NumpyUtils
 
+from generic.temporal import Temporal
 from gui.objects.layer.layer import Layer
-from osu.local.beatmap.beatmap_utility import *
 
 
+class AimpointAngleTextLayer(Layer, Temporal):
 
-class AimpointAngleTextLayer(Layer):
+    def __init__(self, data, time_updater):
+        Layer.__init__(self, 'Aimpoint angle text')
+        
+        beatmap = data
+        map_data = StdMapData.get_aimpoint_data(beatmap.hitobjects)
 
-    def __init__(self, playfield):
-        Layer.__init__(self, 'Aimpoint Angle  Text')
-        self.playfield = playfield
+        self.all_positions = StdMapData.all_positions(map_data)
+        self.times, self.angles = StdMapMetrics.calc_angles(map_data)
+        
+        time_updater.connect(self.time_changed)
+        self.time_changed.connect(lambda time: self.layer_changed())
 
-
-    def area_resize_event(self, width, height):
-        self.ratio_x = width/BeatmapUtil.PLAYFIELD_WIDTH
-        self.ratio_y = height/BeatmapUtil.PLAYFIELD_HEIGHT
+        StdSettings.set_view_time_back.connect(self.layer_changed)
+        StdSettings.set_view_time_ahead.connect(self.layer_changed)
 
 
     def paint(self, painter, option, widget):
-        painter.setPen(QColor(255, 0, 0, 255))
+        if not self.time: return
+        if len(self.all_positions) <= 0: return
 
-        aimpoints = MapData().set_data_hitobjects(self.playfield.visible_hitobjects)
-        aimpoints.append_to_start(MapData.get_data_before(MapData.full_hitobject_data, NumpyUtils.first(aimpoints.start_times())))
-        aimpoints.append_to_end(MapData.get_data_after(MapData.full_hitobject_data, NumpyUtils.last(aimpoints.end_times())))
+        self.ratio_x = widget.width()/Std.PLAYFIELD_WIDTH
+        self.ratio_y = widget.height()/Std.PLAYFIELD_HEIGHT
 
-        time, angles = MapMetrics.calc_angles(aimpoints)
-        aimpoints_positions = aimpoints.all_positions()
+        start_idx = find(self.times, self.time - StdSettings.view_time_back)
+        end_idx   = find(self.times, self.time + StdSettings.view_time_ahead)
+        end_idx   = min(end_idx + 1, len(self.times))
 
         painter.setPen(QColor(0, 0, 255, 255))
-        for i in range(len(angles)):
-            pos = Pos(*aimpoints_positions[i + 1])
-            painter.drawText(pos.x*self.ratio_x, pos.y*self.ratio_y, str(round(angles[i]*180/math.pi, 2)))
+        for i in range(start_idx, end_idx):
+            pos_x, pos_y = self.all_positions[i + 1]
+            angle = self.angles[i]*180/math.pi
+
+            painter.drawText(pos_x*self.ratio_x, pos_y*self.ratio_y, str(round(angle, 2)))
