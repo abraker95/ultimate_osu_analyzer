@@ -347,12 +347,13 @@ class MainWindow(QMainWindow):
         try: self.timeline.save()
         except: pass
 
+        min_time, max_time = beatmap.get_time_range()
+        self.timeline.setLimits(xMin=min_time - 1000, xMax=max_time + 1000)
+
         try: self.timeline.load(beatmap.metadata.name)
         except ValueError:
             # Get new timeline range
-            min_time, max_time = beatmap.get_time_range()
             self.timeline.setRange(xRange=(min_time - 100, max_time + 100))
-            self.timeline.setLimits(xMin=min_time - 1000, xMax=max_time + 1000)
             self.timeline.timeline_marker.setValue(min_time)
             self.timeline.save(beatmap.metadata.name)
 
