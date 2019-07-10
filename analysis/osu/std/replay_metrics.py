@@ -55,6 +55,54 @@ class StdReplayMetrics():
 
 
     @staticmethod
+    def cursor_vel_xy(replay_data):
+        replay_data = np.asarray(replay_data[2:])
+
+        all_times     = replay_data[:,0]
+        all_positions = np.asarray(list(zip(replay_data[:,1], replay_data[:,2])))
+
+        if len(all_times) < 2: return [], []
+        
+        dx = np.diff(all_positions[:,0])
+        dy = np.diff(all_positions[:,1])
+        dt = np.diff(all_times)
+        
+        return all_times[1:], dx/dt, dy/dt
+
+
+    @staticmethod
+    def cursor_accel_xy(replay_data):
+        replay_data = np.asarray(replay_data[2:])
+
+        cursor_vel_xy       = StdReplayMetrics.cursor_vel_xy(replay_data)
+        times, vel_x, vel_y = cursor_vel_xy
+
+        if len(times) < 2: return [], []
+        
+        dvx = np.diff(vel_x)
+        dvy = np.diff(vel_y)
+        dt = np.diff(times)
+        
+        return times[1:], dvx/dt, dvy/dt
+
+
+    @staticmethod
+    def cursor_jerk_xy(replay_data):
+        replay_data = np.asarray(replay_data[2:])
+
+        cursor_accel_xy         = StdReplayMetrics.cursor_accel_xy(replay_data)
+        times, accel_x, accel_y = cursor_accel_xy
+
+        if len(times) < 2: return [], []
+        
+        dax = np.diff(accel_x)
+        day = np.diff(accel_y)
+        dt = np.diff(times)
+        
+        return times[1:], dax/dt, day/dt
+
+
+    @staticmethod
     def press_intervals(replay_data):
         replay_data = np.asarray(replay_data[2:])
 
