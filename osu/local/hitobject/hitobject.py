@@ -36,7 +36,8 @@ class Hitobject():
 
 
     def get_end_time(self):
-        return self.time
+        try:    return self.end_time
+        except: return self.time
 
  
     def raw_data(self):

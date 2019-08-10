@@ -35,6 +35,6 @@ class HitobjectRenderLayer(Layer, Temporal):
             start_idx = find(self.beatmap.hitobjects[column], start_time, selector=lambda hitobject: hitobject.time)
             end_idx   = find(self.beatmap.hitobjects[column], end_time,   selector=lambda hitobject: hitobject.get_end_time())
 
-            visible_hitobjects = self.beatmap.hitobjects[column][start_idx : end_idx + 1]
+            visible_hitobjects = self.beatmap.hitobjects[column][start_idx : end_idx + 2]
             for visible_hitobject in visible_hitobjects:
                 visible_hitobject.render_hitobject(painter, spatial_data[2:], self.time)
