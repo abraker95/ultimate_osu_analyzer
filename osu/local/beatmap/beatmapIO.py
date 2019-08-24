@@ -1,3 +1,4 @@
+import numpy as np
 from collections import OrderedDict
 
 from misc.math_utils import find
@@ -492,7 +493,7 @@ class BeatmapIO():
             ms_per_beat = (100.0 * beatmap.difficulty.sm)/(hitobject.get_velocity() * beatmap.difficulty.st)
             hitobject.tick_times = []
 
-            for beat_time in range(hitobject.time, hitobject.end_time, int(ms_per_beat)):
+            for beat_time in np.arange(hitobject.time, hitobject.end_time, ms_per_beat):
                 hitobject.tick_times.append(beat_time)
 
             if hitobject.tick_times[-1] != hitobject.end_time:
