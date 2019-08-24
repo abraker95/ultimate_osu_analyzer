@@ -146,7 +146,11 @@ class BeatmapIO():
     # Validates beatmap data
     @staticmethod
     def __validate(beatmap):
-        pass
+        if beatmap.difficulty.ar == None:
+            beatmap.difficulty.ar = beatmap.difficulty.od
+
+        if beatmap.difficulty.hp == None:
+            beatmap.difficulty.hp = beatmap.difficulty.od
 
 
     @staticmethod
