@@ -56,8 +56,8 @@ class StdHoldNoteHitobject(Hitobject):
 
 
     def percent_to_idx(self, percent):
-        if percent <= 0.0: return 0
-        if percent >= 1.0: return -1 if self.repeat == 0 else 0
+        if percent < 0.0: return 0
+        if percent > 1.0: return -1 if self.repeat == 0 else 0
 
         idx = percent*len(self.gen_points)
         idx_pos = triangle(idx*self.repeat, (2 * len(self.gen_points)) - 1)
