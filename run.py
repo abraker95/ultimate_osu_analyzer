@@ -339,7 +339,7 @@ class MainWindow(QMainWindow):
 
 
     def change_map(self, beatmap):
-        if not beatmap: return
+        if beatmap == None: return
 
         self.status_bar.showMessage('Switching to map "' + str(beatmap.metadata.name) + '"')
 
