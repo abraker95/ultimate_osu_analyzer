@@ -364,6 +364,10 @@ class MainWindow(QMainWindow):
 
         self.status_bar.showMessage('Switched to map "' + str(beatmap.metadata.name) + '"')
 
+        # TODO: Multi gamemode support
+        if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
+            self.timeline.set_map(beatmap)
+
 
     def add_layer_2d_data(self, name, data_2d):
         self.layer_manager_switch_gui.get().add_layer(name, Data2DLayer(name, data_2d))

@@ -5,7 +5,7 @@ from gui.objects.graph.hitobject_plot import HitobjectPlot
 from gui.objects.graph.line_plot import LinePlot
 from misc.callback import callback
 
-from analysis.osu.std.map_metrics import StdMapMetrics
+from analysis.osu.std.map_data import StdMapData
 from generic.switcher import Switcher
 
 
@@ -39,8 +39,9 @@ class Timeline(pyqtgraph.PlotWidget, Switcher):
         self.y_mid_pos = 0
 
 
-    def set_hitobject_data(self, hitobject_data):
-        self.hitobjects_plot.update_data(hitobject_data.start_end_times(), self.y_mid_pos)
+    def set_map(self, beatmap):
+        map_data = StdMapData.get_aimpoint_data(beatmap.hitobjects)
+        self.hitobjects_plot.update_data(StdMapData.start_end_times(map_data), self.y_mid_pos)
 
 
     def save(self, name=None):
