@@ -19,8 +19,9 @@ class HitobjectPlot(pyqtgraph.GraphItem):
     
 
     def update_data(self, data, y_pos=0):
-        if data == None: return
-        if len(data) == 0: return
+        try: 
+            if len(data) == 0: return
+        except ValueError: return
             
         self.data = data
 
@@ -42,6 +43,8 @@ class HitobjectPlot(pyqtgraph.GraphItem):
                 obj_num += 1
 
                 adj.append([ obj_num - 1, obj_num ])
+            else:
+                adj.append([ obj_num, obj_num ])
 
         pos = np.array(pos, dtype=np.float)
         adj = np.array(adj, dtype=np.int)
