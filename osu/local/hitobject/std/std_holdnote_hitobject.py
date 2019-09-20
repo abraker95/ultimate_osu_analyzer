@@ -112,6 +112,7 @@ class StdHoldNoteHitobject(Hitobject):
 
     def render_hitobject_outline(self, painter, ratio_x, ratio_y, time):
         painter.setPen(QColor(0, 0, 255, self.opacity*255))
+        painter.setBrush(QColor(0, 0, 255, self.opacity*25))
 
         radius = Std.cs_to_px(self.difficulty.cs)
         pos_x  = (self.pos.x - radius)*ratio_x
