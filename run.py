@@ -146,7 +146,7 @@ class MainWindow(QMainWindow):
         self.std_settings_action.triggered.connect(self.show_std_settings)
         self.mania_settings_action.triggered.connect(self.show_mania_settings)
 
-        self.analysis_controls.create_graph_event.connect(lambda: self.graph_manager_switch_gui.get().add_graph)
+        #self.analysis_controls.create_graph_event.connect(lambda: self.graph_manager_switch_gui.get().add_graph)
         self.map_manager.map_changed_event.connect(self.change_map)
         self.map_manager.map_close_event.connect(self.close_map)
 
@@ -155,7 +155,6 @@ class MainWindow(QMainWindow):
         Data2DTemporalGraph.__del__.connect(self.temporal_graph_deletion_event)
 
         self.layer_manager_switch_gui.switch.connect(self.set_scene, inst=self.layer_manager_switch_gui)
-        # gamemode_manger.switch.connect(self.)    # puts out MetricManager
 
         CmdOsu.create_score_offset_graph.connect(self.create_score_offset_graph)
         CmdOsu.create_cursor_velocity_graph.connect(self.create_cursor_velocity_graph)
@@ -307,7 +306,7 @@ class MainWindow(QMainWindow):
         if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
             self.layer_manager_switch_gui.get().add_layer(group, StdReplayCursorLayer(replay, self.timeline.time_changed_event))
             self.layer_manager_switch_gui.get().add_layer(group, StdReplayHoldLayer(replay, self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer(group, StdScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
+            #self.layer_manager_switch_gui.get().add_layer(group, StdScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
 
         if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
             num_columns = beatmap.difficulty.cs
