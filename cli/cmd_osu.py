@@ -1,4 +1,6 @@
 import time
+import numpy as np
+import matplotlib.pyplot as plt
 
 from osu.local.beatmap.beatmapIO import BeatmapIO
 from osu.local.replay.replayIO import ReplayIO
@@ -31,6 +33,17 @@ class CmdOsu():
         for web_replay in web_replays:
             web_replay.download_replay('tmp/replays/')
             time.sleep(10)
+
+
+    @staticmethod
+    def show_cursor_hit_offset_histogram(score_data, beatmap):
+        xy = np.dstack(score_data[:,3])
+        dists = np.sqrt(xy[:,0][0]**2 + xy[:,1][0]**2)
+        
+        plt.hist(dists, 20)
+        plt.xlabel('offset from center (osu!px)')
+        plt.ylabel('number of hits')
+        plt.title('Top 50 players cursor offsets\n' + str(beatmap.metadata.name))
 
 
     @staticmethod
