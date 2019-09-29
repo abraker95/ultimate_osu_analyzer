@@ -112,7 +112,7 @@ class StdMapMetrics():
         mask = np.where(np.logical_and(y_vel[:-1] == 0, x_vel[:-1] == 0))[0]
         theta2[mask] = theta2[mask - 1]
 
-        # Velecity in the perpendicular direction relative to current
+        # Velocity in the perpendicular direction relative to current
         dy_vel = np.sin(theta2 - theta1)
 
         return times, rv*dy_vel[1:]
@@ -135,7 +135,7 @@ class StdMapMetrics():
         mask = np.where(np.logical_and(y_vel[:-1] == 0, x_vel[:-1] == 0))[0]
         theta2[mask] = theta2[mask - 1]
 
-        # Velecity in the parellel direction relative to current
+        # Velocity in the parellel direction relative to current
         dx_vel = np.cos(theta2 - theta1)
 
         return times, rv*dx_vel[1:]
