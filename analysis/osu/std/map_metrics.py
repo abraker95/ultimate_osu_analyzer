@@ -74,6 +74,71 @@ class StdMapMetrics():
 
     @staticmethod
     def calc_angles(hitobject_data=[]):
+        t = StdMapData.all_times(hitobject_data)
+        p = StdMapData.all_positions(hitobject_data)
+        if len(p) < 2: return [], []
+
+        x, y = p[:,0], p[:,1]
+        return t[1:], Metrics.angle(x, y, t)
+
+    
+    @staticmethod
+    def calc_xy_vel(hitobject_data=[]):
+        t = StdMapData.all_times(hitobject_data)
+        p = StdMapData.all_positions(hitobject_data)
+        if len(p) < 2: return [], []
+        
+        dt = np.diff(t)
+        dx = np.diff(p[:,0])
+        dy = np.diff(p[:,1])
+
+        return t[1:], dx/dt, dy/dt
+
+
+    # Perpendicular intensity
+    @staticmethod
+    def calc_perp_int(hitobject_data=[]):
+        times, rv = StdMapMetrics.calc_radial_velocity(hitobject_data)
+        times, x_vel, y_vel = StdMapMetrics.calc_xy_vel(hitobject_data)
+
+        # Construct vector angles from parametric velocities
+        theta1 = np.arctan2(y_vel[1:], x_vel[1:])
+        theta2 = np.arctan2(y_vel[:-1], x_vel[:-1])
+
+        # Make stacks 0 angle change
+        mask = np.where(np.logical_and(y_vel[1:] == 0, x_vel[1:] == 0))[0]
+        theta1[mask] = theta1[mask - 1]
+
+        mask = np.where(np.logical_and(y_vel[:-1] == 0, x_vel[:-1] == 0))[0]
+        theta2[mask] = theta2[mask - 1]
+
+        # Velecity in the perpendicular direction relative to current
+        dy_vel = np.sin(theta2 - theta1)
+
+        return times, rv*dy_vel[1:]
+
+
+    # Linear intensity
+    @staticmethod
+    def calc_lin_int(hitobject_data=[]):
+        times, rv = StdMapMetrics.calc_radial_velocity(hitobject_data)
+        times, x_vel, y_vel = StdMapMetrics.calc_xy_vel(hitobject_data)
+
+        # Construct vector angles from parametric velocities
+        theta1 = np.arctan2(y_vel[1:], x_vel[1:])
+        theta2 = np.arctan2(y_vel[:-1], x_vel[:-1])
+
+        # Make stacks 0 angle change
+        mask = np.where(np.logical_and(y_vel[1:] == 0, x_vel[1:] == 0))[0]
+        theta1[mask] = theta1[mask - 1]
+
+        mask = np.where(np.logical_and(y_vel[:-1] == 0, x_vel[:-1] == 0))[0]
+        theta2[mask] = theta2[mask - 1]
+
+        # Velecity in the parellel direction relative to current
+        dx_vel = np.cos(theta2 - theta1)
+
+        return times, rv*dx_vel[1:]
         all_times     = StdMapData.all_times(hitobject_data)
         all_positions = StdMapData.all_positions(hitobject_data)
         if len(all_positions) < 3: return [], []
