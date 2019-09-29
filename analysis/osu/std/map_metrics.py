@@ -1,7 +1,8 @@
 import numpy as np
 
 from misc.geometry import *
-from misc.numpy_utils import NumpyUtils
+from misc.math_utils import *
+from misc.metrics import Metrics
 
 from osu.local.beatmap.beatmap import Beatmap
 
@@ -16,66 +17,59 @@ class StdMapMetrics():
     '''
     @staticmethod
     def calc_tapping_intervals(hitobject_data=[]):
-        start_times = StdMapData.start_times(hitobject_data)
+        t = StdMapData.start_times(hitobject_data)
+        if len(t) < 2: return [], []
 
-        if len(start_times) < 2: return [], []
-        intervals = start_times[1:] - start_times[:-1]
-    
-        return start_times[1:], intervals
+        dt = np.diff(t)
+        return t[1:], dt
 
 
     @staticmethod
     def calc_notes_per_sec(hitobject_data=[]):
-        start_times = StdMapData.start_times(hitobject_data)
+        t = StdMapData.start_times(hitobject_data)
+        if len(t) < 2: return [], []
 
-        if len(start_times) < 2: return [], []
-        intervals = 1000/(start_times[1:] - start_times[:-1])
-    
-        return start_times[1:], intervals
+        dt = 1000/np.diff(t)
+        return t[1:], dt
 
 
     @staticmethod
     def calc_distances(hitobject_data=[]):
-        all_times     = StdMapData.all_times(hitobject_data)
-        all_positions = StdMapData.all_positions(hitobject_data)
-
-        if len(all_positions) < 2: return [], []
-
-        dists = NumpyUtils.dists(all_positions[1:], all_positions[:-1])
-        return all_times[1:], dists
+        t = StdMapData.all_times(hitobject_data)
+        p = StdMapData.all_positions(hitobject_data)
+        if len(p) < 2: return [], []
+        
+        x, y = p[:,0], p[:,1]
+        return t[1:], Metrics.dists(x, y, t)
 
     
     @staticmethod
     def calc_velocity(hitobject_data=[]):
-        all_times     = StdMapData.all_times(hitobject_data)
-        all_positions = StdMapData.all_positions(hitobject_data)
-
-        if len(all_positions) < 2: return [], []
-        intervals = np.diff(all_times)
+        t = StdMapData.all_times(hitobject_data)
+        p = StdMapData.all_positions(hitobject_data)
+        if len(p) < 2: return [], []
         
-        vel = NumpyUtils.dists(all_positions[1:], all_positions[:-1])/intervals
-        return all_times[1:], vel
+        x, y = p[:,0], p[:,1]
+        return t[1:], Metrics.vel_2d(x, y, t)
 
 
     @staticmethod
     def calc_velocity_start(hitobject_data=[]):
-        start_times   = StdMapData.start_times(hitobject_data)
-        start_positions = StdMapData.start_positions(hitobject_data)
-
-        if len(start_positions) < 2: return [], []
-        intervals = np.diff(start_times)
+        t = StdMapData.start_times(hitobject_data)
+        p = StdMapData.start_positions(hitobject_data)
+        if len(p) < 2: return [], []
         
-        vel = NumpyUtils.dists(start_positions[1:], start_positions[:-1])/intervals
-        return start_times[1:], vel
+        x, y = p[:,0], p[:,1]
+        return t[1:], Metrics.vel_2d(x, y, t)
 
 
     @staticmethod
     def calc_intensity(hitobject_data=[]):
-        times, velocity      = StdMapMetrics.calc_velocity_start(hitobject_data)
-        times, notes_per_sec = StdMapMetrics.calc_notes_per_sec(hitobject_data)
+        t, v   = StdMapMetrics.calc_velocity_start(hitobject_data)
+        t, nps = StdMapMetrics.calc_notes_per_sec(hitobject_data)
 
-        intensity = velocity*notes_per_sec
-        return times, intensity
+        intensity = v*nps
+        return t, intensity
 
 
     @staticmethod
