@@ -20,12 +20,12 @@ class Metrics():
 
     @staticmethod
     def accel_2d(x, y, t):
-        return Metrics.vel_2d(x, y, t)/np.diff(t)
+        return np.diff(Metrics.vel_2d(x, y, t))/np.diff(t)[1:]
 
 
     @staticmethod
     def accel_1d(x, t):
-        return Metrics.vel_1d(x, t)/np.diff(t)
+        return np.diff(Metrics.vel_1d(x, t))/np.diff(t)[1:]
 
 
     @staticmethod
