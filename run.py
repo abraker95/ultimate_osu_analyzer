@@ -10,7 +10,7 @@ from gui.frames.main_frame import MainFrame
 
 from osu.local.beatmap.beatmapIO import BeatmapIO
 from osu.local.beatmap.beatmap import Beatmap
-
+from osu.local.hitobject.std.std import Std
 from osu.local.replay.replayIO import ReplayIO
 
 from osu.online.osu_api import OsuApi
@@ -183,6 +183,7 @@ class MainWindow(QMainWindow):
         self.ipython_console.push_vars({ 'StdScoreMetrics'  : StdScoreMetrics })
 
         self.ipython_console.push_vars({ 'StdScoreDataEnums'  : StdScoreDataEnums })
+        self.ipython_console.push_vars({ 'Sts'                : Std })
 
         self.ipython_console.push_vars({ 'ManiaMapData'    : ManiaMapData })
         self.ipython_console.push_vars({ 'ManiaMapMetrics' : ManiaMapMetrics })
