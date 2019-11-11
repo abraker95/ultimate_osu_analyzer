@@ -182,6 +182,8 @@ class MainWindow(QMainWindow):
         self.ipython_console.push_vars({ 'StdScoreData'     : StdScoreData })
         self.ipython_console.push_vars({ 'StdScoreMetrics'  : StdScoreMetrics })
 
+        self.ipython_console.push_vars({ 'StdScoreDataEnums'  : StdScoreDataEnums })
+
         self.ipython_console.push_vars({ 'ManiaMapData'    : ManiaMapData })
         self.ipython_console.push_vars({ 'ManiaMapMetrics' : ManiaMapMetrics })
         self.ipython_console.push_vars({ 'ManiaReplayData' : ManiaReplayData })
