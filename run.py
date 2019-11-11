@@ -367,7 +367,6 @@ class MainWindow(QMainWindow):
 
         # TODO: Multi gamemode support
         if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
-            self.analysis_controls.set_beatmap(beatmap)
             self.timeline.set_map(beatmap)
         else:
             self.timeline.set_map(None)
