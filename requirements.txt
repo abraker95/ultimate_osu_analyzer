@@ -5,3 +5,4 @@ pyqtgraph
 osrparse
 pyqt5
 qtconsole
+requests
