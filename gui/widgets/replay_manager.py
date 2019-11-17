@@ -63,10 +63,10 @@ class ReplayManagerItem(QTreeWidgetItem):
 
 
     def get_replay_data(self):
-        if self.replay_data == None:
-            if   self.replay.game_mode == GameMode.Standard:     self.replay_data = StdReplayData.get_event_data(self.replay.play_data)
-            #elif self.replay.game_mode == GameMode.Taiko:        self.replay_data = TaikoReplayData.get_event_data(self.replay.play_data)
-            #elif self.replay.game_mode == GameMode.CatchTheBeat: self.replay_data = CatchReplayData.get_event_data(self.replay.play_data)
+        if type(self.replay_data) == type(None):
+            if   self.replay.game_mode == GameMode.Standard:     self.replay_data = StdReplayData.get_replay_data(self.replay.play_data)
+            #elif self.replay.game_mode == GameMode.Taiko:        self.replay_data = TaikoReplayData.get_replay_data(self.replay.play_data)
+            #elif self.replay.game_mode == GameMode.CatchTheBeat: self.replay_data = CatchReplayData.get_replay_data(self.replay.play_data)
             elif self.replay.game_mode == GameMode.Osumania:     self.replay_data = ManiaReplayData.get_replay_data(self.replay.play_data, self.replay.mania_keys)
             else:
                 RuntimeError('Unsupported gamemode: ' + str(self.replay.game_mode))
@@ -109,8 +109,8 @@ class ReplayManager(QWidget):
     def add_replay(self, replay):
         if self.replay_list.topLevelItemCount() == 0:
             if   replay.game_mode == GameMode.Standard: columns = ('player', 'mods', 'score', 'combo', 'acc', '300', '100', '50', 'miss')
-            #elif self.replay.game_mode == GameMode.Taiko:        self.replay_data = TaikoReplayData.get_event_data(self.replay.play_data)
-            #elif self.replay.game_mode == GameMode.CatchTheBeat: self.replay_data = CatchReplayData.get_event_data(self.replay.play_data)
+            #elif self.replay.game_mode == GameMode.Taiko:        self.replay_data = TaikoReplayData.get_replay_data(self.replay.play_data)
+            #elif self.replay.game_mode == GameMode.CatchTheBeat: self.replay_data = CatchReplayData.get_replay_data(self.replay.play_data)
             elif replay.game_mode == GameMode.Osumania: columns = ('player', 'mods', 'score', 'combo', 'acc', 'MAX', '300', '200', '100', '50', 'miss')
             else:
                 RuntimeError('Unsupported gamemode: ' + str(replay.game_mode))

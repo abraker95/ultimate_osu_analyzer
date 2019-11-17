@@ -19,7 +19,7 @@ class StdReplayData():
     SMOKE = 7   # [ bool ]  Smoke button flag
 
     @staticmethod 
-    def get_event_data(replay_events):
+    def get_replay_data(replay_events):
         
         """
         Returns:
@@ -32,7 +32,7 @@ class StdReplayData():
 
         A list of events with data on time, positions of cursor, and flags on various key presses
         """
-        event_data = []
+        replay_data = []
 
         m1_mask    = (1 << 0)
         m2_mask    = (1 << 1)
@@ -49,33 +49,33 @@ class StdReplayData():
             smoke_pressed = (replay_event.keys_pressed & smoke_mask) > 0
 
             event = [ replay_event.t, replay_event.x, replay_event.y, m1_pressed, m2_pressed, k1_pressed, k2_pressed, smoke_pressed ]
-            event_data.append(event)
+            replay_data.append(event)
 
-        return event_data
-
-
-    @staticmethod
-    def component_data(event_data, data):
-        event_data = np.asarray(event_data)
-        return event_data[:, data]
+        return np.asarray(replay_data)
 
 
     @staticmethod
-    def press_start_times(event_data, key=None):
+    def component_data(replay_data, data):
+        return replay_data[:, data]
+
+
+    @staticmethod
+    @staticmethod
+    def press_start_times(replay_data, key=None):
         """
         Returns: [ press_start_idxs, press_start_times ] = [ [ int, int, ... ], [ int, int, ... ] ]
         
-        Tuple with indices in event_data where a press ends and timings where press ends.
-        press_start_idxs can be used on original event_data to get full data related to start times
-        like so: event_data[press_start_idxs]
+        Tuple with indices in replay_data where a press ends and timings where press ends.
+        press_start_idxs can be used on original replay_data to get full data related to start times
+        like so: replay_data[press_start_idxs]
         """
-        event_data = np.asarray(event_data)
+        replay_data = np.asarray(replay_data)
         
         if key == None:
-            m1_idxs, m1_press_start_times = StdReplayData.press_start_times(event_data, StdReplayData.M1)
-            m2_idxs, m2_press_start_times = StdReplayData.press_start_times(event_data, StdReplayData.M2)
-            k1_idxs, k1_press_start_times = StdReplayData.press_start_times(event_data, StdReplayData.K1)
-            k2_idxs, k2_press_start_times = StdReplayData.press_start_times(event_data, StdReplayData.K2)
+            m1_idxs, m1_press_start_times = StdReplayData.press_start_times(replay_data, StdReplayData.M1)
+            m2_idxs, m2_press_start_times = StdReplayData.press_start_times(replay_data, StdReplayData.M2)
+            k1_idxs, k1_press_start_times = StdReplayData.press_start_times(replay_data, StdReplayData.K1)
+            k2_idxs, k2_press_start_times = StdReplayData.press_start_times(replay_data, StdReplayData.K2)
 
             press_start_times = np.concatenate((m1_press_start_times, m2_press_start_times, k1_press_start_times, k2_press_start_times))
             press_idxs        = np.concatenate((m1_idxs, m2_idxs, k1_idxs, k2_idxs))
@@ -83,8 +83,8 @@ class StdReplayData():
             sort_idxs = np.argsort(press_start_times, axis=None)
             return np.asarray([ press_idxs[sort_idxs], press_start_times[sort_idxs] ])
         else:
-            times    = StdReplayData.component_data(event_data, StdReplayData.TIME)
-            key_data = StdReplayData.component_data(event_data, key)
+            times    = StdReplayData.component_data(replay_data, StdReplayData.TIME)
+            key_data = StdReplayData.component_data(replay_data, key)
 
             key_changed = (key_data[1:] != key_data[:-1])
             key_changed = np.insert(key_changed, 0, 0)
@@ -97,21 +97,21 @@ class StdReplayData():
 
 
     @staticmethod
-    def press_end_times(event_data, key=None):
+    def press_end_times(replay_data, key=None):
         """
         Returns: [ press_end_idxs, press_end_times ] = [ [ int, int, ... ], [ int, int, ... ] ]
         
-        Tuple with indices in event_data where a press ends and timings where press ends.
-        press_end_idxs can be used on original event_data to get full data related to end times
-        like so: event_data[press_end_idxs]
+        Tuple with indices in replay_data where a press ends and timings where press ends.
+        press_end_idxs can be used on original replay_data to get full data related to end times
+        like so: replay_data[press_end_idxs]
         """
-        event_data = np.asarray(event_data)
+        replay_data = np.asarray(replay_data)
 
         if key == None:
-            m1_idxs, m1_press_end_times = StdReplayData.press_end_times(event_data, StdReplayData.M1)
-            m2_idxs, m2_press_end_times = StdReplayData.press_end_times(event_data, StdReplayData.M2)
-            k1_idxs, k1_press_end_times = StdReplayData.press_end_times(event_data, StdReplayData.K1)
-            k2_idxs, k2_press_end_times = StdReplayData.press_end_times(event_data, StdReplayData.K2)
+            m1_idxs, m1_press_end_times = StdReplayData.press_end_times(replay_data, StdReplayData.M1)
+            m2_idxs, m2_press_end_times = StdReplayData.press_end_times(replay_data, StdReplayData.M2)
+            k1_idxs, k1_press_end_times = StdReplayData.press_end_times(replay_data, StdReplayData.K1)
+            k2_idxs, k2_press_end_times = StdReplayData.press_end_times(replay_data, StdReplayData.K2)
 
             press_end_times = np.concatenate((m1_press_end_times, m2_press_end_times, k1_press_end_times, k2_press_end_times))
             press_idxs      = np.concatenate((m1_idxs, m2_idxs, k1_idxs, k2_idxs))
@@ -119,8 +119,8 @@ class StdReplayData():
             sort_idxs = np.argsort(press_end_times, axis=None)
             return np.asarray([ press_idxs[sort_idxs], press_end_times[sort_idxs] ])
         else:
-            times    = StdReplayData.component_data(event_data, StdReplayData.TIME)
-            key_data = StdReplayData.component_data(event_data, key)
+            times    = StdReplayData.component_data(replay_data, StdReplayData.TIME)
+            key_data = StdReplayData.component_data(replay_data, key)
 
             key_changed = (key_data[1:] != key_data[:-1])
             key_changed = np.insert(key_changed, 0, 0)
@@ -133,7 +133,7 @@ class StdReplayData():
 
     
     @staticmethod
-    def press_start_end_times(event_data, key=None):
+    def press_start_end_times(replay_data, key=None):
         """
         Returns: 
         [ 
@@ -142,15 +142,15 @@ class StdReplayData():
             ...
         ]
         """
-        press_start_idx, press_start_times = StdReplayData.press_start_times(event_data, key)
-        press_end_idx, press_end_times     = StdReplayData.press_end_times(event_data, key)
+        press_start_idx, press_start_times = StdReplayData.press_start_times(replay_data, key)
+        press_end_idx, press_end_times     = StdReplayData.press_end_times(replay_data, key)
 
         return np.asarray(list(zip(press_start_idx, press_start_times, press_end_idx, press_end_times)))
 
 
     @staticmethod
-    def get_idx_time(event_data, time):
-        event_times = event_data[:,StdReplayData.TIME]
+    def get_idx_time(replay_data, time):
+        event_times = replay_data[:,StdReplayData.TIME]
 
         idx = np.where(event_times >= time)[0]
         idx = (event_times.size - 1) if idx.size == 0 else min(idx[0] + 1, event_times.size - 1)
@@ -159,16 +159,16 @@ class StdReplayData():
 
     
     @staticmethod
-    def get_idx_press_start_time(event_data, time, key=None):
+    def get_idx_press_start_time(replay_data, time, key=None):
         if not time: return None
 
-        times = StdReplayData.press_start_times(event_data, key)
+        times = StdReplayData.press_start_times(replay_data, key)
         return min(max(0, np.searchsorted(times, [time], side='right')[0] - 1), len(times))
 
 
     @staticmethod
-    def get_idx_press_end_time(event_data, time, key=None):
+    def get_idx_press_end_time(replay_data, time, key=None):
         if not time: return None
 
-        times = StdReplayData.press_end_times(event_data, key)
+        times = StdReplayData.press_end_times(replay_data, key)
         return min(max(0, np.searchsorted(times, [time], side='right')[0] - 1), len(times))

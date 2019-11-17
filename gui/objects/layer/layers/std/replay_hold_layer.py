@@ -13,11 +13,8 @@ from analysis.osu.std.replay_data import StdReplayData
 
 class StdReplayHoldLayer(Layer, Temporal):
 
-    def __init__(self, data, time_driver):
-        replay = data
-
-        self.event_data = StdReplayData.get_event_data(replay.play_data)
-        self.event_data = np.asarray(self.event_data)
+    def __init__(self, replay, time_driver):
+        self.replay_data = StdReplayData.get_replay_data(replay.play_data)
 
         Layer.__init__(self, 'Replay hold - ' + str(replay.player_name))
         Temporal.__init__(self)
@@ -39,10 +36,10 @@ class StdReplayHoldLayer(Layer, Temporal):
         ratio_x = widget.width()/Std.PLAYFIELD_WIDTH
         ratio_y = widget.height()/Std.PLAYFIELD_HEIGHT
 
-        start_idx = StdReplayData.get_idx_time(self.event_data, self.time - StdSettings.view_time_back)
-        end_idx   = StdReplayData.get_idx_time(self.event_data, self.time + StdSettings.view_time_ahead )
+        start_idx = StdReplayData.get_idx_time(self.replay_data, self.time - StdSettings.view_time_back)
+        end_idx   = StdReplayData.get_idx_time(self.replay_data, self.time + StdSettings.view_time_ahead)
 
-        for prev_event, curr_event in zip(self.event_data[start_idx:end_idx - 1], self.event_data[start_idx + 1:end_idx]):
+        for prev_event, curr_event in zip(self.replay_data[start_idx:end_idx - 1], self.replay_data[start_idx + 1:end_idx]):
             prev_pos_x, curr_pos_x = prev_event[StdReplayData.XPOS]*ratio_x, curr_event[StdReplayData.XPOS]*ratio_x
             prev_pos_y, curr_pos_y = prev_event[StdReplayData.YPOS]*ratio_y, curr_event[StdReplayData.YPOS]*ratio_y
 

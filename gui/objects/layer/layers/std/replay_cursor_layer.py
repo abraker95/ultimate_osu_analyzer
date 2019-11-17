@@ -12,11 +12,8 @@ from analysis.osu.std.replay_data import StdReplayData
 
 class StdReplayCursorLayer(Layer, Temporal):
 
-    def __init__(self, data, time_driver):
-        replay = data
-
-        self.event_data = StdReplayData.get_event_data(replay.play_data)
-        self.event_data = np.asarray(self.event_data)
+    def __init__(self, replay, time_driver):
+        self.replay_data = StdReplayData.get_replay_data(replay.play_data)
 
         Layer.__init__(self, 'Replay cursor - ' + str(replay.player_name))
         Temporal.__init__(self)
@@ -37,8 +34,8 @@ class StdReplayCursorLayer(Layer, Temporal):
         ratio_y = widget.height()/Std.PLAYFIELD_HEIGHT
         radius  = StdSettings.cursor_radius
 
-        idx = StdReplayData.get_idx_time(self.event_data, self.time)
-        pos_x, pos_y = self.event_data[idx][StdReplayData.XPOS], self.event_data[idx][StdReplayData.YPOS]
+        idx = StdReplayData.get_idx_time(self.replay_data, self.time)
+        pos_x, pos_y = self.replay_data[idx][StdReplayData.XPOS], self.replay_data[idx][StdReplayData.YPOS]
         
         pos_x = (pos_x - radius)*ratio_x
         pos_y = (pos_y - radius)*ratio_y
