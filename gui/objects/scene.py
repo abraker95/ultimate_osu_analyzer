@@ -14,11 +14,11 @@ class Scene(QGraphicsScene):
         self.addItem(layer)
         self.update()
 
-        layer.layer_changed.connect(self.update_layers)
+        layer.layer_changed.connect(self.update_layers, inst=layer)
 
 
     def rmv_layer(self, layer):
-        layer.layer_changed.disconnect(self.update_layers)
+        layer.layer_changed.disconnect(self.update_layers, inst=layer)
 
         self.removeItem(layer)
         self.update()

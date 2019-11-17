@@ -24,7 +24,7 @@ class Layer(QGraphicsItem):
 
     @callback
     def layer_changed(self):
-        self.layer_changed.emit()
+        self.layer_changed.emit(inst=self)
 
     
     def boundingRect(self):
