@@ -17,7 +17,7 @@ class StdReplayMetrics():
         if len(all_times) < 2: return [], []
         
         vel = np.sqrt(np.diff(replay_data[:,1])**2 + np.diff(replay_data[:,2])**2)/np.diff(replay_data[:, 0])
-        return all_times[1:], vel
+        return all_times, vel[1:]
 
 
     @staticmethod
