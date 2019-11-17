@@ -20,7 +20,10 @@ class HitobjectPlot(pyqtgraph.GraphItem):
 
     def update_data(self, data, y_pos=0):
         try: 
-            if len(data) == 0: return
+            if len(data) == 0:
+                self.scatter.clear()
+                self.pos = None
+                return
         except ValueError: return
             
         self.data = data
