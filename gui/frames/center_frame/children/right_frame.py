@@ -36,8 +36,8 @@ class RightFrame(QFrame):
         self.tabs_area.addTab(self.layer_manager_switch, 'Layers')
         self.tabs_area.addTab(self.replay_manager_switch, 'Replays')
         self.tabs_area.addTab(self.graph_manager_switch, 'Graphs')
-        self.tabs_area.addTab(self.analysis_controls, 'Analysis')
-        self.tabs_area.addTab(self.metric_manager, 'Metrics')
+        #self.tabs_area.addTab(self.analysis_controls, 'Analysis')
+        #self.tabs_area.addTab(self.metric_manager, 'Metrics')
         self.tabs_area.addTab(self.ipython_console, 'Console')
         self.layout.addWidget(self.tabs_area)
 
