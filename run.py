@@ -24,7 +24,7 @@ from core.gamemode_manager import gamemode_manager
 
 from gui.objects.display import Display
 
-from gui.objects.layer.layers.data_2d_layer import Data2DLayer
+from gui.objects.layer.layers.std_data_2d_layer import StdData2DLayer
 from gui.objects.layer.layers.std.hitobject_outline_layer import HitobjectOutlineLayer
 from gui.objects.layer.layers.std.hitobject_aimpoint_layer import HitobjectAimpointLayer
 
@@ -55,6 +55,7 @@ from analysis.osu.std.replay_data import StdReplayData
 from analysis.osu.std.replay_metrics import StdReplayMetrics
 from analysis.osu.std.score_data import StdScoreData, StdScoreDataEnums
 from analysis.osu.std.score_metrics import StdScoreMetrics
+from analysis.osu.std.std_layers import StdLayers
 
 from analysis.osu.mania.map_data import ManiaMapData
 from analysis.osu.mania.map_metrics import ManiaMapMetrics
@@ -172,7 +173,8 @@ class MainWindow(QMainWindow):
         self.ipython_console.push_vars({ 'get_beatmap' : self.map_manager.get_current_map })
         self.ipython_console.push_vars({ 'get_replays' : lambda: self.replay_manager_switch_gui.get().get_replay_data() })
 
-        self.ipython_console.push_vars({ 'add_layer_2d_data' : self.add_layer_2d_data })
+        self.ipython_console.push_vars({ 'add_std_layer'     : self.add_std_layer })
+        # self.ipython_console.push_vars({ 'add_mania_layer'   : self.add_mania_layer })  # TODO
         self.ipython_console.push_vars({ 'add_graph_2d_data' : self.add_graph_2d_data })
 
         self.ipython_console.push_vars({ 'StdMapData'       : StdMapData })
@@ -181,6 +183,7 @@ class MainWindow(QMainWindow):
         self.ipython_console.push_vars({ 'StdReplayMetrics' : StdReplayMetrics })
         self.ipython_console.push_vars({ 'StdScoreData'     : StdScoreData })
         self.ipython_console.push_vars({ 'StdScoreMetrics'  : StdScoreMetrics })
+        self.ipython_console.push_vars({ 'StdLayers'        : StdLayers })
 
         self.ipython_console.push_vars({ 'StdScoreDataEnums'  : StdScoreDataEnums })
         self.ipython_console.push_vars({ 'Std'                : Std })
@@ -374,8 +377,8 @@ class MainWindow(QMainWindow):
             self.timeline.set_map(None)
 
 
-    def add_layer_2d_data(self, name, data, draw_func):
-        self.layer_manager_switch_gui.get().add_layer(name, Data2DLayer(name, data, draw_func, self.timeline.time_changed_event))
+    def add_std_layer(self, name, data, draw_func):
+        self.layer_manager_switch_gui.get().add_layer(name, StdData2DLayer(name, data, draw_func, self.timeline.time_changed_event))
 
 
     def add_graph_2d_data(self, name, data_2d, temporal=False, plot_type=Data2DGraph.SCATTER_PLOT):
