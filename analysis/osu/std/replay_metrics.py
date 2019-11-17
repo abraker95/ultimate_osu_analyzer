@@ -11,26 +11,18 @@ from analysis.osu.std.replay_data import StdReplayData
 
 class StdReplayMetrics():
 
-
     @staticmethod
     def cursor_velocity(replay_data):
-        replay_data = np.asarray(replay_data[2:])
-
-        all_times     = replay_data[:,0]
-        all_positions = np.asarray(list(zip(replay_data[:,1], replay_data[:,2])))
-
+        all_times = replay_data[:,0]
         if len(all_times) < 2: return [], []
-        intervals = np.diff(all_times)
         
-        vel = NumpyUtils.dists(all_positions[1:], all_positions[:-1])/intervals
+        vel = np.sqrt(np.diff(replay_data[:,1])**2 + np.diff(replay_data[:,2])**2)/np.diff(replay_data[:, 0])
         return all_times[1:], vel
 
 
     @staticmethod
     def cursor_acceleration(replay_data):
-        replay_data = np.asarray(replay_data[2:])
-
-        cursor_velocity   = StdReplayMetrics.cursor_velocity(replay_data)
+        cursor_velocity = StdReplayMetrics.cursor_velocity(replay_data)
         times, velocities = cursor_velocity
 
         if len(times) < 2: return [], []
@@ -42,8 +34,6 @@ class StdReplayMetrics():
 
     @staticmethod
     def cursor_jerk(replay_data):
-        replay_data = np.asarray(replay_data[2:])
-
         cursor_acceleration  = StdReplayMetrics.cursor_acceleration(replay_data)
         times, accelerations = cursor_acceleration
 
@@ -56,8 +46,6 @@ class StdReplayMetrics():
 
     @staticmethod
     def cursor_vel_xy(replay_data):
-        replay_data = np.asarray(replay_data[2:])
-
         all_times     = replay_data[:,0]
         all_positions = np.asarray(list(zip(replay_data[:,1], replay_data[:,2])))
 
@@ -72,8 +60,6 @@ class StdReplayMetrics():
 
     @staticmethod
     def cursor_accel_xy(replay_data):
-        replay_data = np.asarray(replay_data[2:])
-
         cursor_vel_xy       = StdReplayMetrics.cursor_vel_xy(replay_data)
         times, vel_x, vel_y = cursor_vel_xy
 
@@ -88,8 +74,6 @@ class StdReplayMetrics():
 
     @staticmethod
     def cursor_jerk_xy(replay_data):
-        replay_data = np.asarray(replay_data[2:])
-
         cursor_accel_xy         = StdReplayMetrics.cursor_accel_xy(replay_data)
         times, accel_x, accel_y = cursor_accel_xy
 
@@ -104,8 +88,6 @@ class StdReplayMetrics():
 
     @staticmethod
     def press_intervals(replay_data):
-        replay_data = np.asarray(replay_data[2:])
-
         press_release_times = StdReplayData.press_start_end_times(replay_data)
         intervals = press_release_times[:,3] - press_release_times[:,1]
         
