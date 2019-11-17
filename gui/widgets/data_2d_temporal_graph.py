@@ -50,7 +50,7 @@ class Data2DTemporalGraph(pyqtgraph.PlotWidget):
     def update_data(self, data_2d):
         # Filter out infinities
         data_x, data_y = data_2d
-        inf_idx_filter = np.where(np.isfinite(data_y.astype(np.float64)))
+        inf_idx_filter = np.where(np.isfinite(np.asarray(data_y).astype(np.float64)))
         data_x, data_y = data_x[inf_idx_filter], data_y[inf_idx_filter]
         
         self.plot_item.update_data((data_x, data_y))
