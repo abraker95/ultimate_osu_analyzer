@@ -374,8 +374,8 @@ class MainWindow(QMainWindow):
             self.timeline.set_map(None)
 
 
-    def add_layer_2d_data(self, name, data_2d):
-        self.layer_manager_switch_gui.get().add_layer(name, Data2DLayer(name, data_2d))
+    def add_layer_2d_data(self, name, data, draw_func):
+        self.layer_manager_switch_gui.get().add_layer(name, Data2DLayer(name, data, draw_func, self.timeline.time_changed_event))
 
 
     def add_graph_2d_data(self, name, data_2d, temporal=False, plot_type=Data2DGraph.SCATTER_PLOT):
