@@ -100,7 +100,7 @@ class LayerManager(QWidget):
 
 
     def add_layer(self, path, layer):
-        group = self.__set_groups(path + ',' + layer.name)
+        group = self.__set_groups(path)
         group[1][layer.name] = [ LayerManagerItem(group[0], path, layer), {} ]
 
         self.scene.add_layer(layer)
@@ -113,7 +113,6 @@ class LayerManager(QWidget):
 
 
     def __set_groups(self, path):
-        path, file_name = path.split(',')
         group_names = path.split('.')
         curr_group  = self.hierarchy['.']
 

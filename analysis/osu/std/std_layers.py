@@ -54,10 +54,7 @@ class StdLayers():
     @staticmethod
     def StdReplayCursorVel(painter, ratio_x, ratio_y, time, replay_data):
         t, vel = StdReplayMetrics.cursor_velocity(replay_data)
-
         idx = np.where(t > time)[0][0]
-        pos_x = replay_data[idx, 1]
-        pos_y = replay_data[idx, 2]
 
         painter.setPen(QColor(255, 0, 0, 255))
         painter.drawText(0, 10, f'{vel[idx]}')
