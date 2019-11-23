@@ -1,7 +1,0 @@
-replay\_data module
-===================
-
-.. automodule:: replay_data
-   :members:
-   :undoc-members:
-   :show-inheritance:

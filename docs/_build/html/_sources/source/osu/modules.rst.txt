@@ -1,6 +1,0 @@
-osu
-===
-
-.. toctree::
-   :maxdepth: 4
-

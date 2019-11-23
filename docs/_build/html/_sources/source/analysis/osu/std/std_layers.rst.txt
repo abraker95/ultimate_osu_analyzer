@@ -1,7 +1,0 @@
-std\_layers module
-==================
-
-.. automodule:: std_layers
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,7 +1,0 @@
-replay\_metrics module
-======================
-
-.. automodule:: replay_metrics
-   :members:
-   :undoc-members:
-   :show-inheritance:
