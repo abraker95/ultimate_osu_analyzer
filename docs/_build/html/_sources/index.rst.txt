@@ -7,14 +7,18 @@ Welcome to ultimate_osu_analyzer's documentation!
 =================================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :glob:
+    :caption: Tutorials:
 
-    getting_started
-    fetching_online_data
-    exploring_online_data
-    analyzing_beatmaps_and_replays
-    the_dynamic_environment
+    tutorials/*
+    
+
+.. toctree::
+    :glob:
+    :caption: Code:
+
+    source/*
+
 
 
 Indices and tables

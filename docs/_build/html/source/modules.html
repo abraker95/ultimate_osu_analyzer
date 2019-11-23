@@ -1,34 +1,183 @@
 
-<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta charset="utf-8" />
-    <title>osu-replay-analyzer-v2 &#8212; ultimate_osu_analyzer  documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>osu-replay-analyzer-v2 &mdash; ultimate_osu_analyzer  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="run module" href="run.html" />
+    <link rel="prev" title="misc package" href="misc.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
           
 
-          <div class="body" role="main">
+          
+            <a href="../index.html" class="icon icon-home"> ultimate_osu_analyzer
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Tutorials:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/analyzing_beatmaps_and_replays.html">Analyzing Beatmaps and Replays</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/exploring_online_data.html">Exploring Online Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/fetching_online_data.html">Fetching Online Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/gettings_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/the_dynamic_environment.html">The Dynamic Environment</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Code:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">analysis package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis.osu.html">analysis.osu package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis.osu.catch.html">analysis.osu.catch package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis.osu.mania.html">analysis.osu.mania package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis.osu.std.html">analysis.osu.std package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">cli package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">demo module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.html">gui package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.objects.html">gui.objects package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.objects.graph.html">gui.objects.graph package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gui.objects.layer.html">gui.objects.layer package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipython_test.html">ipython_test module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">misc package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">osu-replay-analyzer-v2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="analysis.html">analysis package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">cli package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demo.html">demo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipython_test.html">ipython_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html">misc package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run.html">run module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test.html">test module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run.html">run module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="test.html">test module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ultimate_osu_analyzer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>osu-replay-analyzer-v2</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/source/modules.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="osu-replay-analyzer-v2">
 <h1>osu-replay-analyzer-v2<a class="headerlink" href="#osu-replay-analyzer-v2" title="Permalink to this headline">¶</a></h1>
@@ -71,66 +220,52 @@
 </div>
 
 
+           </div>
+           
           </div>
-          
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">ultimate_osu_analyzer</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="run.html" class="btn btn-neutral float-right" title="run module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="misc.html" class="btn btn-neutral float-left" title="misc package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+  
 
+  <hr/>
 
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, abraker95
 
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-
-
-
+</footer>
 
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2019, abraker95.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="../_sources/source/modules.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
 
-    
+    </section>
 
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
     
-  </body>
+   
+
+</body>
 </html>
