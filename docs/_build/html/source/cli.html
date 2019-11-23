@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>cli package &#8212; ultimate_osu_analyzer  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="cli-package">
+<h1>cli package<a class="headerlink" href="#cli-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cli.cmd_online">
+<span id="cli-cmd-online-module"></span><h2>cli.cmd_online module<a class="headerlink" href="#module-cli.cmd_online" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cli.cmd_online.CmdOnline">
+<em class="property">class </em><code class="sig-prename descclassname">cli.cmd_online.</code><code class="sig-name descname">CmdOnline</code><a class="headerlink" href="#cli.cmd_online.CmdOnline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="cli.cmd_online.CmdOnline.get_latest_beatmapsets">
+<em class="property">static </em><code class="sig-name descname">get_latest_beatmapsets</code><span class="sig-paren">(</span><em class="sig-param">gamemode</em>, <em class="sig-param">status=&lt;MapStatus.Ranked: 1&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_online.CmdOnline.get_latest_beatmapsets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cli.cmd_online.CmdOnline.get_scores">
+<em class="property">static </em><code class="sig-name descname">get_scores</code><span class="sig-paren">(</span><em class="sig-param">beatmap_id</em>, <em class="sig-param">mode</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_online.CmdOnline.get_scores" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cli.cmd_online.CmdOnline.get_scores_from_beatmap">
+<em class="property">static </em><code class="sig-name descname">get_scores_from_beatmap</code><span class="sig-paren">(</span><em class="sig-param">beatmap</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_online.CmdOnline.get_scores_from_beatmap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cli.cmd_osu">
+<span id="cli-cmd-osu-module"></span><h2>cli.cmd_osu module<a class="headerlink" href="#module-cli.cmd_osu" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cli.cmd_osu.CmdOsu">
+<em class="property">class </em><code class="sig-prename descclassname">cli.cmd_osu.</code><code class="sig-name descname">CmdOsu</code><a class="headerlink" href="#cli.cmd_osu.CmdOsu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="cli.cmd_osu.CmdOsu.create_cursor_acceleration_graph">
+<em class="property">static </em><code class="sig-name descname">create_cursor_acceleration_graph</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_osu.CmdOsu.create_cursor_acceleration_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cli.cmd_osu.CmdOsu.create_cursor_jerk_graph">
+<em class="property">static </em><code class="sig-name descname">create_cursor_jerk_graph</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_osu.CmdOsu.create_cursor_jerk_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cli.cmd_osu.CmdOsu.create_cursor_velocity_graph">
+<em class="property">static </em><code class="sig-name descname">create_cursor_velocity_graph</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_osu.CmdOsu.create_cursor_velocity_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cli.cmd_osu.CmdOsu.create_score_offset_graph">
+<em class="property">static </em><code class="sig-name descname">create_score_offset_graph</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_osu.CmdOsu.create_score_offset_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cli.cmd_osu.CmdOsu.open_replay_file">
+<em class="property">static </em><code class="sig-name descname">open_replay_file</code><span class="sig-paren">(</span><em class="sig-param">replay_filepath</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_osu.CmdOsu.open_replay_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cli.cmd_osu.CmdOsu.save_web_beatmaps">
+<em class="property">static </em><code class="sig-name descname">save_web_beatmaps</code><span class="sig-paren">(</span><em class="sig-param">web_beatmaps</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_osu.CmdOsu.save_web_beatmaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>In: [ WebBeatmap, … ]</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cli.cmd_osu.CmdOsu.save_web_replays">
+<em class="property">static </em><code class="sig-name descname">save_web_replays</code><span class="sig-paren">(</span><em class="sig-param">web_replays</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_osu.CmdOsu.save_web_replays" title="Permalink to this definition">¶</a></dt>
+<dd><p>In: [ WebReplay, … ]</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cli.cmd_osu.CmdOsu.show_cursor_hit_offset_histogram">
+<em class="property">static </em><code class="sig-name descname">show_cursor_hit_offset_histogram</code><span class="sig-paren">(</span><em class="sig-param">score_data</em>, <em class="sig-param">beatmap</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_osu.CmdOsu.show_cursor_hit_offset_histogram" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cli.cmd_utils">
+<span id="cli-cmd-utils-module"></span><h2>cli.cmd_utils module<a class="headerlink" href="#module-cli.cmd_utils" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cli.cmd_utils.CmdUtils">
+<em class="property">class </em><code class="sig-prename descclassname">cli.cmd_utils.</code><code class="sig-name descname">CmdUtils</code><a class="headerlink" href="#cli.cmd_utils.CmdUtils" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="simple">
+<dt>Use:</dt><dd><p>result = threaded(func, (param,))</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="cli.cmd_utils.CmdUtils.console_help">
+<em class="property">static </em><code class="sig-name descname">console_help</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_utils.CmdUtils.console_help" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cli.cmd_utils.CmdUtils.export_csv">
+<em class="property">static </em><code class="sig-name descname">export_csv</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_utils.CmdUtils.export_csv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cli.cmd_utils.CmdUtils.print_numbered_list">
+<em class="property">static </em><code class="sig-name descname">print_numbered_list</code><span class="sig-paren">(</span><em class="sig-param">lst</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_utils.CmdUtils.print_numbered_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cli.cmd_utils.CmdUtils.threaded">
+<em class="property">static </em><code class="sig-name descname">threaded</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">args</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cmd_utils.CmdUtils.threaded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cli">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cli" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">ultimate_osu_analyzer</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, abraker95.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/source/cli.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

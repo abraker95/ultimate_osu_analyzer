@@ -1,0 +1,7 @@
+score\_data module
+==================
+
+.. automodule:: score_data
+   :members:
+   :undoc-members:
+   :show-inheritance:

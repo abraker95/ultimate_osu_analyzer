@@ -1,0 +1,22 @@
+gui.frames.bottom\_frame package
+================================
+
+Submodules
+----------
+
+gui.frames.bottom\_frame.bottom\_frame module
+---------------------------------------------
+
+.. automodule:: gui.frames.bottom_frame.bottom_frame
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: gui.frames.bottom_frame
+   :members:
+   :undoc-members:
+   :show-inheritance:

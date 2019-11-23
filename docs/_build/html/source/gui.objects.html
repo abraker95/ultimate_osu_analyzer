@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>gui.objects package &#8212; ultimate_osu_analyzer  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="gui-objects-package">
+<h1>gui.objects package<a class="headerlink" href="#gui-objects-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gui.objects.graph.html">gui.objects.graph package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gui.objects.graph.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.objects.graph.html#module-gui.objects.graph.hitobject_plot">gui.objects.graph.hitobject_plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.objects.graph.html#module-gui.objects.graph.line_plot">gui.objects.graph.line_plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.objects.graph.html#module-gui.objects.graph.scatter_plot">gui.objects.graph.scatter_plot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.objects.graph.html#module-gui.objects.graph">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gui.objects.layer.html">gui.objects.layer package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gui.objects.layer.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.objects.layer.html#module-gui.objects.layer.layer">gui.objects.layer.layer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.objects.layer.html#module-gui.objects.layer.layer_manager">gui.objects.layer.layer_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.objects.layer.html#module-gui.objects.layer">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gui.objects.display">
+<span id="gui-objects-display-module"></span><h2>gui.objects.display module<a class="headerlink" href="#module-gui.objects.display" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gui.objects.display.Display">
+<em class="property">class </em><code class="sig-prename descclassname">gui.objects.display.</code><code class="sig-name descname">Display</code><a class="headerlink" href="#gui.objects.display.Display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QGraphicsView</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gui.objects.group">
+<span id="gui-objects-group-module"></span><h2>gui.objects.group module<a class="headerlink" href="#module-gui.objects.group" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gui.objects.group.Group">
+<em class="property">class </em><code class="sig-prename descclassname">gui.objects.group.</code><code class="sig-name descname">Group</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.group.Group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="gui.objects.group.Group.add_elem">
+<code class="sig-name descname">add_elem</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.group.Group.add_elem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gui.objects.group.Group.add_group">
+<code class="sig-name descname">add_group</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.group.Group.add_group" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gui.objects.group.Group.child">
+<code class="sig-name descname">child</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.group.Group.child" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gui.objects.group.Group.get_structure">
+<code class="sig-name descname">get_structure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.group.Group.get_structure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gui.objects.group.Group.rmv_elem">
+<code class="sig-name descname">rmv_elem</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.group.Group.rmv_elem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gui.objects.group.Group.rmv_group">
+<code class="sig-name descname">rmv_group</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.group.Group.rmv_group" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gui.objects.scene">
+<span id="gui-objects-scene-module"></span><h2>gui.objects.scene module<a class="headerlink" href="#module-gui.objects.scene" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gui.objects.scene.Scene">
+<em class="property">class </em><code class="sig-prename descclassname">gui.objects.scene.</code><code class="sig-name descname">Scene</code><a class="headerlink" href="#gui.objects.scene.Scene" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QGraphicsScene</span></code></p>
+<dl class="method">
+<dt id="gui.objects.scene.Scene.add_layer">
+<code class="sig-name descname">add_layer</code><span class="sig-paren">(</span><em class="sig-param">layer</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.scene.Scene.add_layer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gui.objects.scene.Scene.rmv_layer">
+<code class="sig-name descname">rmv_layer</code><span class="sig-paren">(</span><em class="sig-param">layer</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.scene.Scene.rmv_layer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gui.objects.scene.Scene.update_layers">
+<code class="sig-name descname">update_layers</code><span class="sig-paren">(</span><em class="sig-param">layer=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.scene.Scene.update_layers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gui.objects">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gui.objects" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">ultimate_osu_analyzer</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, abraker95.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/source/gui.objects.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

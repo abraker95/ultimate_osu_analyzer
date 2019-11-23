@@ -8,25 +8,37 @@ from misc.numpy_utils import NumpyUtils
 
 
 class StdMapData():
+    """
+    Class used for navigating, extracting, and operating on map data.
+    
+    .. note::
+    
+        This is not to be confused with the map data in the Beatmap class.
+        Data used by this class is in numpy array form. Data in the Beatmap 
+        class is based on *.osu file structure and is not in a friendly 
+        format to perform analysis on.
 
+    .. data format::
+        ```
+        [
+            [ 
+                [ time, pos ],
+                [ time, pos ],
+                ... N score points
+            ],
+            [ 
+                [ time, pos ],
+                [ time, pos ],
+                ...  N score points
+            ],
+            ... N hitobjects
+        ]
+        ```
+    """
+    
     TIME = 0
     POS  = 1
 
-    '''
-    [
-        [ 
-            [ time, pos ],
-            [ time, pos ],
-            ... N score points
-        ],
-        [ 
-            [ time, pos ],
-            [ time, pos ],
-            ...  N score points
-        ],
-        ... N hitobjects
-    ]
-    '''
     @staticmethod 
     def std_hitobject_to_aimpoints(std_hitobject):
         if std_hitobject.is_hitobject_type(Hitobject.CIRCLE):

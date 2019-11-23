@@ -1,0 +1,7 @@
+score\_metrics module
+=====================
+
+.. automodule:: score_metrics
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+map\_metrics module
+===================
+
+.. automodule:: map_metrics
+   :members:
+   :undoc-members:
+   :show-inheritance:

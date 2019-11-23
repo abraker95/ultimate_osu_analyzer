@@ -1,0 +1,930 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>analysis.osu.std package &#8212; ultimate_osu_analyzer  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="analysis-osu-std-package">
+<h1>analysis.osu.std package<a class="headerlink" href="#analysis-osu-std-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-analysis.osu.std.map_data">
+<span id="analysis-osu-std-map-data-module"></span><h2>analysis.osu.std.map_data module<a class="headerlink" href="#module-analysis.osu.std.map_data" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="analysis.osu.std.map_data.StdMapData">
+<em class="property">class </em><code class="sig-prename descclassname">analysis.osu.std.map_data.</code><code class="sig-name descname">StdMapData</code><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class used for navigating, extracting, and operating on map data.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is not to be confused with the map data in the Beatmap class.
+Data used by this class is in numpy array form. Data in the Beatmap 
+class is based on <a href="#id1"><span class="problematic" id="id2">*</span></a>.osu file structure and is not in a friendly 
+format to perform analysis on.</p>
+</div>
+<dl class="attribute">
+<dt id="analysis.osu.std.map_data.StdMapData.POS">
+<code class="sig-name descname">POS</code><em class="property"> = 1</em><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.POS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.map_data.StdMapData.TIME">
+<code class="sig-name descname">TIME</code><em class="property"> = 0</em><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.TIME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.all_positions">
+<em class="property">static </em><code class="sig-name descname">all_positions</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em>, <em class="sig-param">flat=True</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.all_positions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.all_times">
+<em class="property">static </em><code class="sig-name descname">all_times</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em>, <em class="sig-param">flat=True</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.all_times" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.end_positions">
+<em class="property">static </em><code class="sig-name descname">end_positions</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.end_positions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.end_times">
+<em class="property">static </em><code class="sig-name descname">end_times</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.end_times" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.get_aimpoint_data">
+<em class="property">static </em><code class="sig-name descname">get_aimpoint_data</code><span class="sig-paren">(</span><em class="sig-param">std_hitobjects</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.get_aimpoint_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.get_data_after">
+<em class="property">static </em><code class="sig-name descname">get_data_after</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em>, <em class="sig-param">time</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.get_data_after" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.get_data_before">
+<em class="property">static </em><code class="sig-name descname">get_data_before</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em>, <em class="sig-param">time</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.get_data_before" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.get_idx_end_time">
+<em class="property">static </em><code class="sig-name descname">get_idx_end_time</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em>, <em class="sig-param">time</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.get_idx_end_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.get_idx_end_time_2">
+<em class="property">static </em><code class="sig-name descname">get_idx_end_time_2</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em>, <em class="sig-param">time</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.get_idx_end_time_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.get_idx_start_time">
+<em class="property">static </em><code class="sig-name descname">get_idx_start_time</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em>, <em class="sig-param">time</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.get_idx_start_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.get_idx_start_time_2">
+<em class="property">static </em><code class="sig-name descname">get_idx_start_time_2</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em>, <em class="sig-param">time</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.get_idx_start_time_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.start_end_times">
+<em class="property">static </em><code class="sig-name descname">start_end_times</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.start_end_times" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.start_positions">
+<em class="property">static </em><code class="sig-name descname">start_positions</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.start_positions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.start_times">
+<em class="property">static </em><code class="sig-name descname">start_times</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.start_times" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.std_hitobject_to_aimpoints">
+<em class="property">static </em><code class="sig-name descname">std_hitobject_to_aimpoints</code><span class="sig-paren">(</span><em class="sig-param">std_hitobject</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.std_hitobject_to_aimpoints" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.std_hitobjects_to_aimpoints">
+<em class="property">static </em><code class="sig-name descname">std_hitobjects_to_aimpoints</code><span class="sig-paren">(</span><em class="sig-param">std_hitobjects</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.std_hitobjects_to_aimpoints" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_data.StdMapData.time_slice">
+<em class="property">static </em><code class="sig-name descname">time_slice</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data</em>, <em class="sig-param">start_time</em>, <em class="sig-param">end_time</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_data.StdMapData.time_slice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-analysis.osu.std.map_metrics">
+<span id="analysis-osu-std-map-metrics-module"></span><h2>analysis.osu.std.map_metrics module<a class="headerlink" href="#module-analysis.osu.std.map_metrics" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics">
+<em class="property">class </em><code class="sig-prename descclassname">analysis.osu.std.map_metrics.</code><code class="sig-name descname">StdMapMetrics</code><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Raw metrics</p>
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.accel_model">
+<em class="property">static </em><code class="sig-name descname">accel_model</code><span class="sig-paren">(</span><em class="sig-param">dx</em>, <em class="sig-param">dt</em>, <em class="sig-param">v_prev</em>, <em class="sig-param">v_next</em>, <em class="sig-param">m</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.accel_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_accel_change_impact">
+<em class="property">static </em><code class="sig-name descname">calc_accel_change_impact</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_accel_change_impact" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_accel_change_impact_freq">
+<em class="property">static </em><code class="sig-name descname">calc_accel_change_impact_freq</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_accel_change_impact_freq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_agility_skill">
+<em class="property">static </em><code class="sig-name descname">calc_agility_skill</code><span class="sig-paren">(</span><em class="sig-param">hitobjects</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_agility_skill" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_angle_curvature">
+<em class="property">static </em><code class="sig-name descname">calc_angle_curvature</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_angle_curvature" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_angles">
+<em class="property">static </em><code class="sig-name descname">calc_angles</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_angles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_backward_vel_vectors">
+<em class="property">static </em><code class="sig-name descname">calc_backward_vel_vectors</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_backward_vel_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns velocity vectors pointing in the direction of the previous note</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_forward_vel_vectors">
+<em class="property">static </em><code class="sig-name descname">calc_forward_vel_vectors</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_forward_vel_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns velocity vectors pointing in the direction of the next note</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_intensity">
+<em class="property">static </em><code class="sig-name descname">calc_intensity</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_intensity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_lin_ang_vel">
+<em class="property">static </em><code class="sig-name descname">calc_lin_ang_vel</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_lin_ang_vel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_lin_int">
+<em class="property">static </em><code class="sig-name descname">calc_lin_int</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_lin_int" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_max_m_model">
+<em class="property">static </em><code class="sig-name descname">calc_max_m_model</code><span class="sig-paren">(</span><em class="sig-param">dt</em>, <em class="sig-param">od_ms</em>, <em class="sig-param">min_jump_time=100</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_max_m_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_max_vel_rest_model">
+<em class="property">static </em><code class="sig-name descname">calc_max_vel_rest_model</code><span class="sig-paren">(</span><em class="sig-param">cs_px</em>, <em class="sig-param">od_ms</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_max_vel_rest_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_min_m_model">
+<em class="property">static </em><code class="sig-name descname">calc_min_m_model</code><span class="sig-paren">(</span><em class="sig-param">dt</em>, <em class="sig-param">od_ms</em>, <em class="sig-param">min_jump_time=100</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_min_m_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_notes_per_sec">
+<em class="property">static </em><code class="sig-name descname">calc_notes_per_sec</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_notes_per_sec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_path_accel">
+<em class="property">static </em><code class="sig-name descname">calc_path_accel</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_path_accel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_path_curvature">
+<em class="property">static </em><code class="sig-name descname">calc_path_curvature</code><span class="sig-paren">(</span><em class="sig-param">hitobjects</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_path_curvature" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_path_dist">
+<em class="property">static </em><code class="sig-name descname">calc_path_dist</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_path_dist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_path_vel">
+<em class="property">static </em><code class="sig-name descname">calc_path_vel</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_path_vel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_perp_int">
+<em class="property">static </em><code class="sig-name descname">calc_perp_int</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_perp_int" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_pos_model">
+<em class="property">static </em><code class="sig-name descname">calc_pos_model</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_pos_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_radial_velocity">
+<em class="property">static </em><code class="sig-name descname">calc_radial_velocity</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_radial_velocity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_rhythmic_complexity">
+<em class="property">static </em><code class="sig-name descname">calc_rhythmic_complexity</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_rhythmic_complexity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_speed_response">
+<em class="property">static </em><code class="sig-name descname">calc_speed_response</code><span class="sig-paren">(</span><em class="sig-param">resolution=1</em>, <em class="sig-param">x_range=(1</em>, <em class="sig-param">100)</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_speed_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_speed_skill">
+<em class="property">static </em><code class="sig-name descname">calc_speed_skill</code><span class="sig-paren">(</span><em class="sig-param">hitobjects</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_speed_skill" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_tapping_intervals">
+<em class="property">static </em><code class="sig-name descname">calc_tapping_intervals</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_tapping_intervals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_tapping_skill">
+<em class="property">static </em><code class="sig-name descname">calc_tapping_skill</code><span class="sig-paren">(</span><em class="sig-param">hitobjects</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_tapping_skill" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_targeting_skill">
+<em class="property">static </em><code class="sig-name descname">calc_targeting_skill</code><span class="sig-paren">(</span><em class="sig-param">hitobjects</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_targeting_skill" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_theta_per_second">
+<em class="property">static </em><code class="sig-name descname">calc_theta_per_second</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_theta_per_second" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_vel_change_freq">
+<em class="property">static </em><code class="sig-name descname">calc_vel_change_freq</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_vel_change_freq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_vel_model">
+<em class="property">static </em><code class="sig-name descname">calc_vel_model</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em>, <em class="sig-param">data_points=100</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_vel_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_velocity_start">
+<em class="property">static </em><code class="sig-name descname">calc_velocity_start</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_velocity_start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_visual_density">
+<em class="property">static </em><code class="sig-name descname">calc_visual_density</code><span class="sig-paren">(</span><em class="sig-param">hitobjects</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_visual_density" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_xy_accel">
+<em class="property">static </em><code class="sig-name descname">calc_xy_accel</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_xy_accel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_xy_dist">
+<em class="property">static </em><code class="sig-name descname">calc_xy_dist</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_xy_dist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_xy_jerk">
+<em class="property">static </em><code class="sig-name descname">calc_xy_jerk</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_xy_jerk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.calc_xy_vel">
+<em class="property">static </em><code class="sig-name descname">calc_xy_vel</code><span class="sig-paren">(</span><em class="sig-param">hitobject_data=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.calc_xy_vel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.create_vel_model">
+<em class="property">static </em><code class="sig-name descname">create_vel_model</code><span class="sig-paren">(</span><em class="sig-param">vel_model_data</em>, <em class="sig-param">data_points=100</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.create_vel_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.solve_initial_condition_model">
+<em class="property">static </em><code class="sig-name descname">solve_initial_condition_model</code><span class="sig-paren">(</span><em class="sig-param">t_start</em>, <em class="sig-param">pos_start</em>, <em class="sig-param">t_end</em>, <em class="sig-param">pos_end</em>, <em class="sig-param">v_rest_t_prev=None</em>, <em class="sig-param">v_rest_prev=None</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.solve_initial_condition_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.map_metrics.StdMapMetrics.solve_vel_model">
+<em class="property">static </em><code class="sig-name descname">solve_vel_model</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em>, <em class="sig-param">m</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.map_metrics.StdMapMetrics.solve_vel_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-analysis.osu.std.replay_data">
+<span id="analysis-osu-std-replay-data-module"></span><h2>analysis.osu.std.replay_data module<a class="headerlink" href="#module-analysis.osu.std.replay_data" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="analysis.osu.std.replay_data.StdReplayData">
+<em class="property">class </em><code class="sig-prename descclassname">analysis.osu.std.replay_data.</code><code class="sig-name descname">StdReplayData</code><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="analysis.osu.std.replay_data.StdReplayData.K1">
+<code class="sig-name descname">K1</code><em class="property"> = 5</em><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.K1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.replay_data.StdReplayData.K2">
+<code class="sig-name descname">K2</code><em class="property"> = 6</em><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.K2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.replay_data.StdReplayData.M1">
+<code class="sig-name descname">M1</code><em class="property"> = 3</em><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.M1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.replay_data.StdReplayData.M2">
+<code class="sig-name descname">M2</code><em class="property"> = 4</em><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.M2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.replay_data.StdReplayData.SMOKE">
+<code class="sig-name descname">SMOKE</code><em class="property"> = 7</em><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.SMOKE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.replay_data.StdReplayData.TIME">
+<code class="sig-name descname">TIME</code><em class="property"> = 0</em><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.TIME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.replay_data.StdReplayData.XPOS">
+<code class="sig-name descname">XPOS</code><em class="property"> = 1</em><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.XPOS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.replay_data.StdReplayData.YPOS">
+<code class="sig-name descname">YPOS</code><em class="property"> = 2</em><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.YPOS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_data.StdReplayData.component_data">
+<em class="property">static </em><code class="sig-name descname">component_data</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.component_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_data.StdReplayData.get_idx_press_end_time">
+<em class="property">static </em><code class="sig-name descname">get_idx_press_end_time</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em>, <em class="sig-param">time</em>, <em class="sig-param">key=None</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.get_idx_press_end_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_data.StdReplayData.get_idx_press_start_time">
+<em class="property">static </em><code class="sig-name descname">get_idx_press_start_time</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em>, <em class="sig-param">time</em>, <em class="sig-param">key=None</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.get_idx_press_start_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_data.StdReplayData.get_idx_time">
+<em class="property">static </em><code class="sig-name descname">get_idx_time</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em>, <em class="sig-param">time</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.get_idx_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_data.StdReplayData.get_replay_data">
+<em class="property">static </em><code class="sig-name descname">get_replay_data</code><span class="sig-paren">(</span><em class="sig-param">replay_events</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.get_replay_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns:
+[</p>
+<blockquote>
+<div><p>[ time, x_pos, y_pos, m1, m2, k1, k2, smoke ],
+[ time, x_pos, y_pos, m1, m2, k1, k2, smoke ],
+[ time, x_pos, y_pos, m1, m2, k1, k2, smoke ],
+…  N events</p>
+</div></blockquote>
+<p>]</p>
+<p>A list of events with data on time, positions of cursor, and flags on various key presses</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_data.StdReplayData.interpolate_timings">
+<em class="property">static </em><code class="sig-name descname">interpolate_timings</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.interpolate_timings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replay data is often eradic with its timings due to sync issues in osu! client 
+dealing with performance. The frames do not occur a constant interval after another,
+and can range to have between 1ms and 25ms difference.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_data.StdReplayData.order_timings">
+<em class="property">static </em><code class="sig-name descname">order_timings</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.order_timings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sometimes replay data has jumps in timing going backwards. This orders replay
+frames into correct sequence</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_data.StdReplayData.press_end_times">
+<em class="property">static </em><code class="sig-name descname">press_end_times</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em>, <em class="sig-param">key=None</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.press_end_times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns: [ press_end_idxs, press_end_times ] = [ [ int, int, … ], [ int, int, … ] ]</p>
+<p>Tuple with indices in replay_data where a press ends and timings where press ends.
+press_end_idxs can be used on original replay_data to get full data related to end times
+like so: replay_data[press_end_idxs]</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_data.StdReplayData.press_start_end_times">
+<em class="property">static </em><code class="sig-name descname">press_start_end_times</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em>, <em class="sig-param">key=None</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.press_start_end_times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns: 
+[</p>
+<blockquote>
+<div><p>[ press_start_idx, press_start_time, press_end_idx, press_end_time ],
+[ press_start_idx, press_start_time, press_end_idx, press_end_time ],
+…</p>
+</div></blockquote>
+<p>]</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_data.StdReplayData.press_start_times">
+<em class="property">static </em><code class="sig-name descname">press_start_times</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em>, <em class="sig-param">key=None</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_data.StdReplayData.press_start_times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns: [ press_start_idxs, press_start_times ] = [ [ int, int, … ], [ int, int, … ] ]</p>
+<p>Tuple with indices in replay_data where a press ends and timings where press ends.
+press_start_idxs can be used on original replay_data to get full data related to start times
+like so: replay_data[press_start_idxs]</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-analysis.osu.std.replay_metrics">
+<span id="analysis-osu-std-replay-metrics-module"></span><h2>analysis.osu.std.replay_metrics module<a class="headerlink" href="#module-analysis.osu.std.replay_metrics" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="analysis.osu.std.replay_metrics.StdReplayMetrics">
+<em class="property">class </em><code class="sig-prename descclassname">analysis.osu.std.replay_metrics.</code><code class="sig-name descname">StdReplayMetrics</code><a class="headerlink" href="#analysis.osu.std.replay_metrics.StdReplayMetrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="analysis.osu.std.replay_metrics.StdReplayMetrics.avg_cursor_pos">
+<em class="property">static </em><code class="sig-name descname">avg_cursor_pos</code><span class="sig-paren">(</span><em class="sig-param">replay_data_list</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_metrics.StdReplayMetrics.avg_cursor_pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes all replays and determines average cursor position throughout all points in time
+Cursor positions are averaged across a moving average of 5 ms</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_metrics.StdReplayMetrics.cursor_accel_xy">
+<em class="property">static </em><code class="sig-name descname">cursor_accel_xy</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_metrics.StdReplayMetrics.cursor_accel_xy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_metrics.StdReplayMetrics.cursor_acceleration">
+<em class="property">static </em><code class="sig-name descname">cursor_acceleration</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_metrics.StdReplayMetrics.cursor_acceleration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_metrics.StdReplayMetrics.cursor_jerk">
+<em class="property">static </em><code class="sig-name descname">cursor_jerk</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_metrics.StdReplayMetrics.cursor_jerk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_metrics.StdReplayMetrics.cursor_jerk_xy">
+<em class="property">static </em><code class="sig-name descname">cursor_jerk_xy</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_metrics.StdReplayMetrics.cursor_jerk_xy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_metrics.StdReplayMetrics.cursor_vel_xy">
+<em class="property">static </em><code class="sig-name descname">cursor_vel_xy</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_metrics.StdReplayMetrics.cursor_vel_xy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_metrics.StdReplayMetrics.cursor_velocity">
+<em class="property">static </em><code class="sig-name descname">cursor_velocity</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_metrics.StdReplayMetrics.cursor_velocity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.replay_metrics.StdReplayMetrics.press_intervals">
+<em class="property">static </em><code class="sig-name descname">press_intervals</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.replay_metrics.StdReplayMetrics.press_intervals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-analysis.osu.std.score_data">
+<span id="analysis-osu-std-score-data-module"></span><h2>analysis.osu.std.score_data module<a class="headerlink" href="#module-analysis.osu.std.score_data" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="analysis.osu.std.score_data.StdScoreData">
+<em class="property">class </em><code class="sig-prename descclassname">analysis.osu.std.score_data.</code><code class="sig-name descname">StdScoreData</code><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.blank_miss">
+<code class="sig-name descname">blank_miss</code><em class="property"> = False</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.blank_miss" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.cursor_pos_offset_mean">
+<em class="property">static </em><code class="sig-name descname">cursor_pos_offset_mean</code><span class="sig-paren">(</span><em class="sig-param">score_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.cursor_pos_offset_mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.cursor_pos_offset_stdev">
+<em class="property">static </em><code class="sig-name descname">cursor_pos_offset_stdev</code><span class="sig-paren">(</span><em class="sig-param">score_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.cursor_pos_offset_stdev" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.cursor_pos_offset_var">
+<em class="property">static </em><code class="sig-name descname">cursor_pos_offset_var</code><span class="sig-paren">(</span><em class="sig-param">score_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.cursor_pos_offset_var" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.dist_miss_range">
+<code class="sig-name descname">dist_miss_range</code><em class="property"> = 50</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.dist_miss_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.dynamic_window">
+<code class="sig-name descname">dynamic_window</code><em class="property"> = False</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.dynamic_window" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.follow_radius">
+<code class="sig-name descname">follow_radius</code><em class="property"> = 36.5</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.follow_radius" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.get_score_data">
+<em class="property">static </em><code class="sig-name descname">get_score_data</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em>, <em class="sig-param">map_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.get_score_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.get_velocity_jump_frames">
+<em class="property">static </em><code class="sig-name descname">get_velocity_jump_frames</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em>, <em class="sig-param">map_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.get_velocity_jump_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts frames of replay data associated with jumps 
+A frame spans from halfway before the last note to halfway after current note</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.hitobject_radius">
+<code class="sig-name descname">hitobject_radius</code><em class="property"> = 36.5</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.hitobject_radius" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.lazy_sliders">
+<code class="sig-name descname">lazy_sliders</code><em class="property"> = False</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.lazy_sliders" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.neg_hit_miss_range">
+<code class="sig-name descname">neg_hit_miss_range</code><em class="property"> = 50</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.neg_hit_miss_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.neg_hit_range">
+<code class="sig-name descname">neg_hit_range</code><em class="property"> = 100</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.neg_hit_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.neg_rel_miss_range">
+<code class="sig-name descname">neg_rel_miss_range</code><em class="property"> = 50</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.neg_rel_miss_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.neg_rel_range">
+<code class="sig-name descname">neg_rel_range</code><em class="property"> = 100</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.neg_rel_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.notelock">
+<code class="sig-name descname">notelock</code><em class="property"> = True</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.notelock" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.odds_all_conditions_within">
+<em class="property">static </em><code class="sig-name descname">odds_all_conditions_within</code><span class="sig-paren">(</span><em class="sig-param">score_data</em>, <em class="sig-param">tap_offset</em>, <em class="sig-param">cursor_offset</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.odds_all_conditions_within" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.odds_all_cursor_within">
+<em class="property">static </em><code class="sig-name descname">odds_all_cursor_within</code><span class="sig-paren">(</span><em class="sig-param">score_data</em>, <em class="sig-param">offset</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.odds_all_cursor_within" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.odds_all_tap_within">
+<em class="property">static </em><code class="sig-name descname">odds_all_tap_within</code><span class="sig-paren">(</span><em class="sig-param">score_data</em>, <em class="sig-param">offset</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.odds_all_tap_within" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.odds_some_cursor_within">
+<em class="property">static </em><code class="sig-name descname">odds_some_cursor_within</code><span class="sig-paren">(</span><em class="sig-param">score_data</em>, <em class="sig-param">offset</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.odds_some_cursor_within" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a 2D gaussian distribution model using avg and var of cursor 2D position offsets and uses it to calculates the odds 
+that some cursor position is within the specified distance from the center of any hitobject</p>
+<dl class="simple">
+<dt>Returns: probability one random value [X, Y] is between (-offset, -offset) &lt;= (X, Y) &lt;= (offset, offset)</dt><dd><dl class="simple">
+<dt>TL;DR: look at all the cursor positions for score; What are the odds of you picking a random hit that has </dt><dd><p>a cursor position between an area of (-offset, -offset) and (offset, offset)?</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.odds_some_tap_within">
+<em class="property">static </em><code class="sig-name descname">odds_some_tap_within</code><span class="sig-paren">(</span><em class="sig-param">score_data</em>, <em class="sig-param">offset</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.odds_some_tap_within" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a gaussian distribution model using avg and var of tap offsets and calculates the odds that some hit
+is within the specified offset</p>
+<dl class="simple">
+<dt>Returns: probability one random value [X] is between -offset &lt;= X &lt;= offset</dt><dd><dl class="simple">
+<dt>TL;DR: look at all the hits for scores; What are the odds of you picking </dt><dd><p>a random hit that is between -offset and offset?</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.overlap_hit_handling">
+<code class="sig-name descname">overlap_hit_handling</code><em class="property"> = False</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.overlap_hit_handling" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.overlap_miss_handling">
+<code class="sig-name descname">overlap_miss_handling</code><em class="property"> = False</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.overlap_miss_handling" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.pos_hit_miss_range">
+<code class="sig-name descname">pos_hit_miss_range</code><em class="property"> = 50</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.pos_hit_miss_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.pos_hit_range">
+<code class="sig-name descname">pos_hit_range</code><em class="property"> = 100</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.pos_hit_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.pos_rel_miss_range">
+<code class="sig-name descname">pos_rel_miss_range</code><em class="property"> = 50</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.pos_rel_miss_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreData.pos_rel_range">
+<code class="sig-name descname">pos_rel_range</code><em class="property"> = 100</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.pos_rel_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.press_interval_mean">
+<em class="property">static </em><code class="sig-name descname">press_interval_mean</code><span class="sig-paren">(</span><em class="sig-param">score_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.press_interval_mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.tap_offset_mean">
+<em class="property">static </em><code class="sig-name descname">tap_offset_mean</code><span class="sig-paren">(</span><em class="sig-param">score_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.tap_offset_mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.tap_offset_stdev">
+<em class="property">static </em><code class="sig-name descname">tap_offset_stdev</code><span class="sig-paren">(</span><em class="sig-param">score_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.tap_offset_stdev" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_data.StdScoreData.tap_offset_var">
+<em class="property">static </em><code class="sig-name descname">tap_offset_var</code><span class="sig-paren">(</span><em class="sig-param">score_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreData.tap_offset_var" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="analysis.osu.std.score_data.StdScoreDataEnums">
+<em class="property">class </em><code class="sig-prename descclassname">analysis.osu.std.score_data.</code><code class="sig-name descname">StdScoreDataEnums</code><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreDataEnums" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreDataEnums.HITOBJECT_IDX">
+<code class="sig-name descname">HITOBJECT_IDX</code><em class="property"> = 4</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreDataEnums.HITOBJECT_IDX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreDataEnums.HIT_OFFSET">
+<code class="sig-name descname">HIT_OFFSET</code><em class="property"> = 2</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreDataEnums.HIT_OFFSET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreDataEnums.POS">
+<code class="sig-name descname">POS</code><em class="property"> = 1</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreDataEnums.POS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreDataEnums.POS_OFFSET">
+<code class="sig-name descname">POS_OFFSET</code><em class="property"> = 3</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreDataEnums.POS_OFFSET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="analysis.osu.std.score_data.StdScoreDataEnums.TIME">
+<code class="sig-name descname">TIME</code><em class="property"> = 0</em><a class="headerlink" href="#analysis.osu.std.score_data.StdScoreDataEnums.TIME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-analysis.osu.std.score_metrics">
+<span id="analysis-osu-std-score-metrics-module"></span><h2>analysis.osu.std.score_metrics module<a class="headerlink" href="#module-analysis.osu.std.score_metrics" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="analysis.osu.std.score_metrics.StdScoreMetrics">
+<em class="property">class </em><code class="sig-prename descclassname">analysis.osu.std.score_metrics.</code><code class="sig-name descname">StdScoreMetrics</code><a class="headerlink" href="#analysis.osu.std.score_metrics.StdScoreMetrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Takes arrays of score data pertaining to various players and transposes it to be an array of per-hitobject score data
+from various players</p>
+<dl class="simple">
+<dt>[</dt><dd><p>[</p>
+</dd>
+</dl>
+<p>a0      [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
+a2      [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
+aN      …  N events</p>
+<blockquote>
+<div><p>],
+[</p>
+</div></blockquote>
+<p>b0      [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
+b1      [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
+bN      …  N events</p>
+<blockquote>
+<div></div></blockquote>
+<p>]</p>
+<p>gets turned into</p>
+<dl class="simple">
+<dt>[</dt><dd><p>[</p>
+</dd>
+</dl>
+<p>a0      [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
+b0      [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
+N0      …  N events</p>
+<blockquote>
+<div><p>],
+[</p>
+</div></blockquote>
+<p>a1      [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
+b1      [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
+N1      …  N events</p>
+<blockquote>
+<div></div></blockquote>
+<p>]</p>
+<dl class="method">
+<dt id="analysis.osu.std.score_metrics.StdScoreMetrics.get_per_hitobject_score_data">
+<em class="property">static </em><code class="sig-name descname">get_per_hitobject_score_data</code><span class="sig-paren">(</span><em class="sig-param">score_data_array</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_metrics.StdScoreMetrics.get_per_hitobject_score_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_metrics.StdScoreMetrics.get_percent_below_offset">
+<em class="property">static </em><code class="sig-name descname">get_percent_below_offset</code><span class="sig-paren">(</span><em class="sig-param">per_hitobject_score_data</em>, <em class="sig-param">hitobject_idx</em>, <em class="sig-param">offset</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_metrics.StdScoreMetrics.get_percent_below_offset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_metrics.StdScoreMetrics.solve_for_hit_offset">
+<em class="property">static </em><code class="sig-name descname">solve_for_hit_offset</code><span class="sig-paren">(</span><em class="sig-param">per_hitobject_score_data</em>, <em class="sig-param">hitobject_idx</em>, <em class="sig-param">target_percent</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_metrics.StdScoreMetrics.solve_for_hit_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves for the tapping offset for the note that 50% of players are able to do</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_metrics.StdScoreMetrics.trans_percent_players_taps">
+<em class="property">static </em><code class="sig-name descname">trans_percent_players_taps</code><span class="sig-paren">(</span><em class="sig-param">per_hitobject_score_data</em>, <em class="sig-param">offset</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_metrics.StdScoreMetrics.trans_percent_players_taps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the percent of players tapping within the specified offset for each hitobject</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.score_metrics.StdScoreMetrics.trans_solve_for_hit_offset">
+<em class="property">static </em><code class="sig-name descname">trans_solve_for_hit_offset</code><span class="sig-paren">(</span><em class="sig-param">per_hitobject_score_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.score_metrics.StdScoreMetrics.trans_solve_for_hit_offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves for the tapping offset for the note that 50% of players are able to do</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-analysis.osu.std.std_layers">
+<span id="analysis-osu-std-std-layers-module"></span><h2>analysis.osu.std.std_layers module<a class="headerlink" href="#module-analysis.osu.std.std_layers" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="analysis.osu.std.std_layers.StdLayers">
+<em class="property">class </em><code class="sig-prename descclassname">analysis.osu.std.std_layers.</code><code class="sig-name descname">StdLayers</code><a class="headerlink" href="#analysis.osu.std.std_layers.StdLayers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="analysis.osu.std.std_layers.StdLayers.StdReplayCursorLayer">
+<em class="property">static </em><code class="sig-name descname">StdReplayCursorLayer</code><span class="sig-paren">(</span><em class="sig-param">painter</em>, <em class="sig-param">ratio_x</em>, <em class="sig-param">ratio_y</em>, <em class="sig-param">time</em>, <em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.std_layers.StdLayers.StdReplayCursorLayer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.std_layers.StdLayers.StdReplayCursorVel">
+<em class="property">static </em><code class="sig-name descname">StdReplayCursorVel</code><span class="sig-paren">(</span><em class="sig-param">painter</em>, <em class="sig-param">ratio_x</em>, <em class="sig-param">ratio_y</em>, <em class="sig-param">time</em>, <em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.std_layers.StdLayers.StdReplayCursorVel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.std_layers.StdLayers.StdReplayHoldLayer">
+<em class="property">static </em><code class="sig-name descname">StdReplayHoldLayer</code><span class="sig-paren">(</span><em class="sig-param">painter</em>, <em class="sig-param">ratio_x</em>, <em class="sig-param">ratio_y</em>, <em class="sig-param">time</em>, <em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.std_layers.StdLayers.StdReplayHoldLayer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="analysis.osu.std.std_layers.StdLayers.StdScoreDebugLayer">
+<em class="property">static </em><code class="sig-name descname">StdScoreDebugLayer</code><span class="sig-paren">(</span><em class="sig-param">painter</em>, <em class="sig-param">ratio_x</em>, <em class="sig-param">ratio_y</em>, <em class="sig-param">time</em>, <em class="sig-param">score_data</em><span class="sig-paren">)</span><a class="headerlink" href="#analysis.osu.std.std_layers.StdLayers.StdScoreDebugLayer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-analysis.osu.std">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-analysis.osu.std" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">ultimate_osu_analyzer</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, abraker95.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/source/analysis.osu.std.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,22 @@
+gui.frames.center\_frame package
+================================
+
+Submodules
+----------
+
+gui.frames.center\_frame.center\_frame module
+---------------------------------------------
+
+.. automodule:: gui.frames.center_frame.center_frame
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: gui.frames.center_frame
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,286 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>run module &#8212; ultimate_osu_analyzer  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-run">
+<span id="run-module"></span><h1>run module<a class="headerlink" href="#module-run" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="run.MainWindow">
+<em class="property">class </em><code class="sig-prename descclassname">run.</code><code class="sig-name descname">MainWindow</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
+<dl class="method">
+<dt id="run.MainWindow.add_graph_2d_data">
+<code class="sig-name descname">add_graph_2d_data</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">data_2d</em>, <em class="sig-param">temporal=False</em>, <em class="sig-param">plot_type=0</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.add_graph_2d_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.add_std_layer">
+<code class="sig-name descname">add_std_layer</code><span class="sig-paren">(</span><em class="sig-param">group</em>, <em class="sig-param">layer_name</em>, <em class="sig-param">data</em>, <em class="sig-param">draw_func</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.add_std_layer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.apply_beatmap">
+<code class="sig-name descname">apply_beatmap</code><span class="sig-paren">(</span><em class="sig-param">beatmap</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.apply_beatmap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.apply_replay">
+<code class="sig-name descname">apply_replay</code><span class="sig-paren">(</span><em class="sig-param">replay</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.apply_replay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.change_map">
+<code class="sig-name descname">change_map</code><span class="sig-paren">(</span><em class="sig-param">beatmap</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.change_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.close_application">
+<code class="sig-name descname">close_application</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.close_application" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.close_map">
+<code class="sig-name descname">close_map</code><span class="sig-paren">(</span><em class="sig-param">beatmap</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.close_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.construct_gui">
+<code class="sig-name descname">construct_gui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.construct_gui" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.create_cursor_acceleration_graph">
+<code class="sig-name descname">create_cursor_acceleration_graph</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.create_cursor_acceleration_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.create_cursor_jerk_graph">
+<code class="sig-name descname">create_cursor_jerk_graph</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.create_cursor_jerk_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.create_cursor_velocity_graph">
+<code class="sig-name descname">create_cursor_velocity_graph</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.create_cursor_velocity_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.create_score_offset_graph">
+<code class="sig-name descname">create_score_offset_graph</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.create_score_offset_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.dragEnterEvent">
+<code class="sig-name descname">dragEnterEvent</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">QDragEnterEvent</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.dragEnterEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.dropEvent">
+<code class="sig-name descname">dropEvent</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">QDropEvent</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.dropEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.get_type_files">
+<code class="sig-name descname">get_type_files</code><span class="sig-paren">(</span><em class="sig-param">file_type</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.get_type_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="run.MainWindow.height">
+<code class="sig-name descname">height</code><em class="property"> = 720</em><a class="headerlink" href="#run.MainWindow.height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.init_gui_elements">
+<code class="sig-name descname">init_gui_elements</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.init_gui_elements" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="run.MainWindow.left">
+<code class="sig-name descname">left</code><em class="property"> = 100</em><a class="headerlink" href="#run.MainWindow.left" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.load_beatmap">
+<code class="sig-name descname">load_beatmap</code><span class="sig-paren">(</span><em class="sig-param">beatmap_data</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.load_beatmap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.load_replay">
+<code class="sig-name descname">load_replay</code><span class="sig-paren">(</span><em class="sig-param">replay_data</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.load_replay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.open_beatmap">
+<code class="sig-name descname">open_beatmap</code><span class="sig-paren">(</span><em class="sig-param">beatmap_filepath</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.open_beatmap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.open_replay">
+<code class="sig-name descname">open_replay</code><span class="sig-paren">(</span><em class="sig-param">replay_filepath</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.open_replay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.remove_layer">
+<code class="sig-name descname">remove_layer</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.remove_layer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.request_open_beatmap">
+<code class="sig-name descname">request_open_beatmap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.request_open_beatmap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.request_open_replay">
+<code class="sig-name descname">request_open_replay</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.request_open_replay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.set_scene">
+<code class="sig-name descname">set_scene</code><span class="sig-paren">(</span><em class="sig-param">old_layer_mgr</em>, <em class="sig-param">new_layer_mgr</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.set_scene" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.show_mania_settings">
+<code class="sig-name descname">show_mania_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.show_mania_settings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.show_std_settings">
+<code class="sig-name descname">show_std_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.show_std_settings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.temporal_graph_creation_event">
+<code class="sig-name descname">temporal_graph_creation_event</code><span class="sig-paren">(</span><em class="sig-param">graph</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.temporal_graph_creation_event" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.temporal_graph_deletion_event">
+<code class="sig-name descname">temporal_graph_deletion_event</code><span class="sig-paren">(</span><em class="sig-param">graph</em><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.temporal_graph_deletion_event" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="run.MainWindow.title">
+<code class="sig-name descname">title</code><em class="property"> = 'Ultimate osu! Analyzer'</em><a class="headerlink" href="#run.MainWindow.title" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="run.MainWindow.top">
+<code class="sig-name descname">top</code><em class="property"> = 100</em><a class="headerlink" href="#run.MainWindow.top" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.update_gui">
+<code class="sig-name descname">update_gui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.update_gui" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.view_tapping_intervals_action">
+<code class="sig-name descname">view_tapping_intervals_action</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.view_tapping_intervals_action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run.MainWindow.view_velocity_action">
+<code class="sig-name descname">view_velocity_action</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#run.MainWindow.view_velocity_action" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="run.MainWindow.width">
+<code class="sig-name descname">width</code><em class="property"> = 1500</em><a class="headerlink" href="#run.MainWindow.width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">ultimate_osu_analyzer</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, abraker95.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/source/run.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

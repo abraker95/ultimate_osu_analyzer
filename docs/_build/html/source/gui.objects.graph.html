@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>gui.objects.graph package &#8212; ultimate_osu_analyzer  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="gui-objects-graph-package">
+<h1>gui.objects.graph package<a class="headerlink" href="#gui-objects-graph-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gui.objects.graph.hitobject_plot">
+<span id="gui-objects-graph-hitobject-plot-module"></span><h2>gui.objects.graph.hitobject_plot module<a class="headerlink" href="#module-gui.objects.graph.hitobject_plot" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gui.objects.graph.hitobject_plot.HitobjectPlot">
+<em class="property">class </em><code class="sig-prename descclassname">gui.objects.graph.hitobject_plot.</code><code class="sig-name descname">HitobjectPlot</code><span class="sig-paren">(</span><em class="sig-param">data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.graph.hitobject_plot.HitobjectPlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyqtgraph.graphicsItems.GraphItem.GraphItem</span></code></p>
+<dl class="attribute">
+<dt id="gui.objects.graph.hitobject_plot.HitobjectPlot.HITOBJECT_RADIUS">
+<code class="sig-name descname">HITOBJECT_RADIUS</code><em class="property"> = 40</em><a class="headerlink" href="#gui.objects.graph.hitobject_plot.HitobjectPlot.HITOBJECT_RADIUS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gui.objects.graph.hitobject_plot.HitobjectPlot.update_data">
+<code class="sig-name descname">update_data</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">y_pos=0</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.graph.hitobject_plot.HitobjectPlot.update_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gui.objects.graph.line_plot">
+<span id="gui-objects-graph-line-plot-module"></span><h2>gui.objects.graph.line_plot module<a class="headerlink" href="#module-gui.objects.graph.line_plot" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gui.objects.graph.line_plot.LinePlot">
+<em class="property">class </em><code class="sig-prename descclassname">gui.objects.graph.line_plot.</code><code class="sig-name descname">LinePlot</code><a class="headerlink" href="#gui.objects.graph.line_plot.LinePlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyqtgraph.graphicsItems.PlotCurveItem.PlotCurveItem</span></code></p>
+<dl class="method">
+<dt id="gui.objects.graph.line_plot.LinePlot.update_data">
+<code class="sig-name descname">update_data</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.graph.line_plot.LinePlot.update_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gui.objects.graph.line_plot.LinePlot.update_xy">
+<code class="sig-name descname">update_xy</code><span class="sig-paren">(</span><em class="sig-param">data_x</em>, <em class="sig-param">data_y</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.graph.line_plot.LinePlot.update_xy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gui.objects.graph.scatter_plot">
+<span id="gui-objects-graph-scatter-plot-module"></span><h2>gui.objects.graph.scatter_plot module<a class="headerlink" href="#module-gui.objects.graph.scatter_plot" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gui.objects.graph.scatter_plot.ScatterPlot">
+<em class="property">class </em><code class="sig-prename descclassname">gui.objects.graph.scatter_plot.</code><code class="sig-name descname">ScatterPlot</code><a class="headerlink" href="#gui.objects.graph.scatter_plot.ScatterPlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyqtgraph.graphicsItems.ScatterPlotItem.ScatterPlotItem</span></code></p>
+<dl class="method">
+<dt id="gui.objects.graph.scatter_plot.ScatterPlot.update_data">
+<code class="sig-name descname">update_data</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#gui.objects.graph.scatter_plot.ScatterPlot.update_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gui.objects.graph">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gui.objects.graph" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">ultimate_osu_analyzer</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, abraker95.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/source/gui.objects.graph.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
