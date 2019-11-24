@@ -39,8 +39,8 @@ class StdMapData():
         -------
         generator object
             A list of scorepoints in the following format:
+            ::
 
-            .. code-block:: python
                 [
                     [ start_time, [ (scorepoint_x, scorepoint), ... ] ],
                     [ start_time, [ (scorepoint_x, scorepoint), ... ] ],
@@ -109,7 +109,8 @@ class StdMapData():
         Returns
         -------
         A numpy array with the following format representing map data:
-        .. code-block:: python
+        ::
+
             [
                 [ 
                     [ time, pos ],
@@ -144,7 +145,8 @@ class StdMapData():
         Returns
         -------
         Scorepoint data
-
+        ::
+        
             [ time, (scorepoint_x, scorepoint_y) ]
 
         """
@@ -172,6 +174,7 @@ class StdMapData():
         Returns
         -------
         Scorepoint data
+        ::
 
             [ time, (scorepoint_x, scorepoint_y) ]
             
@@ -203,6 +206,7 @@ class StdMapData():
         Returns
         -------
         Hitobject data
+        ::
 
             array([
                 list([
@@ -238,6 +242,7 @@ class StdMapData():
         Returns
         -------
         Numpy array of hitobject start times
+        ::
 
             [ time, time, time, ... ]
             
@@ -261,6 +266,7 @@ class StdMapData():
         Returns
         -------
         Numpy array of hitobject end times
+        ::
 
             [ time, time, time, ... ]
             
@@ -281,6 +287,7 @@ class StdMapData():
         Returns
         -------
         Numpy array of hitobject starting positions
+        ::
 
             [ 
                 [ pos_x, pos_y ], 
@@ -308,6 +315,7 @@ class StdMapData():
         Returns
         -------
         Numpy array of hitobject ending positions
+        ::
 
             [ 
                 [ pos_x, pos_y ], 
@@ -336,6 +344,7 @@ class StdMapData():
         Returns
         -------
         If flat = True, returns numpy array of scorepoint positions
+        ::
 
             [ 
                 [ pos_x, pos_y ], 
@@ -344,6 +353,7 @@ class StdMapData():
             ]
 
         If flat = False, returns numpy array of list of scorepoint positions grouped by hitobject
+        ::
 
             [ 
                 list([
@@ -384,10 +394,12 @@ class StdMapData():
         Returns
         -------
         If flat = True, returns numpy array of scorepoint times
+        ::
 
             [ time, time, time, ... ]
 
         If flat = False, returns numpy array of list of scorepoint times grouped by hitobject
+        ::
 
             [ 
                 list([ time, time, ... ]),
@@ -416,7 +428,8 @@ class StdMapData():
         Returns
         -------
         Pairs of start and end times
-
+        ::
+        
             [ 
                 [ start_time, end_time ], 
                 [ start_time, end_time ], 
