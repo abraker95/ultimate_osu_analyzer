@@ -154,7 +154,7 @@ class StdMapData():
     @staticmethod
     def get_data_after(map_data, time):
         """
-        Get all scorepoints before the desired point in time
+        Get the closest scorepoints right after the desired point in time
 
         Parameters
         ----------
@@ -181,6 +181,39 @@ class StdMapData():
 
     @staticmethod
     def time_slice(map_data, start_time, end_time):
+        """
+        Gets a list of hitobjects data that occurs between start_time and end_time
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to get the slice of data for
+
+        start_time : int
+            Starting time for the slice of data
+        
+        end_time : int
+            Ending time for the slice of data
+
+        Returns
+        -------
+        Hitobject data
+
+            array([
+                list([
+                    [ time, [scorepoint_x, scorepoint_y] ]
+                    [ time, [scorepoint_x, scorepoint_y] ]
+                    ...
+                ]),
+                list([
+                    [ time, [scorepoint_x, scorepoint_y] ]
+                    [ time, [scorepoint_x, scorepoint_y] ]
+                    ...
+                ]),
+                ...
+            ])
+            
+        """
         start_idx = StdMapData.get_idx_start_time(map_data, start_time)
         end_idx   = StdMapData.get_idx_end_time(map_data, end_time)
 
@@ -189,44 +222,227 @@ class StdMapData():
 
     @staticmethod
     def start_times(map_data):
+        """
+        Gets the start times of all hitobjects
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to get hitobject start times for
+
+        Returns
+        -------
+        Numpy array of hitobject start times
+
+            [ time, time, time, ... ]
+            
+        """
         return np.asarray([ note[0][StdMapData.TIME] for note in map_data ])
 
 
     @staticmethod
     def end_times(map_data):
+        """
+        Get gets the end times of all hitobjects
+
+        .. note::
+            Hitcircle hitobjects will have the same start and end times
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to get hitobject end times for
+
+        Returns
+        -------
+        Numpy array of hitobject end times
+
+            [ time, time, time, ... ]
+            
+        """
         return np.asarray([ note[-1][StdMapData.TIME] for note in map_data ])
 
 
     @staticmethod
     def start_positions(map_data):
+        """
+        Gets the starting positions of all hitobjects
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to get hitobject starting positions for
+
+        Returns
+        -------
+        Numpy array of hitobject starting positions
+
+            [ 
+                [ pos_x, pos_y ], 
+                [ pos_x, pos_y ], 
+                ... 
+            ]
+            
+        """
         return np.asarray([ note[0][StdMapData.POS] for note in map_data ])
 
     
     @staticmethod
     def end_positions(map_data):
+        """
+        Gets the ending positions of all hitobjects
+
+        .. note::
+            Hitcircle hitobjects will have the same start and end positions
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to get hitobject ending positions for
+
+        Returns
+        -------
+        Numpy array of hitobject ending positions
+
+            [ 
+                [ pos_x, pos_y ], 
+                [ pos_x, pos_y ], 
+                ... 
+            ]
+            
+        """
         return np.asarray([ note[-1][StdMapData.POS] for note in map_data ])
 
 
     @staticmethod
     def all_positions(map_data, flat=True):
+        """
+        Gets positions data for all hitobjects in the map
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to get position data for
+
+        flat : boolean
+            Whether to return as flat scorepoint data or preserve
+            hitobject information
+
+        Returns
+        -------
+        If flat = True, returns numpy array of scorepoint positions
+
+            [ 
+                [ pos_x, pos_y ], 
+                [ pos_x, pos_y ], 
+                ... 
+            ]
+
+        If flat = False, returns numpy array of list of scorepoint positions grouped by hitobject
+
+            [ 
+                list([
+                        [ scorepoint_x, scorepoint_y ],
+                        [ scorepoint_x, scorepoint_y ],
+                        ...
+                ]),
+                list([
+                        [ scorepoint_x, scorepoint_y ],
+                        [ scorepoint_x, scorepoint_y ],
+                        ...
+                ]),
+                ...,
+                list([ (scorepoint_x, scorepoint_y) ]),
+                list([ (scorepoint_x, scorepoint_y) ]),
+                ...
+            ]
+            
+        """
         if flat: return np.asarray([ data[StdMapData.POS] for note in map_data for data in note ])
         else:    return np.asarray([[data[StdMapData.POS] for data in note] for note in map_data])
 
 
     @staticmethod
     def all_times(map_data, flat=True):
+        """
+        Gets time data for all hitobjects in the map
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to get position data for
+
+        flat : boolean
+            Whether to return as flat scorepoint data or preserve
+            hitobject information
+
+        Returns
+        -------
+        If flat = True, returns numpy array of scorepoint times
+
+            [ time, time, time, ... ]
+
+        If flat = False, returns numpy array of list of scorepoint times grouped by hitobject
+
+            [ 
+                list([ time, time, ... ]),
+                list([ time, time, ... ]),
+                ...,
+                list([ time ]),
+                list([ time ]),
+                ...
+            ]
+            
+        """
         if flat: return np.asarray([ data[StdMapData.TIME] for note in map_data for data in note ])
         else:    return np.asarray([[data[StdMapData.TIME] for data in note] for note in map_data])
 
     
     @staticmethod
     def start_end_times(map_data):
+        """
+        Gets pairs of start and ending times for all hitobjects in the map
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to get start and end times of hitobjects for
+
+        Returns
+        -------
+        Pairs of start and end times
+
+            [ 
+                [ start_time, end_time ], 
+                [ start_time, end_time ], 
+                ... 
+            ]
+
+        .. note::
+            Start and end times of hitcircles are the same
+        
+        """
         all_times = StdMapData.all_times(map_data, flat=False)
         return np.asarray([ (hitobject_times[0], hitobject_times[-1]) for hitobject_times in all_times ])
 
 
     @staticmethod
     def get_idx_start_time(map_data, time):
+        """
+        Gets the index of the first hitobject that starts after the given time
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to get the index of hitobject for
+
+        time : int
+            Time to get the index of hitobject for
+
+        Returns
+        -------
+        int representing index of hitobject in map data
+        """
         if type(time) == type(None): return None
 
         times = np.asarray(StdMapData.start_times(map_data))
@@ -235,6 +451,21 @@ class StdMapData():
     
     @staticmethod
     def get_idx_end_time(map_data, time):
+        """
+        Gets the index of the first hitobject that ends after the given time
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to get the index of hitobject for
+
+        time : int
+            Time to get the index of hitobject for
+
+        Returns
+        -------
+        int representing index of hitobject in map data
+        """
         if type(time) == type(None): return None
             
         times = np.asarray(StdMapData.end_times(map_data))
