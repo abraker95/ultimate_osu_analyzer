@@ -24,11 +24,11 @@ class StdMapData():
     @staticmethod 
     def std_hitobject_to_aimpoints(std_hitobject):
         """
-        Converts a Hitobject type into a numpy array equivalent that can 
-        be used by the analysis framework.
-
         .. warning::
             This function is not intended to be used directly
+
+        Converts a Hitobject type into a numpy array equivalent that can 
+        be used by the analysis framework.
 
         Parameters
         ----------
@@ -38,9 +38,14 @@ class StdMapData():
         Returns
         -------
         generator object
-            A list of
+            A list of scorepoints in the following format:
 
-                [ start_time, [ (scorepoint_x, scorepoint), ... ] ]
+            .. code-block:: python
+                [
+                    [ start_time, [ (scorepoint_x, scorepoint), ... ] ],
+                    [ start_time, [ (scorepoint_x, scorepoint), ... ] ],
+                    ...
+                ]
 
             Hitcircles contain only one scorepoint. Sliders can contain
             more than one. This format is reflected in the groups of 
@@ -57,11 +62,11 @@ class StdMapData():
     @staticmethod
     def std_hitobjects_to_aimpoints(std_hitobjects):
         """
-        Converts a list of Hitobject types into a numpy array equivalent that can 
-        be used by the analysis framework.
-
         .. warning::
             This function is not intended to be used directly
+
+        Converts a list of Hitobject types into a numpy array equivalent that can 
+        be used by the analysis framework.
 
         Parameters
         ----------
@@ -90,11 +95,11 @@ class StdMapData():
     @staticmethod
     def get_aimpoint_data(std_hitobjects):
         """
-        Converts a list of Hitobject types into a numpy array equivalent that can 
-        be used by the analysis framework.
-
         .. note::
             This function is intended to be used directly
+
+        Converts a list of Hitobject types into a numpy array equivalent that can 
+        be used by the analysis framework.
 
         Parameters
         ----------
@@ -104,7 +109,7 @@ class StdMapData():
         Returns
         -------
         A numpy array with the following format representing map data:
-
+        .. code-block:: python
             [
                 [ 
                     [ time, pos ],
