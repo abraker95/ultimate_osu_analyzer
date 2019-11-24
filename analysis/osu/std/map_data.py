@@ -227,7 +227,7 @@ class StdMapData():
 
     @staticmethod
     def get_idx_start_time(map_data, time):
-        if not time: return None
+        if type(time) == type(None): return None
 
         times = np.asarray(StdMapData.start_times(map_data))
         return min(max(0, np.searchsorted(times, [time], side='right')[0] - 1), len(times))
@@ -235,7 +235,7 @@ class StdMapData():
     
     @staticmethod
     def get_idx_end_time(map_data, time):
-        if not time: return None
+        if type(time) == type(None): return None
             
         times = np.asarray(StdMapData.end_times(map_data))
         return min(max(0, np.searchsorted(times, [time], side='right')[0] - 1), len(times))
