@@ -1,8 +1,5 @@
 import numpy as np
-
-from osu.local.beatmap.beatmap_utility import BeatmapUtil
 from misc.numpy_utils import NumpyUtils
-
 
 
 class MapData():

@@ -12,13 +12,13 @@ class StdMapData():
     Class used for navigating, extracting, and operating on map data.
     
     .. note::
-    
         This is not to be confused with the map data in the Beatmap class.
         Data used by this class is in numpy array form. Data in the Beatmap 
         class is based on *.osu file structure and is not in a friendly 
         format to perform analysis on.
 
-    .. data format::
+    ..  note::
+        Data format is:
         ```
         [
             [ 
@@ -35,12 +35,36 @@ class StdMapData():
         ]
         ```
     """
-    
+
     TIME = 0
     POS  = 1
 
     @staticmethod 
     def std_hitobject_to_aimpoints(std_hitobject):
+        """
+        Converts a Hitobject type into a numpy array equivalent that can 
+        be used by the analysis framework.
+
+        .. note::
+            This function was not intended to be used directly
+
+        Parameters
+        ----------
+        std_hitobject : Hitobject
+            A hitobject to convert
+
+        Returns
+        -------
+        generator object
+            A list of
+            ```
+            [ start_time, [ (scorepoint_x, scorepoint), ... ] ]
+            ```
+
+            Hitcircles contain only one scorepoint. Sliders can contain
+            more than one. This format is reflected in the groups of 
+            `[ time, pos ]` in the map data
+        """
         if std_hitobject.is_hitobject_type(Hitobject.CIRCLE):
             yield [ std_hitobject.time, (std_hitobject.pos.x, std_hitobject.pos.y) ]
         
