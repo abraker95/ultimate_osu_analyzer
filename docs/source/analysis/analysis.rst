@@ -1,6 +1,13 @@
 analysis package
 ================
 
+Subpackages
+-----------
+
+.. toctree::
+
+   analysis.osu
+
 Module contents
 ---------------
 

@@ -11,14 +11,6 @@ Welcome to ultimate_osu_analyzer's documentation!
     :caption: Tutorials:
 
     tutorials/*
-    
-
-.. toctree::
-    :glob:
-    :caption: Code:
-
-    source/*
-
 
 
 Indices and tables

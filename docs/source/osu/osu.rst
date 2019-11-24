@@ -1,4 +1,4 @@
-gui package
+osu package
 ===========
 
 Subpackages
@@ -6,13 +6,12 @@ Subpackages
 
 .. toctree::
 
-   gui.frames
-   gui.objects
+   osu.online
 
 Module contents
 ---------------
 
-.. automodule:: gui
+.. automodule:: osu
    :members:
    :undoc-members:
    :show-inheritance:

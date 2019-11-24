@@ -1,5 +1,10 @@
 @ECHO OFF
 
+sphinx-apidoc -o source/analysis ../analysis
+sphinx-apidoc -o source/cli ../cli
+sphinx-apidoc -o source/gui ../gui
+sphinx-apidoc -o source/osu ../osu
+
 pushd %~dp0
 
 REM Command file for Sphinx documentation
