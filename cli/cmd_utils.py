@@ -59,11 +59,11 @@ class CmdUtils():
         data = np.asarray(data)
         if len(data) < 1: return
         
-        size = len(data[0])
+        size = len(data)
         csv_data  = ''
 
         for i in range(size):
-             csv_data += ','.join([ str(x) for x in data[:,i] ]) + '\n'
+             csv_data += ','.join([ str(x) for x in data[i,:] ]) + '\n'
 
         with open(name + '.txt', 'w') as csv_file:
             csv_file.write(csv_data)
