@@ -108,7 +108,8 @@ class StdMapData():
 
         Returns
         -------
-            A numpy array with the following format representing map data:
+        numpy.array
+            Map data representing the following format:
             ::
                 [
                     [ 
@@ -143,6 +144,7 @@ class StdMapData():
 
         Returns
         -------
+        numpy.array
             Scorepoint data
             ::
                 [ time, (scorepoint_x, scorepoint_y) ]
@@ -171,6 +173,7 @@ class StdMapData():
 
         Returns
         -------
+        numpy.array
             Scorepoint data
             ::
                 [ time, (scorepoint_x, scorepoint_y) ]
@@ -202,6 +205,7 @@ class StdMapData():
 
         Returns
         -------
+        numpy.array
             Hitobject data
             ::
                 array([
@@ -237,7 +241,8 @@ class StdMapData():
 
         Returns
         -------
-            Numpy array of hitobject start times
+        numpy.array
+            Hitobject start times
             ::
                 [ time, time, time, ... ]
             
@@ -260,7 +265,8 @@ class StdMapData():
 
         Returns
         -------
-            Numpy array of hitobject end times
+        numpy.array
+            End times of hitobjects
             ::
                 [ time, time, time, ... ]
             
@@ -280,7 +286,8 @@ class StdMapData():
 
         Returns
         -------
-            Numpy array of hitobject starting positions
+        numpy.array
+            Hitobject starting positions
             ::
                 [ 
                     [ pos_x, pos_y ], 
@@ -307,7 +314,8 @@ class StdMapData():
 
         Returns
         -------
-            Numpy array of hitobject ending positions
+        numpy.array
+            Ending positions of hitobject
             ::
                 [ 
                     [ pos_x, pos_y ], 
@@ -335,6 +343,7 @@ class StdMapData():
 
         Returns
         -------
+        numpy.array
             If flat = True, returns numpy array of scorepoint positions
             ::
                 [ 
@@ -383,6 +392,7 @@ class StdMapData():
 
         Returns
         -------
+        numpy.array
             If flat = True, returns numpy array of scorepoint times
             ::
                 [ time, time, time, ... ]
@@ -415,6 +425,7 @@ class StdMapData():
 
         Returns
         -------
+        numpy.array
             Pairs of start and end times
             ::
                 [ 
