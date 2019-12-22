@@ -9,7 +9,7 @@ from misc.numpy_utils import NumpyUtils
 
 class StdMapData():
     """
-    Class used for navigating, extracting, and operating on map data.
+    Class used for navigating, extracting, and operating on standard gamemode map data.
     
     .. note::
         This is not to be confused with the map data in the Beatmap class.
@@ -108,22 +108,21 @@ class StdMapData():
 
         Returns
         -------
-        A numpy array with the following format representing map data:
-        ::
-
-            [
-                [ 
-                    [ time, pos ],
-                    [ time, pos ],
-                    ... N score points
-                ],
-                [ 
-                    [ time, pos ],
-                    [ time, pos ],
-                    ...  N score points
-                ],
-                ... N hitobjects
-            ]
+            A numpy array with the following format representing map data:
+            ::
+                [
+                    [ 
+                        [ time, pos ],
+                        [ time, pos ],
+                        ... N score points
+                    ],
+                    [ 
+                        [ time, pos ],
+                        [ time, pos ],
+                        ...  N score points
+                    ],
+                    ... N hitobjects
+                ]
 
         """
         return np.asarray(list(StdMapData.std_hitobjects_to_aimpoints(std_hitobjects)))
@@ -144,10 +143,9 @@ class StdMapData():
 
         Returns
         -------
-        Scorepoint data
-        ::
-        
-            [ time, (scorepoint_x, scorepoint_y) ]
+            Scorepoint data
+            ::
+                [ time, (scorepoint_x, scorepoint_y) ]
 
         """
         idx_time = StdMapData.get_idx_start_time(map_data, time)
@@ -173,10 +171,9 @@ class StdMapData():
 
         Returns
         -------
-        Scorepoint data
-        ::
-
-            [ time, (scorepoint_x, scorepoint_y) ]
+            Scorepoint data
+            ::
+                [ time, (scorepoint_x, scorepoint_y) ]
             
         """
         idx_time = StdMapData.get_idx_end_time(map_data, time)
@@ -205,22 +202,21 @@ class StdMapData():
 
         Returns
         -------
-        Hitobject data
-        ::
-
-            array([
-                list([
-                    [ time, [scorepoint_x, scorepoint_y] ]
-                    [ time, [scorepoint_x, scorepoint_y] ]
+            Hitobject data
+            ::
+                array([
+                    list([
+                        [ time, [scorepoint_x, scorepoint_y] ]
+                        [ time, [scorepoint_x, scorepoint_y] ]
+                        ...
+                    ]),
+                    list([
+                        [ time, [scorepoint_x, scorepoint_y] ]
+                        [ time, [scorepoint_x, scorepoint_y] ]
+                        ...
+                    ]),
                     ...
-                ]),
-                list([
-                    [ time, [scorepoint_x, scorepoint_y] ]
-                    [ time, [scorepoint_x, scorepoint_y] ]
-                    ...
-                ]),
-                ...
-            ])
+                ])
             
         """
         start_idx = StdMapData.get_idx_start_time(map_data, start_time)
@@ -241,10 +237,9 @@ class StdMapData():
 
         Returns
         -------
-        Numpy array of hitobject start times
-        ::
-
-            [ time, time, time, ... ]
+            Numpy array of hitobject start times
+            ::
+                [ time, time, time, ... ]
             
         """
         return np.asarray([ note[0][StdMapData.TIME] for note in map_data ])
@@ -265,10 +260,9 @@ class StdMapData():
 
         Returns
         -------
-        Numpy array of hitobject end times
-        ::
-
-            [ time, time, time, ... ]
+            Numpy array of hitobject end times
+            ::
+                [ time, time, time, ... ]
             
         """
         return np.asarray([ note[-1][StdMapData.TIME] for note in map_data ])
@@ -286,14 +280,13 @@ class StdMapData():
 
         Returns
         -------
-        Numpy array of hitobject starting positions
-        ::
-
-            [ 
-                [ pos_x, pos_y ], 
-                [ pos_x, pos_y ], 
-                ... 
-            ]
+            Numpy array of hitobject starting positions
+            ::
+                [ 
+                    [ pos_x, pos_y ], 
+                    [ pos_x, pos_y ], 
+                    ... 
+                ]
             
         """
         return np.asarray([ note[0][StdMapData.POS] for note in map_data ])
@@ -314,14 +307,13 @@ class StdMapData():
 
         Returns
         -------
-        Numpy array of hitobject ending positions
-        ::
-
-            [ 
-                [ pos_x, pos_y ], 
-                [ pos_x, pos_y ], 
-                ... 
-            ]
+            Numpy array of hitobject ending positions
+            ::
+                [ 
+                    [ pos_x, pos_y ], 
+                    [ pos_x, pos_y ], 
+                    ... 
+                ]
             
         """
         return np.asarray([ note[-1][StdMapData.POS] for note in map_data ])
@@ -343,34 +335,32 @@ class StdMapData():
 
         Returns
         -------
-        If flat = True, returns numpy array of scorepoint positions
-        ::
+            If flat = True, returns numpy array of scorepoint positions
+            ::
+                [ 
+                    [ pos_x, pos_y ], 
+                    [ pos_x, pos_y ], 
+                    ... 
+                ]
 
-            [ 
-                [ pos_x, pos_y ], 
-                [ pos_x, pos_y ], 
-                ... 
-            ]
-
-        If flat = False, returns numpy array of list of scorepoint positions grouped by hitobject
-        ::
-
-            [ 
-                list([
-                        [ scorepoint_x, scorepoint_y ],
-                        [ scorepoint_x, scorepoint_y ],
-                        ...
-                ]),
-                list([
-                        [ scorepoint_x, scorepoint_y ],
-                        [ scorepoint_x, scorepoint_y ],
-                        ...
-                ]),
-                ...,
-                list([ (scorepoint_x, scorepoint_y) ]),
-                list([ (scorepoint_x, scorepoint_y) ]),
-                ...
-            ]
+            If flat = False, returns numpy array of list of scorepoint positions grouped by hitobject
+            ::
+                [ 
+                    list([
+                            [ scorepoint_x, scorepoint_y ],
+                            [ scorepoint_x, scorepoint_y ],
+                            ...
+                    ]),
+                    list([
+                            [ scorepoint_x, scorepoint_y ],
+                            [ scorepoint_x, scorepoint_y ],
+                            ...
+                    ]),
+                    ...,
+                    list([ (scorepoint_x, scorepoint_y) ]),
+                    list([ (scorepoint_x, scorepoint_y) ]),
+                    ...
+                ]
             
         """
         if flat: return np.asarray([ data[StdMapData.POS] for note in map_data for data in note ])
@@ -393,22 +383,20 @@ class StdMapData():
 
         Returns
         -------
-        If flat = True, returns numpy array of scorepoint times
-        ::
+            If flat = True, returns numpy array of scorepoint times
+            ::
+                [ time, time, time, ... ]
 
-            [ time, time, time, ... ]
-
-        If flat = False, returns numpy array of list of scorepoint times grouped by hitobject
-        ::
-
-            [ 
-                list([ time, time, ... ]),
-                list([ time, time, ... ]),
-                ...,
-                list([ time ]),
-                list([ time ]),
-                ...
-            ]
+            If flat = False, returns numpy array of list of scorepoint times grouped by hitobject
+            ::
+                [ 
+                    list([ time, time, ... ]),
+                    list([ time, time, ... ]),
+                    ...,
+                    list([ time ]),
+                    list([ time ]),
+                    ...
+                ]
             
         """
         if flat: return np.asarray([ data[StdMapData.TIME] for note in map_data for data in note ])
@@ -427,17 +415,16 @@ class StdMapData():
 
         Returns
         -------
-        Pairs of start and end times
-        ::
-        
-            [ 
-                [ start_time, end_time ], 
-                [ start_time, end_time ], 
-                ... 
-            ]
+            Pairs of start and end times
+            ::
+                [ 
+                    [ start_time, end_time ], 
+                    [ start_time, end_time ], 
+                    ... 
+                ]
 
-        .. note::
-            Start and end times of hitcircles are the same
+            .. note::
+                Start and end times of hitcircles are the same
         
         """
         all_times = StdMapData.all_times(map_data, flat=False)
@@ -459,7 +446,8 @@ class StdMapData():
 
         Returns
         -------
-        int representing index of hitobject in map data
+        int 
+            index of hitobject in map data
         """
         if type(time) == type(None): return None
 
@@ -482,7 +470,8 @@ class StdMapData():
 
         Returns
         -------
-        int representing index of hitobject in map data
+        int 
+            index of hitobject in map data
         """
         if type(time) == type(None): return None
             
