@@ -11,9 +11,9 @@ from analysis.osu.mania.map_data import ManiaMapData
 
 class ManiaMapMetrics():
 
-    '''
+    """
     Raw metrics
-    '''
+    """
     @staticmethod
     def calc_tapping_intervals(hitobject_data, column):
         start_times = ManiaMapData.start_times(hitobject_data, column)

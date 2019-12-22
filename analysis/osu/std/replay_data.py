@@ -85,14 +85,14 @@ class StdReplayData():
 
         component : int
             Which component to get data for. Components are:
-                `StdReplayData.TIME`  - List of all cursor times
-                `StdReplayData.XPOS`  - List of all cursor x coordinate positions
-                `StdReplayData.YPOS`  - List of all cursor y coordinate positions
-                `StdReplayData.M1`    - List of all mouse button 1 presses
-                `StdReplayData.M2`    - List of all mouse button 2 presses
-                `StdReplayData.K1`    - List of all keyboard key 1 presses
-                `StdReplayData.K2`    - List of all keyboard key 2 presses
-                `StdReplayData.SMOKE` - List of all smoke key presses
+            - `StdReplayData.TIME`  - List of all cursor times
+            - `StdReplayData.XPOS`  - List of all cursor x coordinate positions
+            - `StdReplayData.YPOS`  - List of all cursor y coordinate positions
+            - `StdReplayData.M1`    - List of all mouse button 1 presses
+            - `StdReplayData.M2`    - List of all mouse button 2 presses
+            - `StdReplayData.K1`    - List of all keyboard key 1 presses
+            - `StdReplayData.K2`    - List of all keyboard key 2 presses
+            - `StdReplayData.SMOKE` - List of all smoke key presses
         
         Returns
         -------
@@ -161,14 +161,15 @@ class StdReplayData():
         key : int
             Which key to get start times for. If key = None, then intermixed key start times
             for M1, M2, K1, and K2 are returned.
-                `StdReplayData.M1`    - Mouse button 1 presses
-                `StdReplayData.M2`    - Mouse button 2 presses
-                `StdReplayData.K1`    - Keyboard key 1 presses
-                `StdReplayData.K2`    - Keyboard key 2 presses
-                `StdReplayData.SMOKE` - Smoke key presses
+            - `StdReplayData.M1`    - Mouse button 1 presses
+            - `StdReplayData.M2`    - Mouse button 2 presses
+            - `StdReplayData.K1`    - Keyboard key 1 presses
+            - `StdReplayData.K2`    - Keyboard key 2 presses
+            - `StdReplayData.SMOKE` - Smoke key presses
         Returns
         -------
         numpy.array
+        
             ::
                 [ press_start_idxs, press_start_times ]
             which is
@@ -217,15 +218,16 @@ class StdReplayData():
         key : int
             Which key to get start times for. If key = None, then intermixed key start times
             for M1, M2, K1, and K2 are returned.
-                `StdReplayData.M1`    - Mouse button 1 presses
-                `StdReplayData.M2`    - Mouse button 2 presses
-                `StdReplayData.K1`    - Keyboard key 1 presses
-                `StdReplayData.K2`    - Keyboard key 2 presses
-                `StdReplayData.SMOKE` - Smoke key presses
+            - `StdReplayData.M1`    - Mouse button 1 presses
+            - `StdReplayData.M2`    - Mouse button 2 presses
+            - `StdReplayData.K1`    - Keyboard key 1 presses
+            - `StdReplayData.K2`    - Keyboard key 2 presses
+            - `StdReplayData.SMOKE` - Smoke key presses
 
         Returns
         -------
         numpy.array
+
             ::
                 [ press_end_idxs, press_end_times ]
             which is
@@ -274,15 +276,16 @@ class StdReplayData():
         key : int
             Which key to get start times for. If key = None, then intermixed key start times
             for M1, M2, K1, and K2 are returned.
-                `StdReplayData.M1`    - Mouse button 1 presses
-                `StdReplayData.M2`    - Mouse button 2 presses
-                `StdReplayData.K1`    - Keyboard key 1 presses
-                `StdReplayData.K2`    - Keyboard key 2 presses
-                `StdReplayData.SMOKE` - Smoke key presses
+            - `StdReplayData.M1`    - Mouse button 1 presses
+            - `StdReplayData.M2`    - Mouse button 2 presses
+            - `StdReplayData.K1`    - Keyboard key 1 presses
+            - `StdReplayData.K2`    - Keyboard key 2 presses
+            - `StdReplayData.SMOKE` - Smoke key presses
 
         Returns
         -------
         numpy.array
+
             ::
             [ 
                 [ press_start_idx, press_start_time, press_end_idx, press_end_time ],

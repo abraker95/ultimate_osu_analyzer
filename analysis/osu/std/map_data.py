@@ -12,7 +12,7 @@ class StdMapData():
     Class used for navigating, extracting, and operating on standard gamemode map data.
     
     .. note::
-        This is not to be confused with the map data in the Beatmap class.
+        This is not to be confused with the map data in the osu.local.beatmap.beatmap.Beatmap class.
         Data used by this class is in numpy array form. Data in the Beatmap 
         class is based on *.osu file structure and is not in a friendly 
         format to perform analysis on.
