@@ -94,7 +94,7 @@ class BeatmapIO():
         BeatmapIO.__parse_beatmap_data(beatmap_data, beatmap)
         BeatmapIO.__process_timing_points(beatmap)
 
-        if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
+        if beatmap.gamemode == Beatmap.GAMEMODE_OSU or beatmap.gamemode == None:
             BeatmapIO.__process_slider_timings(beatmap)
             BeatmapIO.__process_hitobject_end_times(beatmap)
             BeatmapIO.__process_slider_tick_times(beatmap)
@@ -152,6 +152,9 @@ class BeatmapIO():
 
         if beatmap.difficulty.hp == None:
             beatmap.difficulty.hp = beatmap.difficulty.od
+
+        if beatmap.gamemode == None:
+            beatmap.gamemode = Beatmap.GAMEMODE_OSU
 
 
     @staticmethod
@@ -379,7 +382,7 @@ class BeatmapIO():
         
         hitobject_type = int(data[3])
 
-        if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
+        if beatmap.gamemode == Beatmap.GAMEMODE_OSU or beatmap.gamemode == None:
             if Std.is_hitobject_type(hitobject_type, Hitobject.CIRCLE):
                 beatmap.hitobjects.append(StdSingleNoteIO.load_singlenote(data, beatmap.difficulty))
                 return
