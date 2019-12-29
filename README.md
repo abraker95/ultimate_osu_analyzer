@@ -4,7 +4,7 @@ Python rewrite of my [old osu analyzer](https://github.com/abraker95/osu-Replay-
 
 The Ultimate osu! Analyzer is a gui for mass analysis of data. It's been made with the intent to collect beatmaps and replays to analyze correlations between patterns and player performance.
 
-See the [tutorials](https://github.com/abraker95/ultimate_osu_analyzer/wiki/Tutorials) for info on how to use the analyzer.
+See the [tutorials](https://github.com/abraker95/ultimate_osu_analyzer/wiki/Tutorials) for info on how to use the analyzer and [documentation](https://ultimate-osu-analyzer.readthedocs.io/en/latest/source/analysis/analysis.osu.std.html#module-analysis.osu.std.map_data) regarding various specifics.
 
 ## Run/Install
 
