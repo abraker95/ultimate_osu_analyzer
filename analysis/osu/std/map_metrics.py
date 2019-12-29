@@ -12,11 +12,28 @@ from analysis.osu.std.map_data import StdMapData
 
 class StdMapMetrics():
 
-    '''
-    Raw metrics
-    '''
+    """
+    Class used for pattern recognition, calculating pattern attributes, and difficulty.
+
+    .. warning::
+        Undocumented functions in this class are not supported and are experimental.
+    """
     @staticmethod
     def calc_tapping_intervals(hitobject_data=[]):
+        """
+        Gets the timing difference between note starting times.
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(times, intervals)``. ``times`` are hitobject timings. ``intervals`` are the timings 
+            difference between current and previous note. Resultant array size is ``len(hitobject_data) - 1``.
+        """
         t = StdMapData.start_times(hitobject_data)
         if len(t) < 2: return [], []
 
@@ -26,6 +43,20 @@ class StdMapMetrics():
 
     @staticmethod
     def calc_notes_per_sec(hitobject_data=[]):
+        """
+        Gets number of notes tapped per second based on immidiate duration between notes.
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(times, nps)``. ``times`` are hitobject timings. ``nps`` is notes per second.
+            Resultant array size is ``len(hitobject_data) - 1``.
+        """
         t = StdMapData.start_times(hitobject_data)
         if len(t) < 2: return [], []
 
@@ -34,7 +65,22 @@ class StdMapMetrics():
 
 
     @staticmethod
-    def calc_distances(hitobject_data=[]):
+    def calc_path_dist(hitobject_data=[]):
+        """
+        Calculates distance between aimpoints. Aimpoints are hitobject start 
+        and end times, and slider ticks.
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(times, dists)``. ``times`` are aimpoint timings. ``dists`` are distances 
+            between aimpoints. Resultant array size is ``len(hitobject_data) - 1``.
+        """
         t = StdMapData.all_times(hitobject_data)
         p = StdMapData.all_positions(hitobject_data)
         if len(p) < 2: return [], []
@@ -44,7 +90,22 @@ class StdMapMetrics():
 
     
     @staticmethod
-    def calc_velocity(hitobject_data=[]):
+    def calc_path_vel(hitobject_data=[]):
+        """
+        Calculates velocity between aimpoints. Aimpoints are hitobject start 
+        and end times, and slider ticks.
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(times, vels)``. ``times`` are aimpoint timings. ``vels`` are based on time and distance
+            between aimpoints. Resultant array size is ``len(hitobject_data) - 2``.
+        """
         t = StdMapData.all_times(hitobject_data)
         p = StdMapData.all_positions(hitobject_data)
         if len(p) < 2: return [], []
@@ -53,6 +114,146 @@ class StdMapMetrics():
         return t[1:], Metrics.vel_2d(x, y, t)
 
 
+    @staticmethod
+    def calc_path_accel(hitobject_data=[]):
+        """
+        Calculates acceleration between aimpoints. Aimpoints are hitobject start 
+        and end times, and slider ticks.
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of (times, accels). ``times`` are aimpoint timings. ``accels`` are based on 
+            change in velocity between aimpoints. Resultant array size is ``len(hitobject_data) - 3``.
+        """
+        t = StdMapData.all_times(hitobject_data)
+        p = StdMapData.all_positions(hitobject_data)
+        if len(p) < 2: return [], []
+        
+        x, y = p[:,0], p[:,1]
+        return t[1:], Metrics.accel_2d(x, y, t)
+
+
+    @staticmethod
+    def calc_xy_dist(hitobject_data=[]):
+        """
+        Calculates parametric distance between aimpoints. Aimpoints are hitobject start 
+        and end times, and slider ticks.
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(times, x_dists, y_dists)``. ``times`` are aimpoint timings. ``x_dists`` are distances
+            between aimpoints in the x-coordinate direction. ``y_dists`` are distances between aimpoints 
+            in the y-coordinate direction. Resultant array size is ``len(hitobject_data) - 1``.
+        """
+        t = StdMapData.all_times(hitobject_data)
+        p = StdMapData.all_positions(hitobject_data)
+        if len(p) < 2: return [], []
+        
+        dx = np.diff(p[:,0])
+        dy = np.diff(p[:,1])
+
+        return t[1:], dx, dy
+
+
+    @staticmethod
+    def calc_xy_vel(hitobject_data=[]):
+        """
+        Calculates parametric velocity between aimpoints. Aimpoints are hitobject start 
+        and end times, and slider ticks.
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(times, x_vels, y_vels)``. ``times`` are aimpoint timings. ``x_vels`` are velocities
+            between aimpoints in the x-coordinate direction. ``y_vels`` are velocities between aimpoints 
+            in the y-coordinate direction. Resultant array size is ``len(hitobject_data) - 2``.
+        """
+        t = StdMapData.all_times(hitobject_data)
+        p = StdMapData.all_positions(hitobject_data)
+        if len(p) < 2: return [], []
+        
+        dt = np.diff(t)
+        dx = np.diff(p[:,0])
+        dy = np.diff(p[:,1])
+
+        return t[1:], dx/dt, dy/dt
+
+
+    @staticmethod
+    def calc_xy_accel(hitobject_data=[]):
+        """
+        Calculates parametric acceleration between aimpoints. Aimpoints are hitobject start 
+        and end times, and slider ticks.
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(times, x_accels, y_accels)``. ``times`` are aimpoint timings. ``x_accels`` are 
+            accelerations between aimpoints in the x-coordinate direction. ``y_accels`` are accelerations 
+            between aimpoints in the y-coordinate direction. Resultant array size is ``len(hitobject_data) - 3``.
+        """
+        hitobject_data = np.asarray(hitobject_data[2:])
+        t, vx, vy = StdMapMetrics.calc_xy_vel(hitobject_data)
+        if len(t) < 2: return [], []
+        
+        dvx = np.diff(vx)
+        dvy = np.diff(vy)
+        dt  = np.diff(t)
+        
+        return t[1:], dvx/dt, dvy/dt
+
+
+    @staticmethod
+    def calc_xy_jerk(hitobject_data=[]):
+        """
+        Calculates parametric jerks between aimpoints. Aimpoints are hitobject start 
+        and end times, and slider ticks.
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(times, x_jerks, y_jerks)``. ``times`` are aimpoint timings. ``x_jerks`` are 
+            jerks between aimpoints in the x-coordinate direction. ``y_jerks`` are jerks 
+            between aimpoints in the y-coordinate direction. Resultant array size is ``len(hitobject_data) - 4``.
+        """
+        hitobject_data = np.asarray(hitobject_data[2:])
+        t, ax, ay = StdMapMetrics.calc_xy_accel(hitobject_data)
+        if len(t) < 2: return [], []
+        
+        dax = np.diff(ax)
+        day = np.diff(ay)
+        dt  = np.diff(t)
+        
+        return t[1:], dax/dt, day/dt
+
+    
     @staticmethod
     def calc_velocity_start(hitobject_data=[]):
         t = StdMapData.start_times(hitobject_data)
@@ -74,6 +275,21 @@ class StdMapMetrics():
 
     @staticmethod
     def calc_angles(hitobject_data=[]):
+        """
+        Calculates angle between aimpoints. Aimpoints are hitobject start 
+        and end times, and slider ticks.
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(times, angles)``. ``times`` are aimpoint timings. ``angles`` are 
+            angles between aimpoints. Resultant array size is ``len(hitobject_data) - 1``.
+        """
         t = StdMapData.all_times(hitobject_data)
         p = StdMapData.all_positions(hitobject_data)
         if len(p) < 2: return [], []
@@ -83,21 +299,80 @@ class StdMapMetrics():
 
     
     @staticmethod
-    def calc_xy_vel(hitobject_data=[]):
+    def calc_theta_per_second(hitobject_data=[]):
+        """
+        Calculates immediate path rotation (in radians per second) from previous aimpoint.
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(times, rps)``. ``times`` are aimpoint timings. ``rps`` are 
+            radians per second between aimpoints. Resultant array size is ``len(hitobject_data) - 1``.
+        """
+        t, thetas = StdMapMetrics.calc_angles(hitobject_data)
+        dt = np.diff(t)
+
+        return t[1:], thetas[1:]*(1000/dt)
+
+
+    @staticmethod
+    def calc_radial_velocity(hitobject_data=[]):
+        """
+        Calculates radial velocity between aimpoints. Aimpoints are hitobject start 
+        and end times, and slider ticks. Radial velocity is how fast a path
+        moves in a circle in radians per second. Unlike ``calc_theta_per_second``, which 
+        calculates immediate rotation, this calculates average rotation.
+        
+        The difference between the two implemtations is apparent when considering zig-zag and circular patterns.
+        Zig-zag patterns has no average angular velocity, but have average linear velocity. In a zig-zag
+        pattern one angle would be positive indicating a rotation in a clockwise direction, and another angle 
+        would be negative indicating a rotation in a counter-clockwise direction. Ultimately those two cancel 
+        out to result in no overall rotation direction. A circular pattern would have either both angles positive 
+        or both angles negative, yielding a net negative or a net positive rotation direction.
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(times, avg_rad_vels)``. ``times`` are aimpoint timings. ``avg_rad_vels`` are 
+            average radial velocities. Resultant array size is ``len(hitobject_data) - 2``.
+        """
         t = StdMapData.all_times(hitobject_data)
         p = StdMapData.all_positions(hitobject_data)
         if len(p) < 2: return [], []
-        
-        dt = np.diff(t)
-        dx = np.diff(p[:,0])
-        dy = np.diff(p[:,1])
 
-        return t[1:], dx/dt, dy/dt
+        x, y = p[:,0], p[:,1]
+        return t[2:], Metrics.avg_ang_vel(x, y, t[1:])
 
 
-    # Perpendicular intensity
     @staticmethod
     def calc_perp_int(hitobject_data=[]):
+        """
+        Calculates perpendicular intensity between aimpoints. Aimpoints are hitobject start 
+        and end times, and slider ticks. Perpendicular intensity is how much strongly the path
+        between aimpoints turns 90 deg, factoring in average radial velocity of the path as well as
+        overall velocity throughout the path (measured in osu!px*radians/millisconds^2).
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(times, perp_ints)``. ``times`` are aimpoint timings. ``perp_ints`` are 
+            perpendicular intensities. Resultant array size is ``len(hitobject_data) - 2``.
+        """
         times, rv = StdMapMetrics.calc_radial_velocity(hitobject_data)
         times, x_vel, y_vel = StdMapMetrics.calc_xy_vel(hitobject_data)
 
@@ -121,6 +396,23 @@ class StdMapMetrics():
     # Linear intensity
     @staticmethod
     def calc_lin_int(hitobject_data=[]):
+        """
+        Calculates linear intensity between aimpoints. Aimpoints are hitobject start 
+        and end times, and slider ticks. Linear intensity is how much strongly the path
+        between aimpoints is linear, factoring in average radial velocity of the path as well as
+        overall velocity throughout the path (measured in osu!px*radians/millisconds^2).
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``StdMapData.get_aimpoint_data``
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(times, lin_ints)``. ``times`` are aimpoint timings. ``lin_ints`` are 
+            linear intensities. Resultant array size is ``len(hitobject_data) - 2``.
+        """
         times, rv = StdMapMetrics.calc_radial_velocity(hitobject_data)
         times, x_vel, y_vel = StdMapMetrics.calc_xy_vel(hitobject_data)
 

@@ -35,7 +35,7 @@ class StdReplayData():
         Parameters
         ----------
         replay_events : list
-            Replay event data located in Replay.play_data
+            Replay event data located in ``Replay.play_data``
         
         Returns
         -------
@@ -76,7 +76,7 @@ class StdReplayData():
     def component_data(replay_data, component):
         """
         Gets a specific component of replay data. This function
-        is serves as an alias for `replay_data[:, component]`
+        is serves as an alias for ``replay_data[:, component]``
 
         Parameters
         ----------
@@ -85,14 +85,14 @@ class StdReplayData():
 
         component : int
             Which component to get data for. Components are:
-            - `StdReplayData.TIME`  - List of all cursor times
-            - `StdReplayData.XPOS`  - List of all cursor x coordinate positions
-            - `StdReplayData.YPOS`  - List of all cursor y coordinate positions
-            - `StdReplayData.M1`    - List of all mouse button 1 presses
-            - `StdReplayData.M2`    - List of all mouse button 2 presses
-            - `StdReplayData.K1`    - List of all keyboard key 1 presses
-            - `StdReplayData.K2`    - List of all keyboard key 2 presses
-            - `StdReplayData.SMOKE` - List of all smoke key presses
+                - ``StdReplayData.TIME``  - List of all cursor times
+                - ``StdReplayData.XPOS``  - List of all cursor x coordinate positions
+                - ``StdReplayData.YPOS``  - List of all cursor y coordinate positions
+                - ``StdReplayData.M1``    - List of all mouse button 1 presses
+                - ``StdReplayData.M2``    - List of all mouse button 2 presses
+                - ``StdReplayData.K1``    - List of all keyboard key 1 presses
+                - ``StdReplayData.K2``    - List of all keyboard key 2 presses
+                - ``StdReplayData.SMOKE`` - List of all smoke key presses
         
         Returns
         -------
@@ -150,8 +150,8 @@ class StdReplayData():
     def press_start_times(replay_data, key=None):
         """        
         Tuple with indices in replay_data where a press ends and timings where press ends.
-        `press_start_idxs` can be used on original `replay_data` to get full data related to start times
-        like so: `replay_data[press_start_idxs]`
+        ``press_start_idxs`` can be used on original ``replay_data`` to get full data related to start times
+        like so: ``replay_data[press_start_idxs]``
 
         Parameters
         ----------
@@ -159,17 +159,17 @@ class StdReplayData():
             Replay data
 
         key : int
-            Which key to get start times for. If key = None, then intermixed key start times
-            for M1, M2, K1, and K2 are returned.
-            - `StdReplayData.M1`    - Mouse button 1 presses
-            - `StdReplayData.M2`    - Mouse button 2 presses
-            - `StdReplayData.K1`    - Keyboard key 1 presses
-            - `StdReplayData.K2`    - Keyboard key 2 presses
-            - `StdReplayData.SMOKE` - Smoke key presses
+            Which key to get start times for. If ``key is None``, then intermixed key start times
+            for ``M1``, ``M2``, ``K1``, and ``K2`` are returned.
+                - ``StdReplayData.M1``    - Mouse button 1 presses
+                - ``StdReplayData.M2``    - Mouse button 2 presses
+                - ``StdReplayData.K1``    - Keyboard key 1 presses
+                - ``StdReplayData.K2``    - Keyboard key 2 presses
+                - ``StdReplayData.SMOKE`` - Smoke key presses
         Returns
         -------
         numpy.array
-        
+            Format:
             ::
                 [ press_start_idxs, press_start_times ]
             which is
@@ -207,8 +207,8 @@ class StdReplayData():
     def press_end_times(replay_data, key=None):
         """        
         Tuple with indices in replay_data where a press ends and timings where press ends.
-        `press_end_idxs` can be used on original `replay_data` to get full data related to end times
-        like so: `replay_data[press_end_idxs]`
+        ``press_end_idxs`` can be used on original ``replay_data`` to get full data related to end times
+        like so: ``replay_data[press_end_idxs]``
 
         Parameters
         ----------
@@ -217,17 +217,17 @@ class StdReplayData():
 
         key : int
             Which key to get start times for. If key = None, then intermixed key start times
-            for M1, M2, K1, and K2 are returned.
-            - `StdReplayData.M1`    - Mouse button 1 presses
-            - `StdReplayData.M2`    - Mouse button 2 presses
-            - `StdReplayData.K1`    - Keyboard key 1 presses
-            - `StdReplayData.K2`    - Keyboard key 2 presses
-            - `StdReplayData.SMOKE` - Smoke key presses
+            for ``M1``, ``M2``, ``K1``, and ``K2`` are returned.
+                - ``StdReplayData.M1``    - Mouse button 1 presses
+                - ``StdReplayData.M2``    - Mouse button 2 presses
+                - ``StdReplayData.K1``    - Keyboard key 1 presses
+                - ``StdReplayData.K2``    - Keyboard key 2 presses
+                - ``StdReplayData.SMOKE`` - Smoke key presses
 
         Returns
         -------
         numpy.array
-
+            Format:
             ::
                 [ press_end_idxs, press_end_times ]
             which is
@@ -264,9 +264,9 @@ class StdReplayData():
     @staticmethod
     def press_start_end_times(replay_data, key=None):
         """
-        Tuple with indices in replay_data where a press starts and ends and timings where press 
-        stars and ends. `press_start_end_idxs` can be used on original `replay_data` to get full data 
-        related to end times like so: `replay_data[press_start_end_idxs]`
+        Tuple with indices in ``replay_data`` where a press starts and ends and timings where press 
+        stars and ends. ``press_start_end_idxs`` can be used on original ``replay_data`` to get full data 
+        related to end times like so: ``replay_data[press_start_end_idxs]``
 
         Parameters
         ----------
@@ -274,24 +274,24 @@ class StdReplayData():
             Replay data
 
         key : int
-            Which key to get start times for. If key = None, then intermixed key start times
-            for M1, M2, K1, and K2 are returned.
-            - `StdReplayData.M1`    - Mouse button 1 presses
-            - `StdReplayData.M2`    - Mouse button 2 presses
-            - `StdReplayData.K1`    - Keyboard key 1 presses
-            - `StdReplayData.K2`    - Keyboard key 2 presses
-            - `StdReplayData.SMOKE` - Smoke key presses
+            Which key to get start times for. If ``key is None``, then intermixed key start times
+            for ``M1``, ``M2``, ``K1``, and ``K2`` are returned.
+                - ``StdReplayData.M1``    - Mouse button 1 presses
+                - ``StdReplayData.M2``    - Mouse button 2 presses
+                - ``StdReplayData.K1``    - Keyboard key 1 presses
+                - ``StdReplayData.K2``    - Keyboard key 2 presses
+                - ``StdReplayData.SMOKE`` - Smoke key presses
 
         Returns
         -------
         numpy.array
-
+            Format:
             ::
-            [ 
-                [ press_start_idx, press_start_time, press_end_idx, press_end_time ],
-                [ press_start_idx, press_start_time, press_end_idx, press_end_time ],
-                ...
-            ]
+                [ 
+                    [ press_start_idx, press_start_time, press_end_idx, press_end_time ],
+                    [ press_start_idx, press_start_time, press_end_idx, press_end_time ],
+                    ...
+                ]
         """
         press_start_idx, press_start_times = StdReplayData.press_start_times(replay_data, key)
         press_end_idx, press_end_times     = StdReplayData.press_end_times(replay_data, key)
@@ -302,7 +302,7 @@ class StdReplayData():
     @staticmethod
     def get_idx_time(replay_data, time):
         """
-        Gets index of first sample in `replay_data` where time of sample is greater than `time`
+        Gets index of first sample in ``replay_data`` where time of sample is greater than ``time``
         
         Parameters
         ----------
@@ -327,7 +327,7 @@ class StdReplayData():
     @staticmethod
     def get_idx_press_start_time(replay_data, time, key=None):
         """
-        Gets index of closest press of `key` to `time` in `replay_data`
+        Gets index of closest press of ``key`` to ``time`` in ``replay_data``
 
         Parameters
         ----------
@@ -353,7 +353,7 @@ class StdReplayData():
     @staticmethod
     def get_idx_press_end_time(replay_data, time, key=None):
         """
-        Gets index of closest release of `key` to `time` in `replay_data`
+        Gets index of closest release of ``key`` to ``time`` in ``replay_data``
 
         Parameters
         ----------

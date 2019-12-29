@@ -18,9 +18,16 @@ from analysis.osu.std.score_metrics import StdScoreMetrics
 
 
 class StdLayers():
+    """
+    Class used for time dependent visualization in central display.
+    Sample use case: ``add_std_layer('layer group', 'layer name', replay_data, StdLayers.StdReplayCursorLayer)``
+    """
 
     @staticmethod
     def StdReplayCursorLayer(painter, ratio_x, ratio_y, time, replay_data):
+        """
+        Displays player's cursor movement in replays
+        """
         painter.setPen(QPen(StdSettings.cursor_color, StdSettings.cursor_thickness))
         radius = StdSettings.cursor_radius
 
@@ -35,6 +42,9 @@ class StdLayers():
 
     @staticmethod
     def StdReplayHoldLayer(painter, ratio_x, ratio_y, time, replay_data):
+        """
+        Displays held keys in replay
+        """
         start_idx = StdReplayData.get_idx_time(replay_data, time - StdSettings.view_time_back)
         end_idx   = StdReplayData.get_idx_time(replay_data, time + StdSettings.view_time_ahead)
 
@@ -53,6 +63,9 @@ class StdLayers():
 
     @staticmethod
     def StdReplayCursorVel(painter, ratio_x, ratio_y, time, replay_data):
+        """
+        Displays cursor vel for replay in top left corner
+        """
         t, vel = StdReplayMetrics.cursor_velocity(replay_data)
         idx = np.where(t > time)[0][0]
 
@@ -62,6 +75,9 @@ class StdLayers():
 
     @staticmethod
     def StdScoreDebugLayer(painter, ratio_x, ratio_y, time, score_data):
+        """
+        Displays tap offset and position offset for each tapped note in replay.
+        """
         if len(score_data) <= 0: return
         painter.setPen(QColor(255, 0, 0, 255))
 

@@ -27,7 +27,7 @@ class StdMapData():
         .. warning::
             This function is not intended to be used directly
 
-        Converts a Hitobject type into a numpy array equivalent that can 
+        Converts a ``Hitobject`` type into a numpy array equivalent that can 
         be used by the analysis framework.
 
         Parameters
@@ -65,7 +65,7 @@ class StdMapData():
         .. warning::
             This function is not intended to be used directly
 
-        Converts a list of Hitobject types into a numpy array equivalent that can 
+        Converts a list of ``Hitobject`` types into a numpy array equivalent that can 
         be used by the analysis framework.
 
         Parameters
@@ -76,7 +76,7 @@ class StdMapData():
         Returns
         -------
         generator object
-            A complied list of a aimpoints
+            A complied list of aimpoints
         """
         for hitobject in std_hitobjects:
             aimpoints = list(StdMapData.std_hitobject_to_aimpoints(hitobject))
@@ -98,7 +98,7 @@ class StdMapData():
         .. note::
             This function is intended to be used directly
 
-        Converts a list of Hitobject types into a numpy array equivalent that can 
+        Converts a list of ``Hitobject`` types into a numpy array equivalent that can 
         be used by the analysis framework.
 
         Parameters
@@ -190,7 +190,7 @@ class StdMapData():
     @staticmethod
     def time_slice(map_data, start_time, end_time):
         """
-        Gets a list of hitobjects data that occurs between start_time and end_time
+        Gets a list of hitobjects data that occurs between ``start_time`` and ``end_time``
 
         Parameters
         ----------

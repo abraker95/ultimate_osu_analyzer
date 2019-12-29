@@ -9,6 +9,7 @@ from misc.math_utils import prob_not, prob_and, prob_or
 from osu.local.hitobject.std.std import Std
 from analysis.osu.std.map_data import StdMapData
 from analysis.osu.std.replay_data import StdReplayData
+from analysis.osu.std.replay_metrics import StdReplayMetrics
 
 
 class StdScoreDataEnums(Enum):
@@ -20,15 +21,10 @@ class StdScoreDataEnums(Enum):
     HITOBJECT_IDX = 4
 
 
-'''
-[
-    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
-    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
-    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
-    ...  N events
-]
-'''
 class StdScoreData():
+    """
+    Class used for analyzing score data pertaining to a specific play.
+    """
 
     pos_hit_range      = 100   # ms range of the late hit window
     neg_hit_range      = 100   # ms range of the early hit window
@@ -45,34 +41,79 @@ class StdScoreData():
     hitobject_radius = Std.cs_to_px(4)  # Radius from hitobject for which cursor needs to be within for a tap to count
     follow_radius    = Std.cs_to_px(4)  # Radius from slider aimpoint for which cursor needs to be within for a hold to count
 
-    # Disables hitting next note too early. If False, the neg_miss_range of the current note is 
-    # overridden to extend to the previous note's pos_hit_range boundary.
+    """
+    Disables hitting next note too early. If False, the neg_miss_range of the current note is 
+    overridden to extend to the previous note's pos_hit_range boundary.
+    """
     notelock = True
 
-    # Overrides the miss and hit windows to correspond to spacing between notes. If True then all 
-    # the ranges are are overridden to be split up in 1/4th sections relative to the distance between 
-    # current and next notes
+    """
+    Overrides the miss and hit windows to correspond to spacing between notes. If True then all 
+    the ranges are are overridden to be split up in 1/4th sections relative to the distance between 
+    current and next notes
+    """
     dynamic_window = False
 
-    # Enables missing in blank space. If True, the Nothing window behaves like the miss window, but the 
-    # iterator does not go to the next note.
+    """
+    Enables missing in blank space. If True, the Nothing window behaves like the miss window, but the 
+    iterator does not go to the next note.
+    """
     blank_miss = False
 
-    # If True, remove release miss window for sliders. This allows to hit sliders and release them whenever
+    """
+    If True, remove release miss window for sliders. This allows to hit sliders and release them whenever
+    """
     lazy_sliders = False
 
-    # There are cases for which parts of the hitwindow of multiple notes may overlap. If True, all 
-    # overlapped miss parts are processed for one key event. If False, each overlapped miss part is 
-    # processed for each individual key event.
+    """
+    There are cases for which parts of the hitwindow of multiple notes may overlap. If True, all 
+    overlapped miss parts are processed for one key event. If False, each overlapped miss part is 
+    processed for each individual key event.
+    """
     overlap_miss_handling = False
 
-    # There are cases for which parts of the hitwindow of multiple notes may overlap. If True, all 
-    # overlapped hit parts are processed for one key event. If False, each overlapped hit part is 
-    # processed for each individual key event.
+    """
+    There are cases for which parts of the hitwindow of multiple notes may overlap. If True, all 
+    overlapped hit parts are processed for one key event. If False, each overlapped hit part is 
+    processed for each individual key event.
+    """
     overlap_hit_handling  = False
 
     @staticmethod
     def get_score_data(replay_data, map_data):
+        """
+        Returns data pertaining to player's timing on notes in the map. This also records any extra taps the player
+        may have made
+
+        Parameters
+        ----------
+        replay_data : numpy.array
+            Replay data
+
+        map_data : numpy.array
+            Map data
+
+        Returns
+        -------
+        numpy.array
+            Score data has time the hit occured, cursor position when the hit occured, hit offset from 0ms, 
+            position offset from center of the note, and the idx of the note the hit pertains to.
+            ::
+                [
+                    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
+                    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
+                    [ time, (cursor_pos_x, cursor_pos_y), hit_offset, (pos_offset_x, pos_offset_y), hitobject_idx ],
+                    ...  N events
+                ]
+
+            If the note is never hit, then the event will be
+            ::
+                [ time, (cursor_pos_x, cursor_pos_y), float(StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range), (np.nan, np.nan), hitobject_idx ]
+
+            If the tap doesn't hit anything, the event will be
+            ::
+                [ press_time, cursor_cor, np.nan, (np.nan, np.nan), np.nan ]
+        """
         pos_nothing_range = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
         neg_nothing_range = StdScoreData.neg_hit_range + StdScoreData.neg_hit_miss_range
 
@@ -179,6 +220,58 @@ class StdScoreData():
 
 
     @staticmethod
+    def get_velocity_jump_frames(replay_data, map_data):
+        """
+        Extracts frames of replay data associated with jumps 
+        A frame spans from halfway before the last note to halfway after current note
+
+        Parameters
+        ----------
+        replay_data : numpy.array
+            Replay data
+
+        map_data : numpy.array
+            Map data
+
+        Returns
+        -------
+        numpy.array
+        """
+        vel_times, vel_data = StdReplayMetrics.cursor_velocity(replay_data)
+        map_times = StdMapData.start_end_times(map_data)
+        frames = []
+
+        threshold_vel = vel_data[vel_data != np.inf][int(len(vel_data)*0.8)]
+        #vel_data = np.convolve(vel_data, np.ones(3, dtype=float)/3, 'valid')
+
+        for idx in range(1, len(map_times)):
+            # Frame start and end
+            time_start, time_end = map_times[idx - 1][-1], map_times[idx][0]
+
+            # If it's a slider, expand the frame back a bit
+            # Sliders have some leniency allowing the player to leave it before it's fully finished
+            # There is a time when it's optimal to leave the slider based on OD (values are fudged for now,
+            # but do approach circle OD calc later). 
+            if map_times[idx - 1][0] != map_times[idx - 1][-1]:
+                time_start -= min((map_times[idx - 1][-1] - map_times[idx - 1][0])*0.5, 50)
+
+            # Get replay data mask spanning that time period
+            frame_mask = np.where(np.logical_and(time_start <= vel_times, vel_times <= time_end))[0]
+
+            vel_frame = vel_data[frame_mask]
+            if np.all(vel_frame < threshold_vel):
+                continue
+
+            time_frame = vel_times[frame_mask]
+            #time_frame = time_frame - time_frame[0]
+
+            frames.append([ time_frame, vel_frame ])
+
+        return np.asarray(frames)
+
+
+
+    @staticmethod
     def press_interval_mean(score_data):
         # TODO need to put in release offset into score_data
         # TODO need to go through hitobjects and filter out hold notes
@@ -188,6 +281,18 @@ class StdScoreData():
 
     @staticmethod
     def tap_offset_mean(score_data):
+        """
+        Average of tap offsets
+
+        Parameters
+        ----------
+        score_data : numpy.array
+            Score data
+
+        Returns
+        -------
+        float
+        """
         hit_offsets = score_data[:, StdScoreDataEnums.HIT_OFFSET.value]
         
         hit_offsets[hit_offsets == float('inf')]  = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
@@ -199,6 +304,18 @@ class StdScoreData():
 
     @staticmethod
     def tap_offset_var(score_data):
+        """
+        Variance of tap offsets
+
+        Parameters
+        ----------
+        score_data : numpy.array
+            Score data
+
+        Returns
+        -------
+        float
+        """
         hit_offsets = score_data[:, StdScoreDataEnums.HIT_OFFSET.value]
         
         hit_offsets[hit_offsets == float('inf')]  = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
@@ -210,6 +327,18 @@ class StdScoreData():
 
     @staticmethod
     def tap_offset_stdev(score_data):
+        """
+        Standard deviation of tap offsets
+
+        Parameters
+        ----------
+        score_data : numpy.array
+            Score data
+
+        Returns
+        -------
+        float
+        """
         hit_offsets = score_data[:, StdScoreDataEnums.HIT_OFFSET.value]
         
         hit_offsets[hit_offsets == float('inf')]  = StdScoreData.pos_hit_range + StdScoreData.pos_hit_miss_range
@@ -221,6 +350,18 @@ class StdScoreData():
 
     @staticmethod
     def cursor_pos_offset_mean(score_data):
+        """
+        Average of cursor position offsets at moments the player tapped notes
+
+        Parameters
+        ----------
+        score_data : numpy.array
+            Score data
+
+        Returns
+        -------
+        float
+        """
         positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
         if not all(np.isnan(positions.flatten())):
             nan_mask = np.isnan(positions)
@@ -232,6 +373,18 @@ class StdScoreData():
 
     @staticmethod
     def cursor_pos_offset_var(score_data):
+        """
+        Variance of cursor position offsets at moments the player tapped notes
+
+        Parameters
+        ----------
+        score_data : numpy.array
+            Score data
+
+        Returns
+        -------
+        float
+        """
         positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
         if not all(np.isnan(positions.flatten())):
             nan_mask = np.isnan(positions)
@@ -243,6 +396,18 @@ class StdScoreData():
 
     @staticmethod
     def cursor_pos_offset_stdev(score_data):
+        """
+        Standard deviation of cursor position offsets at moments the player tapped notes
+
+        Parameters
+        ----------
+        score_data : numpy.array
+            Score data
+
+        Returns
+        -------
+        float
+        """
         positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
         if not all(np.isnan(positions.flatten())):
             nan_mask = np.isnan(positions)
@@ -258,9 +423,20 @@ class StdScoreData():
         Creates a gaussian distribution model using avg and var of tap offsets and calculates the odds that some hit
         is within the specified offset
 
-        Returns: probability one random value [X] is between -offset <= X <= offset
-                 TL;DR: look at all the hits for scores; What are the odds of you picking 
-                        a random hit that is between -offset and offset?
+        Parameters
+        ----------
+        score_data : numpy.array
+            Score data
+
+        offset : float
+            Tap offset (ms) to determine odds for
+
+        Returns
+        -------
+        float
+            Probability one random value ``[X]`` is between ``-offset <= X <= offset``.
+            In simpler terms, look at all the hits for scores; What are the odds 
+            of you picking a random hit that is between ``-offset`` and ``offset``?
         """
         mean  = StdScoreData.tap_offset_mean(score_data)
         stdev = StdScoreData.tap_offset_stdev(score_data)
@@ -277,10 +453,21 @@ class StdScoreData():
         Creates a 2D gaussian distribution model using avg and var of cursor 2D position offsets and uses it to calculates the odds 
         that some cursor position is within the specified distance from the center of any hitobject
 
-        Returns: probability one random value [X, Y] is between (-offset, -offset) <= (X, Y) <= (offset, offset)
-                 TL;DR: look at all the cursor positions for score; What are the odds of you picking a random hit that has 
-                        a cursor position between an area of (-offset, -offset) and (offset, offset)?
-        """        
+        Parameters
+        ----------
+        score_data : numpy.array
+            Score data
+
+        offset : float
+            Tap offset (ms) to determine odds for
+
+        Returns
+        -------
+        float
+            Probability one random value ``[X, Y]`` is between ``(-offset, -offset) <= (X, Y) <= (offset, offset)``.
+            In simpler terms, look at all the cursor positions for score; What are the odds of you picking a random hit that has 
+            a cursor position between an area of ``(-offset, -offset)`` and ``(offset, offset)``?
+        """ 
         positions = np.stack(score_data[:, StdScoreDataEnums.POS_OFFSET.value], axis=0)
         if not all(np.isnan(positions.flatten())):
             nan_mask = np.isnan(positions)
@@ -300,37 +487,74 @@ class StdScoreData():
         return prob_less_than_pos - prob_less_than_neg
 
 
-    """
-    Creates a gaussian distribution model using avg and var of tap offsets and calculates the odds that all hits
-    are within the specified offset
-
-    Returns: probability all random values [X] are between -offset <= X <= offset
-             TL;DR: look at all the hits for scores; What are the odds all of them are between -offset and offset?
-    """
     @staticmethod
     def odds_all_tap_within(score_data, offset):
+        """
+        Creates a gaussian distribution model using avg and var of tap offsets and calculates the odds that all hits
+        are within the specified offset
+
+        Parameters
+        ----------
+        score_data : numpy.array
+            Score data
+
+        offset : float
+            Tap offset (ms) to determine odds for
+
+        Returns
+        ------- 
+        float
+            Probability all random values ``[X]`` are between ``-offset <= X <= offset``.
+            In simpler terms, look at all the hits for scores; What are the odds all of them are between -offset and offset?
+        """
         return StdScoreData.odds_some_tap_within(score_data, offset)**len(score_data)
 
 
-    """
-    Creates a 2D gaussian distribution model using avg and var of cursor 2D position offsets and uses it to calculates the odds 
-    that all cursor positions are within the specified distance from the center of all hitobject
-
-    Returns: probability all random values {[X, Y], ...} are between (-offset, -offset) <= (X, Y) <= (offset, offset)
-             TL;DR: look at all the cursor positions for score; What are the odds all of them are between an area 
-                    of (-offset, -offset) and (offset, offset)?
-    """
     @staticmethod
-    def odds_all_cursor_within(score_data, offset):
+    def odds_all_cursor_within(score_data, offset):    
+        """
+        Creates a 2D gaussian distribution model using avg and var of cursor 2D position offsets and uses it to calculates the odds 
+        that all cursor positions are within the specified distance from the center of all hitobject
+
+        Parameters
+        ----------
+        score_data : numpy.array
+            Score data
+
+        offset : float
+            Tap offset (ms) to determine odds for
+
+        Returns
+        -------
+        float
+            Probability all random values ``{[X, Y], ...}`` are between ``(-offset, -offset) <= (X, Y) <= (offset, offset)``
+            In simpler terms, look at all the cursor positions for score; What are the odds all of them are between an area 
+            of ``(-offset, -offset)`` and ``(offset, offset)``?
+        """
         return StdScoreData.odds_some_cursor_within(score_data, offset)**len(score_data)
 
 
-    """
-    Creates gaussian distribution models using tap offsets and cursor offsets for hits. That is used to calculate the odds
-    of the player consistently tapping and aiming within those boundaries for the entire play. Be weary of survivorship bias.
-    """
     @staticmethod
     def odds_all_conditions_within(score_data, tap_offset, cursor_offset):
+        """
+        Creates gaussian distribution models using tap offsets and cursor offsets for hits. That is used to calculate the odds
+        of the player consistently tapping and aiming within those boundaries for the entire play. Be weary of survivorship bias.
+
+        Parameters
+        ----------
+        score_data : numpy.array
+            Score data
+
+        tap_offset : float
+            Tap offset (ms) to determine odds for
+
+        cursor_offset : float
+            Cursor offset (ms) to determine odds for
+
+        Returns
+        -------
+        float
+        """
         odds_all_tap_within    = StdScoreData.odds_all_tap_within(score_data, tap_offset)
         odds_all_cursor_within = StdScoreData.odds_all_cursor_within(score_data, cursor_offset)
 
