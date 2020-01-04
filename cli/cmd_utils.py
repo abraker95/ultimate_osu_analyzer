@@ -55,15 +55,10 @@ class CmdUtils():
 
 
     @staticmethod
-    def export_csv(name, data):
-        data = np.asarray(data)
-        if len(data) < 1: return
-        
-        size = len(data)
-        csv_data  = ''
+    def export_csv(filepath, data):
+        np.savetxt(filepath, data.T, delimiter=',', newline='\n')
 
-        for i in range(size):
-             csv_data += ','.join([ str(x) for x in data[i,:] ]) + '\n'
 
-        with open(name + '.txt', 'w') as csv_file:
-            csv_file.write(csv_data)
+    @staticmethod
+    def import_csv(filepath):
+        return np.loadtxt(open(filepath, 'rb'), delimiter=",", skiprows=0)
