@@ -11,13 +11,13 @@ from analysis.osu.std.map_data import StdMapData
 
 
 class StdMapMetrics():
-
     """
-    Class used for pattern recognition, calculating pattern attributes, and difficulty.
+    Class used for calculating pattern attributes and difficulty.
 
     .. warning::
         Undocumented functions in this class are not supported and are experimental.
     """
+
     @staticmethod
     def calc_tapping_intervals(hitobject_data=[]):
         """

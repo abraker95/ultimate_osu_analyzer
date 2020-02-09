@@ -497,7 +497,6 @@ class MainWindow(QMainWindow):
             RuntimeError('Unsupported gamemode')
         
         self.add_graph_2d_data('replay hit offsets', (times, offsets), temporal=True, plot_type=Data2DGraph.SCATTER_PLOT)
-
         self.status_bar.showMessage('Created replay hit offsets graph. Check graphs tab.')
 
 

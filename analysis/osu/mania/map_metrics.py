@@ -74,6 +74,24 @@ class ManiaMapMetrics():
 
     @staticmethod
     def calc_notes_per_sec(hitobject_data, column=None):
+        """
+        Gets average note rate with window of 1 second throughout the beatmap in the specified ``column``
+
+        Parameters
+        ----------
+        hitobject_data : numpy.array
+            Hitobject data from ``ManiaMapData.get_hitobject_data``
+
+        column : int
+            Which column number to get average note rate for. If left blank, interprets all columns as one.
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(start_times, notes_per_sec)``. ``start_times`` are timings corresponding to start of notes. 
+            ``notes_per_sec`` are average note rates at ``start_times`` point in time. Resultant array size is 
+            ``len(hitobject_data) - 1``.
+        """
         if column == None:
             start_times = ManiaMapData.start_times(hitobject_data)
             mask, filtered_start_times, processed_start_times = NumpyUtils.mania_chord_to_jack(start_times)
@@ -88,4 +106,3 @@ class ManiaMapMetrics():
             if len(start_times) < 2: return [], []
             intervals = 1000/np.diff(start_times)
         
-            return start_times[1:], intervals
