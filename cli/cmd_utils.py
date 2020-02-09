@@ -56,9 +56,9 @@ class CmdUtils():
 
     @staticmethod
     def export_csv(filepath, data):
-        np.savetxt(filepath, data.T, delimiter=',', newline='\n')
+        np.savetxt(filepath, np.asarray(data).T, delimiter=',', newline='\n')
 
 
     @staticmethod
     def import_csv(filepath):
-        return np.loadtxt(open(filepath, 'rb'), delimiter=",", skiprows=0)
+        return np.loadtxt(open(filepath, 'rb'), delimiter=',', skiprows=0)
