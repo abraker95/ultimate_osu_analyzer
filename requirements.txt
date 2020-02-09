@@ -6,3 +6,5 @@ osrparse
 pyqt5
 qtconsole
 requests
+sphinx
+sphinx-rtd-theme
