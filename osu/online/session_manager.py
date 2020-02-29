@@ -43,6 +43,9 @@ class SessionMgr(requests.Session):
         self.xsrf_token  = response.cookies['XSRF-TOKEN']
         self.osu_session = response.cookies['osu_session']
 
+        if self.xsrf_token == None:
+            raise Exception('xsrf_token is None')
+
         self._logged_in = True
 
 
