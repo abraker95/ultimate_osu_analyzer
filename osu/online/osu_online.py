@@ -17,13 +17,22 @@ class OsuOnline():
 
     @staticmethod
     @rate_limited(rate_limit=0.5)
-    def fetch_beatmap_file(beatmap_id, strio=False):
+    def fetch_beatmap_file(beatmap_id, strio=False, ret_name=False):
         url      = 'https://osu.ppy.sh/osu/' + str(beatmap_id)
         response = urllib.request.urlopen(url)
         data     = response.read()
         
-        if not strio: return data.decode('utf-8')
-        else:         return io.StringIO(data.decode('utf-8'))
+        if not ret_name:
+            if not strio: return data.decode('utf-8')
+            else:         return io.StringIO(data.decode('utf-8'))
+
+        name = response.info().get_filename()
+        if name == None:
+            print('Beatmap does not exist!')
+            return
+
+        if not strio: return name[1:].split('.')[0], data.decode('utf-8')
+        else:         return name[1:].split('.')[0], io.StringIO(data.decode('utf-8'))
 
 
     @staticmethod
