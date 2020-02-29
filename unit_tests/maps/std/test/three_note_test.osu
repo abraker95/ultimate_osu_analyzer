@@ -1,0 +1,61 @@
+osu file format v14
+
+[General]
+AudioFilename: audio.mp3
+AudioLeadIn: 0
+PreviewTime: -1
+Countdown: 1
+SampleSet: Normal
+StackLeniency: 0.7
+Mode: 0
+LetterboxInBreaks: 0
+WidescreenStoryboard: 1
+
+[Editor]
+DistanceSpacing: 1.2
+BeatDivisor: 8
+GridSize: 32
+TimelineZoom: 1.5
+
+[Metadata]
+Title:Candy Luv
+TitleUnicode:Candy Luv
+Artist:IAHN
+ArtistUnicode:IAHN
+Creator:abraker
+Version:targeting_test
+Source:
+Tags:
+BeatmapID:0
+BeatmapSetID:-1
+
+[Difficulty]
+HPDrainRate:5
+CircleSize:4
+OverallDifficulty:5
+ApproachRate:10
+SliderMultiplier:1.4
+SliderTickRate:1
+
+[Events]
+//Background and Video events
+//Break Periods
+//Storyboard Layer 0 (Background)
+//Storyboard Layer 1 (Fail)
+//Storyboard Layer 2 (Pass)
+//Storyboard Layer 3 (Foreground)
+//Storyboard Sound Samples
+
+[TimingPoints]
+-431,1000,4,1,0,100,1,0
+0,-200,4,1,0,100,0,0
+15692,-66.6666666666667,4,1,0,100,0,0
+15807,-66.6666666666667,4,1,0,5,0,0
+16154,-100,4,1,0,100,0,0
+17538,-66.6666666666667,4,1,0,100,0,0
+29538,-133.333333333333,4,1,0,100,0,0
+
+
+[HitObjects]
+256,192,569,5,0,0:0:0:0:
+416,192,1194,1,0,0:0:0:0:
