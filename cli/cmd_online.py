@@ -1,4 +1,5 @@
 from osu.online.osu_online import OsuOnline
+from osu.online.osu_api import OsuApi
 from osu.online.structs.web_structs import *
 from osu.local.enums import MapStatus
 
