@@ -20,8 +20,8 @@ class OsuApi():
     '''
     Returns the LZMA stream containing the cursor and key data, not the full *.osr file
     '''
-    @rate_limited(rate_limit=10)
     @staticmethod
+    @rate_limited(rate_limit=10)
     def fetch_replay_stream(user_name, beatmap_id, gamemode):
         param = []
         param.append('k=' + str(api_key))
@@ -41,8 +41,8 @@ class OsuApi():
             raise Exception(error['error'])
 
     
-    @rate_limited(rate_limit=0.1)
     @staticmethod
+    @rate_limited(rate_limit=0.1)
     def fetch_beatmap_info(beatmap_id):
         param = []
         param.append('k=' + str(api_key))
@@ -55,8 +55,8 @@ class OsuApi():
         return json.loads(data.decode('utf-8'))
 
 
-    @rate_limited(rate_limit=0.1)
     @staticmethod
+    @rate_limited(rate_limit=0.1)
     def fetch_score_info(beatmap_id, user_name=None, gamemode=None, mods=None):
         param = []
         param.append('k=' + str(api_key))
@@ -74,8 +74,8 @@ class OsuApi():
 
 
     # Thanks https://github.com/Xferno2/CSharpOsu/blob/master/CSharpOsu/CSharpOsu.cs
-    @rate_limited(rate_limit=3)
     @staticmethod
+    @rate_limited(rate_limit=3)
     def fetch_replay_file(user_name, beatmap_id, gamemode, mods):
         replay_data  = OsuApi.fetch_replay_stream(user_name, beatmap_id, gamemode)
         beatmap_info = OsuApi.fetch_beatmap_info(beatmap_id)[0]
