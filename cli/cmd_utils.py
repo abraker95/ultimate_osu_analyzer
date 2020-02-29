@@ -55,6 +55,18 @@ class CmdUtils():
 
 
     @staticmethod
+    def run_script(filepath, globals=None, locals=None):
+        if globals is None: globals = {}
+        globals.update({
+            '__file__': filepath,
+            '__name__': '__main__',
+        })
+
+        with open(filepath, 'rb') as file:
+            exec(compile(file.read(), filepath, 'exec'), globals, locals)
+
+
+    @staticmethod
     def export_csv(filepath, data):
         np.savetxt(filepath, np.asarray(data).T, delimiter=',', newline='\n')
 
