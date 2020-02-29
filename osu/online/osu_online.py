@@ -25,6 +25,16 @@ class OsuOnline():
         if not strio: return data.decode('utf-8')
         else:         return io.StringIO(data.decode('utf-8'))
 
+
+    @staticmethod
+    @rate_limited(rate_limit=0.5)
+    def fetch_beatmap_name(beatmap_id):
+        url      = 'https://osu.ppy.sh/osu/' + str(beatmap_id)
+        response = urllib.request.urlopen(url)
+        name     = response.info().get_filename()
+        
+        return name[1:].split('.')[0]
+
     
     @staticmethod
     @rate_limited(rate_limit=3)
