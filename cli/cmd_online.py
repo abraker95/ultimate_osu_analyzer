@@ -25,7 +25,8 @@ class CmdOnline():
 
     @staticmethod
     def get_scores_api(beatmap_id, mode, mods, name=None):
-        return OsuApi.fetch_score_info(beatmap_id, gamemode=mode, mods=mods)
+        if name == None: name = OsuOnline.fetch_beatmap_name(beatmap_id)
+        return [ APIv1Score(name, mode, score) for score in OsuApi.fetch_score_info(beatmap_id, gamemode=mode, mods=mods) ]
 
 
     @staticmethod
