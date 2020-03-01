@@ -13,7 +13,7 @@ class CmdOnline():
 
 
     @staticmethod
-    def get_beatmap(beatmap_id, mode):
+    def get_beatmap(beatmap_id):
         return OsuOnline.fetch_beatmap_file(beatmap_id, ret_name=True)
 
 
