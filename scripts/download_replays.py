@@ -17,6 +17,7 @@ class DownloadReplays():
 
 
     def run(self, beatmap_id):
+        self.create_dir('download')
         self.create_dir('download/osu')
         self.create_dir('download/osu/maps')
         self.create_dir('download/osu/replays')
