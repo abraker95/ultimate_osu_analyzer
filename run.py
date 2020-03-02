@@ -410,7 +410,7 @@ class MainWindow(QMainWindow):
         pass
 
 
-    def tick(self, ms_sleep):
+    def tick(self, ms_sleep=0.1):
         QApplication.instance().processEvents()
         time.sleep(min(ms_sleep, 0.1))
 
