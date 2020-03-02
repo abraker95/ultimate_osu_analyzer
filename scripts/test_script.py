@@ -10,8 +10,8 @@ Now try:
 All variables accessable in the embedded console are accessible here. Even ones you declared
 right before loading the script!
 
-It is recommemded to create your script as a class to lower chances there might be conflicts in
-variable names. If there are, you may accidently overwrite or use an unintended variable.
+It is recommended to create your script as a class to lower chances there might be conflicts in
+variable names. If there are, you may accidentally overwrite or use an unintended variable.
 '''
 class TestScript():
 
