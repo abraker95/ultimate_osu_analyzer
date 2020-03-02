@@ -68,7 +68,7 @@ class CmdUtils():
 
     @staticmethod
     def export_csv(filepath, data):
-        np.savetxt(filepath, np.asarray(data).T, delimiter=',', newline='\n')
+        np.savetxt(filepath, np.asarray(data).T, delimiter=',', newline='\n', fmt='%f')
 
 
     @staticmethod
