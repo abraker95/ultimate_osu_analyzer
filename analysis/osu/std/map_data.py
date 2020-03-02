@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import itertools
 
 from osu.local.hitobject.hitobject import Hitobject
