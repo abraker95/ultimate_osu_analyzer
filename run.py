@@ -176,6 +176,9 @@ class MainWindow(QMainWindow):
         self.ipython_console.execute_command('import matplotlib.pyplot as plt')
         self.ipython_console.execute_command('np.set_printoptions(suppress=True)')
 
+        self.ipython_console.push_vars({ 'BeatmapIO' : BeatmapIO })
+        self.ipython_console.push_vars({ 'ReplayIO' : ReplayIO })
+
         self.ipython_console.push_vars({ 'timeline' : self.timeline })
         self.ipython_console.push_vars({ 'get_beatmap' : self.map_manager.get_current_map })
         self.ipython_console.push_vars({ 'get_replays' : lambda: self.replay_manager_switch_gui.get().get_replay_data() })
