@@ -176,6 +176,8 @@ class MainWindow(QMainWindow):
         self.ipython_console.execute_command('import matplotlib.pyplot as plt')
         self.ipython_console.execute_command('np.set_printoptions(suppress=True)')
 
+        self.ipython_console.push_vars({ 'tick' : self.tick })
+
         self.ipython_console.push_vars({ 'BeatmapIO' : BeatmapIO })
         self.ipython_console.push_vars({ 'ReplayIO' : ReplayIO })
 
@@ -406,6 +408,11 @@ class MainWindow(QMainWindow):
     def remove_layer(self, name):
         # TODO
         pass
+
+
+    def tick(self, ms_sleep):
+        QApplication.instance().processEvents()
+        time.sleep(min(ms_sleep, 0.1))
 
 
     def set_scene(self, old_layer_mgr, new_layer_mgr):
