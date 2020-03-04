@@ -99,8 +99,7 @@ class Replay(osrparse.replay.Replay):
             while replay_data[self.offset] != 0x00: 
                 self.offset += Replay.__BYTE
             
-            self.offset += Replay.__BYTE
-            return replay_data[begin : self.offset-2].decode("utf-8")
+            return replay_data[begin : self.offset - 1].decode("utf-8")
         
         elif replay_data[self.offset] == 0x0b:
             self.offset += Replay.__BYTE
