@@ -1,6 +1,5 @@
 import os
 import pyqtgraph as pygraph
-from pyqtgraph.Qt import QtGui, QtCore
 
 
 class SolveHitoffsets():
