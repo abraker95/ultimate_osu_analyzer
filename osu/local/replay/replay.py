@@ -90,6 +90,19 @@ class Replay(osrparse.replay.Replay):
         return self.play_data[idx_start : idx_end]
 
 
+    def parse_life_bar_graph(self, replay_data):
+        # Apperently there is a special exception if life bar data is blank
+        if replay_data[self.offset] == 0x0B:
+            self.life_bar_graph = self.parse_string(replay_data)
+        else:
+            self.offset += Replay.__BYTE
+
+        # I don't even... 
+        # A replay that's missing game version number is weird, but
+        # until I come across another case like this that doesn't work,
+        # this is to allow the Leaf - I replay to load
+        if self.game_version == 0:
+            self.offset += Replay.__BYTE
     # Because the library's parse_string is dun goofed
     # See https://github.com/kszlim/osu-replay-parser/issues/17
     def parse_string(self, replay_data):
@@ -99,7 +112,8 @@ class Replay(osrparse.replay.Replay):
             while replay_data[self.offset] != 0x00: 
                 self.offset += Replay.__BYTE
             
-            return replay_data[begin : self.offset - 1].decode("utf-8")
+            self.offset += Replay.__BYTE
+            return replay_data[begin : self.offset - 2].decode("utf-8")
         
         elif replay_data[self.offset] == 0x0b:
             self.offset += Replay.__BYTE
