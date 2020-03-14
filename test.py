@@ -30,18 +30,18 @@ if __name__ == '__main__':
     CallbackTest.run_tests()
 
     print('Running beatmap loading test mania . . .')
-    BeatmapTests.test_beatmap_loading_mania('unit_tests\\maps\\Camellia - GHOST (qqqant) [Collab PHANTASM [MX]].osu')
+    BeatmapTests.test_beatmap_loading_mania('unit_tests\\maps\\mania\\playable\\Camellia - GHOST (qqqant) [Collab PHANTASM [MX]].osu')
     print('OK\n\n')
 
     print('Running beatmap loading test std . . .')
-    BeatmapTests.test_beatmap_loading_std('unit_tests\\maps\\Mutsuhiko Izumi - Red Goose (nold_1702) [ERT Basic].osu')
+    BeatmapTests.test_beatmap_loading_std('unit_tests\\maps\\std\\playable\\Mutsuhiko Izumi - Red Goose (nold_1702) [ERT Basic].osu')
     print('OK\n\n')
 
     print('Running std hitobject visibility test . . .')
     # BeatmapTests.test_hitobject_visibility_std()
     print('OK\n\n')
 
-    display_test = DisplayTest(app, 'unit_tests\\maps\\Mutsuhiko Izumi - Red Goose (nold_1702) [ERT Basic].osu')
+    display_test = DisplayTest(app, 'unit_tests\\maps\\std\\playable\\Mutsuhiko Izumi - Red Goose (nold_1702) [ERT Basic].osu')
     display_test.switcher_test()
     display_test.time_browse_test(app)
     display_test.close()
