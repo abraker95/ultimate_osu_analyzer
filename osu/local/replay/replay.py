@@ -127,7 +127,7 @@ class Replay(osrparse.replay.Replay):
 
         else:
             #TODO: Replace with custom exception
-            raise Exception("Invalid replay")
+            raise Exception(f'Invalid replay\noffset: {self.offset}\nData: {replay_data[self.offset]}')
 
 
     # Because library didn't update to include ScoreV2 mod
