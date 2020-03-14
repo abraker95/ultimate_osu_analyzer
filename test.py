@@ -8,6 +8,7 @@ from PyQt5.QtGui import *
 from unit_tests.callback_test import CallbackTest
 from unit_tests.beatmap_tests import BeatmapTests
 from unit_tests.replay_read_tests import ReplayReadTests
+from unit_tests.collection_tests import CollectionTests
 from unit_tests.temporal_graph_test import TemporalGraphTest
 from unit_tests.graph_manager_test import GraphManagerTest
 from unit_tests.manager_switch_test import ManagerSwitchTest
@@ -40,6 +41,10 @@ if __name__ == '__main__':
 
     print('Running std hitobject visibility test . . .')
     # BeatmapTests.test_hitobject_visibility_std()
+    print('OK\n\n')
+
+    print('Running collection loading test . . .')
+    CollectionTests.test_collection_loading('unit_tests\\collections\\collection.db')
     print('OK\n\n')
 
     print('Running replay loading test . . .')
