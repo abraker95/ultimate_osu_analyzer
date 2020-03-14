@@ -7,6 +7,7 @@ from PyQt5.QtGui import *
 
 from unit_tests.callback_test import CallbackTest
 from unit_tests.beatmap_tests import BeatmapTests
+from unit_tests.replay_read_tests import ReplayReadTests
 from unit_tests.temporal_graph_test import TemporalGraphTest
 from unit_tests.graph_manager_test import GraphManagerTest
 from unit_tests.manager_switch_test import ManagerSwitchTest
@@ -41,6 +42,15 @@ if __name__ == '__main__':
     # BeatmapTests.test_hitobject_visibility_std()
     print('OK\n\n')
 
+    print('Running replay loading test . . .')
+    ReplayReadTests.test_replay_loading('unit_tests\\replays\\agility_test.osr')
+    ReplayReadTests.test_replay_loading('unit_tests\\replays\\abraker - Mutsuhiko Izumi - Red Goose [ERT Basic] (2019-08-24) Osu.osr')
+    ReplayReadTests.test_replay_loading('unit_tests\\replays\\LeaF - I (Maddy) [Terror] replay_0.osr')
+    ReplayReadTests.test_replay_loading('unit_tests\\replays\\so bad - Nakamura Meiko - Aka no Ha [Extra] (2020-03-01) std Osu.osr')
+    ReplayReadTests.test_replay_loading('unit_tests\\replays\\so bad - Nakamura Meiko - Aka no Ha [Extra] (2020-03-01) std ripple.osr')
+    ReplayReadTests.test_replay_loading('unit_tests\\replays\\osu!topus! - DJ Genericname - Dear You [S.Star\'s 4K HD+] (2019-05-29) OsuMania.osr')
+    ReplayReadTests.test_replay_loading('unit_tests\\replays\\Toy - Within Temptation - The Unforgiving [Marathon] (2018-02-06) Osu.osr')
+    print('OK\n\n')
     display_test = DisplayTest(app, 'unit_tests\\maps\\std\\playable\\Mutsuhiko Izumi - Red Goose (nold_1702) [ERT Basic].osu')
     display_test.switcher_test()
     display_test.time_browse_test(app)
