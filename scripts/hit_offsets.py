@@ -22,6 +22,8 @@ class HitOffsets():
         # Scatter plot showing hits
         hit_offset_scatter_plot = win.addPlot(title='Hits scatterplot')
         hit_offset_scatter_plot.addLine(x=None, y=0, pen=pyqtgraph.mkPen('r', width=1))
+        hit_offset_scatter_plot.setLabel('left', 'Hit offset', units='ms', unitPrefix='')
+        hit_offset_scatter_plot.setLabel('bottom', 'Time since start', units='ms', unitPrefix='')
 
         scatter_data_plot = hit_offset_scatter_plot.plot()
         scatter_data_plot.setData(timing_data, hitoffset_data, pen=None, symbol='o', symbolPen=None, symbolSize=2, symbolBrush=(100, 100, 255, 200))
@@ -37,6 +39,8 @@ class HitOffsets():
         pdf  = vec_normal_distr(hits, avg, std)
 
         hit_offset_model_plot = win.addPlot(title='Hits distribution')
+        hit_offset_model_plot.setLabel('left', '# of hits', units='', unitPrefix='')
+        hit_offset_model_plot.setLabel('bottom', 'Hit offset', units='ms', unitPrefix='')
 
         freqs = pyqtgraph.pseudoScatter(np.hstack(hitoffset_data), spacing=1)
         hit_offset_distr_plot = hit_offset_model_plot.plot()
