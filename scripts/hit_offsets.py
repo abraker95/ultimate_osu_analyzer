@@ -4,17 +4,19 @@ import pyqtgraph
 
 class HitOffsets():
 
-    def run(self):
+    def run(self, replay=None):
+        replay_idx = 0 if replay==None else replay
+
         # Data extraction
         map_data    = StdMapData.get_aimpoint_data(get_beatmap().hitobjects)
-        replay_data = get_replay_data()[0]
+        replay_data = get_replay_data()[replay_idx]
         score_data  = StdScoreData.get_score_data(replay_data, map_data)
 
         timing_data    = score_data[:, 0]
         hitoffset_data = score_data[:, 2]
 
         # GFX
-        win = pyqtgraph.GraphicsWindow(title=get_beatmap().metadata.name + ' ' + get_replays()[0].get_name())
+        win = pyqtgraph.GraphicsWindow(title=get_beatmap().metadata.name + ' ' + get_replays()[replay_idx].get_name())
         win.resize(1000, 600)
 
         # Scatter plot showing hits
