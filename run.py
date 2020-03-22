@@ -183,7 +183,8 @@ class MainWindow(QMainWindow):
 
         self.ipython_console.push_vars({ 'timeline' : self.timeline })
         self.ipython_console.push_vars({ 'get_beatmap' : self.map_manager.get_current_map })
-        self.ipython_console.push_vars({ 'get_replays' : lambda: self.replay_manager_switch_gui.get().get_replay_data() })
+        self.ipython_console.push_vars({ 'get_replays' : lambda: self.replay_manager_switch_gui.get().get_replays() })
+        self.ipython_console.push_vars({ 'get_replay_data' : lambda: self.replay_manager_switch_gui.get().get_replay_data() })
 
         self.ipython_console.push_vars({ 'add_std_layer'     : self.add_std_layer })
         self.ipython_console.push_vars({ 'add_mania_layer'   : self.add_mania_layer })

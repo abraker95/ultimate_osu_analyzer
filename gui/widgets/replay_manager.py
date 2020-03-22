@@ -133,6 +133,13 @@ class ReplayManager(QWidget):
 
         return [ self.replay_list.topLevelItem(i).get_replay_data() for i in range(start, end) ]
 
+    
+    def get_replays(self, start=None, end=None):
+        start = max(0, start) if start != None else 0
+        end   = min(self.replay_list.topLevelItemCount(), end) if end != None else self.replay_list.topLevelItemCount()
+
+        return [ self.replay_list.topLevelItem(i).replay for i in range(start, end) ]
+
 
     def __right_click_menu(self, pos):
         selected = self.replay_list.selectedItems()
