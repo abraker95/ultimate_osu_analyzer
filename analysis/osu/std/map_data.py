@@ -88,7 +88,7 @@ class StdMapData():
                 aimpoint_bx, aimpoint_by = aimpoints[0][-1][0], aimpoints[0][-1][1]
                 
                 dist = math.sqrt((aimpoint_bx - aimpoint_ax)**2 - (aimpoint_by - aimpoint_ay)**2)
-                if dist < 50: aimpoints = aimpoints[:-1]
+                #if dist < 50: aimpoints = aimpoints[:-1]
 
             if len(aimpoints) > 0: yield aimpoints
 

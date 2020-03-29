@@ -53,6 +53,7 @@ from gui.widgets.mania_settings import ManiaSettingsGui
 
 from analysis.osu.std.map_data import StdMapData
 from analysis.osu.std.map_metrics import StdMapMetrics
+from analysis.osu.std.map_patterns import StdMapPatterns
 from analysis.osu.std.replay_data import StdReplayData
 from analysis.osu.std.replay_metrics import StdReplayMetrics
 from analysis.osu.std.score_data import StdScoreData, StdScoreDataEnums
@@ -192,6 +193,7 @@ class MainWindow(QMainWindow):
 
         self.ipython_console.push_vars({ 'StdMapData'       : StdMapData })
         self.ipython_console.push_vars({ 'StdMapMetrics'    : StdMapMetrics })
+        self.ipython_console.push_vars({ 'StdMapPatterns'   : StdMapPatterns })
         self.ipython_console.push_vars({ 'StdReplayData'    : StdReplayData })
         self.ipython_console.push_vars({ 'StdReplayMetrics' : StdReplayMetrics })
         self.ipython_console.push_vars({ 'StdScoreData'     : StdScoreData })
