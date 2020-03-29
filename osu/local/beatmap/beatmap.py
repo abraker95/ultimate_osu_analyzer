@@ -205,7 +205,7 @@ class Beatmap():
 
     
     def set_cs_px(self, px):
-        self.difficulty.cs = Osu.px_to_cs(px)
+        self.difficulty.cs = Std.px_to_cs(px)
 
 
     def get_cs_val(self):
@@ -213,7 +213,7 @@ class Beatmap():
 
 
     def get_cs_px(self):
-        return Osu.cs_to_px(self.difficulty.cs)
+        return Std.cs_to_px(self.difficulty.cs)
 
 
     def set_ar_val(self, ar):
@@ -222,7 +222,7 @@ class Beatmap():
 
 
     def set_ar_ms(self, ms):
-        self.difficulty.ar = Osu.ms_to_ar(ms)
+        self.difficulty.ar = Std.ms_to_ar(ms)
         #self.ar_changed.emit()
 
 
@@ -231,7 +231,7 @@ class Beatmap():
 
 
     def get_ar_ms(self):
-        return Osu.ar_to_ms(self.difficulty.ar)
+        return Std.ar_to_ms(self.difficulty.ar)
 
 
     def set_od_val(self, od):
