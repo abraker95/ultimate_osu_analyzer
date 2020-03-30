@@ -59,6 +59,7 @@ class StdMapData():
         """
         if std_hitobject.is_hitobject_type(Hitobject.CIRCLE):
             yield [ std_hitobject.time, np.asarray([ std_hitobject.pos.x, std_hitobject.pos.y ]), StdMapData.TYPE_PRESS ]
+            yield [ std_hitobject.time, np.asarray([ std_hitobject.pos.x, std_hitobject.pos.y ]), StdMapData.TYPE_RELEASE ]
         
         elif std_hitobject.is_hitobject_type(Hitobject.SLIDER):
             aimpoint_times = std_hitobject.get_aimpoint_times()
