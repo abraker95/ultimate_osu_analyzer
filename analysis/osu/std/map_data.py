@@ -21,6 +21,11 @@ class StdMapData():
 
     TIME = 0
     POS  = 1
+    TYPE = 2
+
+    TYPE_PRESS   = 0
+    TYPE_HOLD    = 1
+    TYPE_RELEASE = 2
 
     @staticmethod 
     def std_hitobject_to_aimpoints(std_hitobject):
@@ -53,44 +58,16 @@ class StdMapData():
             [ time, pos ] in the map data
         """
         if std_hitobject.is_hitobject_type(Hitobject.CIRCLE):
-            yield [ std_hitobject.time, (std_hitobject.pos.x, std_hitobject.pos.y) ]
+            yield [ std_hitobject.time, np.asarray([ std_hitobject.pos.x, std_hitobject.pos.y ]), StdMapData.TYPE_PRESS ]
         
         elif std_hitobject.is_hitobject_type(Hitobject.SLIDER):
-            for aimpoint_time in std_hitobject.get_aimpoint_times():
-                yield [ aimpoint_time, np.asarray([ std_hitobject.time_to_pos(aimpoint_time).x, std_hitobject.time_to_pos(aimpoint_time).y ]) ]
+            aimpoint_times = std_hitobject.get_aimpoint_times()
 
-    
-    @staticmethod
-    def std_hitobjects_to_aimpoints(std_hitobjects):
-        """
-        .. warning::
-            This function is not intended to be used directly
-
-        Converts a list of ``Hitobject`` types into a numpy array equivalent that can 
-        be used by the analysis framework.
-
-        Parameters
-        ----------
-        std_hitobjects : Hitobject
-            List of hitobjects to convert
-
-        Returns
-        -------
-        generator object
-            A complied list of aimpoints
-        """
-        for hitobject in std_hitobjects:
-            aimpoints = list(StdMapData.std_hitobject_to_aimpoints(hitobject))
-
-            # If last slider aimpoint is within a certain slider circle distance of first aimpoint, then filter out
-            if len(aimpoints) > 1:
-                aimpoint_ax, aimpoint_ay = aimpoints[0][1][0], aimpoints[0][1][1]
-                aimpoint_bx, aimpoint_by = aimpoints[0][-1][0], aimpoints[0][-1][1]
-                
-                dist = math.sqrt((aimpoint_bx - aimpoint_ax)**2 - (aimpoint_by - aimpoint_ay)**2)
-                #if dist < 50: aimpoints = aimpoints[:-1]
-
-            if len(aimpoints) > 0: yield aimpoints
+            yield [ aimpoint_times[0], np.asarray([ std_hitobject.time_to_pos(aimpoint_times[0]).x, std_hitobject.time_to_pos(aimpoint_times[0]).y ]), StdMapData.TYPE_PRESS ]
+            if len(aimpoint_times) > 2:
+                for aimpoint_time in aimpoint_times[1:-1]:
+                    yield [ aimpoint_time, np.asarray([ std_hitobject.time_to_pos(aimpoint_time).x, std_hitobject.time_to_pos(aimpoint_time).y ]), StdMapData.TYPE_HOLD ]
+            yield [ aimpoint_times[-1], np.asarray([ std_hitobject.time_to_pos(aimpoint_times[-1]).x, std_hitobject.time_to_pos(aimpoint_times[-1]).y ]), StdMapData.TYPE_RELEASE ]
 
 
     @staticmethod
@@ -112,22 +89,61 @@ class StdMapData():
         numpy.array
             Map data representing the following format:
             ::
-                [
-                    [ 
-                        [ time, pos ],
-                        [ time, pos ],
-                        ... N score points
-                    ],
-                    [ 
-                        [ time, pos ],
-                        [ time, pos ],
-                        ...  N score points
-                    ],
-                    ... N hitobjects
+                [ 
+                    [ time, pos, type ],
+                    [ time, pos, type ],
+                    ... N aimpoints
                 ]
-
         """
-        return np.asarray(list(StdMapData.std_hitobjects_to_aimpoints(std_hitobjects)))
+        return np.asarray([ aimpoint for hitobject in std_hitobjects for aimpoint in StdMapData.std_hitobject_to_aimpoints(hitobject) ])
+
+
+    @staticmethod
+    def get_presses(map_data):
+        """
+        Gets aimpoints associated with the player pressing a key
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to operate on
+        
+        Returns
+        -------
+        numpy.array
+            Map data representing the following format:
+            ::
+                [ 
+                    [ time, pos, type ],
+                    [ time, pos, type ],
+                    ... N aimpoints
+                ]
+        """
+        return map_data[map_data[:, StdMapData.TYPE] == StdMapData.TYPE_PRESS]
+
+
+    @staticmethod
+    def get_releases(map_data):
+        """
+        Gets aimpoints associated with the player releasing a key
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to operate on
+        
+        Returns
+        -------
+        numpy.array
+            Map data representing the following format:
+            ::
+                [ 
+                    [ time, pos, type ],
+                    [ time, pos, type ],
+                    ... N aimpoints
+                ]
+        """
+        return map_data[map_data[:, StdMapData.TYPE] == StdMapData.TYPE_RELEASE]
 
 
     @staticmethod
@@ -248,7 +264,7 @@ class StdMapData():
                 [ time, time, time, ... ]
             
         """
-        return np.asarray([ note[0][StdMapData.TIME] for note in map_data ])
+        return StdMapData.get_presses(map_data)[:, StdMapData.TIME]
 
 
     @staticmethod
@@ -272,7 +288,7 @@ class StdMapData():
                 [ time, time, time, ... ]
             
         """
-        return np.asarray([ note[-1][StdMapData.TIME] for note in map_data ])
+        return StdMapData.get_releases(map_data)[:, StdMapData.TIME]
 
 
     @staticmethod
@@ -297,7 +313,7 @@ class StdMapData():
                 ]
             
         """
-        return np.asarray([ note[0][StdMapData.POS] for note in map_data ])
+        return np.vstack(StdMapData.get_presses(map_data)[:, StdMapData.POS])
 
     
     @staticmethod
@@ -325,11 +341,11 @@ class StdMapData():
                 ]
             
         """
-        return np.asarray([ note[-1][StdMapData.POS] for note in map_data ])
+        return np.vstack(StdMapData.get_releases(map_data)[:, StdMapData.POS])
 
 
     @staticmethod
-    def all_positions(map_data, flat=True):
+    def all_positions(map_data):
         """
         Gets positions data for all hitobjects in the map
 
@@ -338,47 +354,22 @@ class StdMapData():
         map_data : numpy.array
             Map data to get position data for
 
-        flat : boolean
-            Whether to return as flat scorepoint data or preserve
-            hitobject information
-
         Returns
         -------
         numpy.array
-            If flat = True, returns numpy array of scorepoint positions
+            returns numpy array of scorepoint positions
             ::
                 [ 
                     [ pos_x, pos_y ], 
                     [ pos_x, pos_y ], 
                     ... 
                 ]
-
-            If flat = False, returns numpy array of list of scorepoint positions grouped by hitobject
-            ::
-                [ 
-                    list([
-                            [ scorepoint_x, scorepoint_y ],
-                            [ scorepoint_x, scorepoint_y ],
-                            ...
-                    ]),
-                    list([
-                            [ scorepoint_x, scorepoint_y ],
-                            [ scorepoint_x, scorepoint_y ],
-                            ...
-                    ]),
-                    ...,
-                    list([ (scorepoint_x, scorepoint_y) ]),
-                    list([ (scorepoint_x, scorepoint_y) ]),
-                    ...
-                ]
-            
         """
-        if flat: return np.asarray([ data[StdMapData.POS] for note in map_data for data in note ])
-        else:    return np.asarray([[data[StdMapData.POS] for data in note] for note in map_data])
+        return np.vstack(map_data[:, StdMapData.POS])
 
 
     @staticmethod
-    def all_times(map_data, flat=True):
+    def all_times(map_data):
         """
         Gets time data for all hitobjects in the map
 
@@ -387,31 +378,15 @@ class StdMapData():
         map_data : numpy.array
             Map data to get position data for
 
-        flat : boolean
-            Whether to return as flat scorepoint data or preserve
-            hitobject information
-
         Returns
         -------
         numpy.array
-            If flat = True, returns numpy array of scorepoint times
+            Returns numpy array of scorepoint times
             ::
                 [ time, time, time, ... ]
-
-            If flat = False, returns numpy array of list of scorepoint times grouped by hitobject
-            ::
-                [ 
-                    list([ time, time, ... ]),
-                    list([ time, time, ... ]),
-                    ...,
-                    list([ time ]),
-                    list([ time ]),
-                    ...
-                ]
             
         """
-        if flat: return np.asarray([ data[StdMapData.TIME] for note in map_data for data in note ])
-        else:    return np.asarray([[data[StdMapData.TIME] for data in note] for note in map_data])
+        return map_data[:, StdMapData.TIME]
 
     
     @staticmethod
@@ -439,8 +414,9 @@ class StdMapData():
                 Start and end times of hitcircles are the same
         
         """
-        all_times = StdMapData.all_times(map_data, flat=False)
-        return np.asarray([ (hitobject_times[0], hitobject_times[-1]) for hitobject_times in all_times ])
+        start_times = StdMapData.start_times(map_data)
+        end_times   = StdMapData.end_times(map_data)
+        return np.asarray(list(zip(start_times, end_times)))
 
 
     @staticmethod
@@ -491,9 +467,20 @@ class StdMapData():
         return min(max(0, np.searchsorted(times, [time], side='right')[0] - 1), len(times))
 
 
+    @staticmethod
+    def get_idx_start_time_2(map_data, time):
+        if not time: return None
+
+        times = np.asarray(StdMapData.start_times(map_data))
+        return np.where(times >= time)[0][0]
 
 
-
+    @staticmethod
+    def get_idx_end_time_2(map_data, time):
+        if not time: return None
+            
+        times = np.asarray(StdMapData.end_times(map_data))
+        return np.where(times >= time)[0][0]
 
 
 

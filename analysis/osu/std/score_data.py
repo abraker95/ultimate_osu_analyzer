@@ -121,18 +121,21 @@ class StdScoreData():
         curr_key_event_idx = 0
         score_data = []
 
-        # Go through each hitobject
-        for hitobject_idx in range(len(map_data)):
-            # Get first aimpoint in the hitobject
-            aimpoint_time, aimpoint_cor = map_data[hitobject_idx][0]
+        presses = StdMapData.get_presses(map_data)
 
+        # Go through each hitobject
+        for hitobject_idx in range(len(presses)):
+            # Get first aimpoint in the hitobject
+            aimpoint_time = presses[hitobject_idx][StdMapData.TIME]
+            aimpoint_cor  = presses[hitobject_idx][StdMapData.POS]
+            
             # To keep track of whether there was a tap that corresponded to this hitobject
             is_hitobject_consumed = False
 
             # Modify hit windows
             if StdScoreData.notelock:
                 # TODO:
-                prev_aimpoint_time, prev_aimpoint_cor = map_data[hitobject_idx - 1][0]
+                #prev_aimpoint_time, prev_aimpoint_cor = map_data[hitobject_idx - 1][0]
                 # neg 
                 # neg_miss_range = 
                 pass
