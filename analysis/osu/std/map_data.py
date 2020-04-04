@@ -20,8 +20,9 @@ class StdMapData():
     """
 
     TIME = 0
-    POS  = 1
-    TYPE = 2
+    POSX = 1
+    POSY = 2
+    TYPE = 3
 
     TYPE_PRESS   = 0
     TYPE_HOLD    = 1
@@ -48,9 +49,9 @@ class StdMapData():
             ::
 
                 [
-                    [ start_time, [ (scorepoint_x, scorepoint), ... ] ],
-                    [ start_time, [ (scorepoint_x, scorepoint), ... ] ],
-                    ...
+                    [ start_time, aimpoint_x, aimpoint_y, type ],
+                    [ start_time, aimpoint_x, aimpoint_y, type ],
+                    ... N aimpoints
                 ]
 
             Hitcircles contain only one scorepoint. Sliders can contain
@@ -58,17 +59,17 @@ class StdMapData():
             [ time, pos ] in the map data
         """
         if std_hitobject.is_hitobject_type(Hitobject.CIRCLE):
-            yield [ std_hitobject.time, np.asarray([ std_hitobject.pos.x, std_hitobject.pos.y ]), StdMapData.TYPE_PRESS ]
-            yield [ std_hitobject.time, np.asarray([ std_hitobject.pos.x, std_hitobject.pos.y ]), StdMapData.TYPE_RELEASE ]
+            yield [ std_hitobject.time, std_hitobject.pos.x, std_hitobject.pos.y, StdMapData.TYPE_PRESS ]
+            yield [ std_hitobject.time, std_hitobject.pos.x, std_hitobject.pos.y, StdMapData.TYPE_RELEASE ]
         
         elif std_hitobject.is_hitobject_type(Hitobject.SLIDER):
             aimpoint_times = std_hitobject.get_aimpoint_times()
 
-            yield [ aimpoint_times[0], np.asarray([ std_hitobject.time_to_pos(aimpoint_times[0]).x, std_hitobject.time_to_pos(aimpoint_times[0]).y ]), StdMapData.TYPE_PRESS ]
+            yield [ aimpoint_times[0], std_hitobject.time_to_pos(aimpoint_times[0]).x, std_hitobject.time_to_pos(aimpoint_times[0]).y, StdMapData.TYPE_PRESS ]
             if len(aimpoint_times) > 2:
                 for aimpoint_time in aimpoint_times[1:-1]:
-                    yield [ aimpoint_time, np.asarray([ std_hitobject.time_to_pos(aimpoint_time).x, std_hitobject.time_to_pos(aimpoint_time).y ]), StdMapData.TYPE_HOLD ]
-            yield [ aimpoint_times[-1], np.asarray([ std_hitobject.time_to_pos(aimpoint_times[-1]).x, std_hitobject.time_to_pos(aimpoint_times[-1]).y ]), StdMapData.TYPE_RELEASE ]
+                    yield [ aimpoint_time, std_hitobject.time_to_pos(aimpoint_time).x, std_hitobject.time_to_pos(aimpoint_time).y, StdMapData.TYPE_HOLD ]
+            yield [ aimpoint_times[-1], std_hitobject.time_to_pos(aimpoint_times[-1]).x, std_hitobject.time_to_pos(aimpoint_times[-1]).y, StdMapData.TYPE_RELEASE ]
 
 
     @staticmethod
@@ -91,8 +92,8 @@ class StdMapData():
             Map data representing the following format:
             ::
                 [ 
-                    [ time, pos, type ],
-                    [ time, pos, type ],
+                    [ time, aimpoint_x, aimpoint_y, type ],
+                    [ time, aimpoint_x, aimpoint_y, type ],
                     ... N aimpoints
                 ]
         """
@@ -115,8 +116,8 @@ class StdMapData():
             Map data representing the following format:
             ::
                 [ 
-                    [ time, pos, type ],
-                    [ time, pos, type ],
+                    [ time, aimpoint_x, aimpoint_y, type ],
+                    [ time, aimpoint_x, aimpoint_y, type ],
                     ... N aimpoints
                 ]
         """
@@ -139,8 +140,8 @@ class StdMapData():
             Map data representing the following format:
             ::
                 [ 
-                    [ time, pos, type ],
-                    [ time, pos, type ],
+                    [ time, aimpoint_x, aimpoint_y, type ],
+                    [ time, aimpoint_x, aimpoint_y, type ],
                     ... N aimpoints
                 ]
         """
@@ -194,7 +195,7 @@ class StdMapData():
         numpy.array
             Scorepoint data
             ::
-                [ time, (scorepoint_x, scorepoint_y) ]
+                [ time, aimpoint_x, aimpoint_y, type ]
             
         """
         idx_time = StdMapData.get_idx_end_time(map_data, time)
@@ -226,19 +227,11 @@ class StdMapData():
         numpy.array
             Hitobject data
             ::
-                array([
-                    list([
-                        [ time, [scorepoint_x, scorepoint_y] ]
-                        [ time, [scorepoint_x, scorepoint_y] ]
-                        ...
-                    ]),
-                    list([
-                        [ time, [scorepoint_x, scorepoint_y] ]
-                        [ time, [scorepoint_x, scorepoint_y] ]
-                        ...
-                    ]),
+                [          
+                    [ time, aimpoint_x, aimpoint_y, type ]
+                    [ time, aimpoint_x, aimpoint_y, type ]
                     ...
-                ])
+                ]
             
         """
         start_idx = StdMapData.get_idx_start_time(map_data, start_time)
@@ -308,13 +301,13 @@ class StdMapData():
             Hitobject starting positions
             ::
                 [ 
-                    [ pos_x, pos_y ], 
-                    [ pos_x, pos_y ], 
+                    [ aimpoint_x, aimpoint_y ], 
+                    [ aimpoint_x, aimpoint_y ], 
                     ... 
                 ]
             
         """
-        return np.vstack(StdMapData.get_presses(map_data)[:, StdMapData.POS])
+        return StdMapData.get_presses(map_data)[:, StdMapData.POSX : StdMapData.POSY + 1]
 
     
     @staticmethod
@@ -336,13 +329,13 @@ class StdMapData():
             Ending positions of hitobject
             ::
                 [ 
-                    [ pos_x, pos_y ], 
-                    [ pos_x, pos_y ], 
+                    [ aimpoint_x, aimpoint_y ], 
+                    [ aimpoint_x, aimpoint_y ], 
                     ... 
                 ]
             
         """
-        return np.vstack(StdMapData.get_releases(map_data)[:, StdMapData.POS])
+        return StdMapData.get_releases(map_data)[:, StdMapData.POSX : StdMapData.POSY + 1]
 
 
     @staticmethod
@@ -361,12 +354,12 @@ class StdMapData():
             returns numpy array of scorepoint positions
             ::
                 [ 
-                    [ pos_x, pos_y ], 
-                    [ pos_x, pos_y ], 
+                    [ aimpoint_x, aimpoint_y ], 
+                    [ aimpoint_x, aimpoint_y ], 
                     ... 
                 ]
         """
-        return np.vstack(map_data[:, StdMapData.POS])
+        return map_data[:, StdMapData.POSX : StdMapData.POSY + 1]
 
 
     @staticmethod

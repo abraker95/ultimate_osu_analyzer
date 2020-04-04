@@ -127,7 +127,7 @@ class StdScoreData():
         for hitobject_idx in range(len(presses)):
             # Get first aimpoint in the hitobject
             aimpoint_time = presses[hitobject_idx][StdMapData.TIME]
-            aimpoint_cor  = presses[hitobject_idx][StdMapData.POS]
+            aimpoint_cor  = presses[hitobject_idx][StdMapData.POSX : StdMapData.POSY + 1]
             
             # To keep track of whether there was a tap that corresponded to this hitobject
             is_hitobject_consumed = False
