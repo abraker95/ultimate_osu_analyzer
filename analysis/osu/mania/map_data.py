@@ -47,7 +47,10 @@ class ManiaMapData():
             ... 
         ]
         """
+        # It's easier to deal with start and end timings
         hitobject_data = ManiaMapData.get_hitobject_data(hitobjects)
+
+        # Record data via dictionary to identify timings
         action_data = {}
 
         for col in range(len(hitobject_data)):
@@ -70,10 +73,16 @@ class ManiaMapData():
         # Convert the dictionary of recorded timings and states into a sorted numpy array
         action_data = np.asarray([ np.concatenate(([timing], action_data[timing])) for timing in np.sort(list(action_data.keys())) ])
         
-        # Record hold state
+        # Fill in hold states
         for col in range(action_data.shape[1]):
-            for i in range(1, len(action_data[:,col])):
-                if (action_data[i - 1, col] == ManiaMapData.PRESS or action_data[i - 1, col] == ManiaMapData.HOLD) and action_data[i, col] != ManiaMapData.RELEASE:
+            for i in range(1, len(action_data[:,col]) - 1):
+                # Every press must have a release, so if there is no RELEASE after a press then it muct be a hold
+                press_with_no_hold = (action_data[i - 1, col] == ManiaMapData.PRESS) and (action_data[i, col] != ManiaMapData.RELEASE)
+
+                # If there is a FREE after a HOLD and the current state is not a RELEASE, then it must be a continuing HOLD
+                hold_continue = (action_data[i - 1, col] == ManiaMapData.HOLD) and (action_data[i, col] != ManiaMapData.RELEASE)
+                
+                if press_with_no_hold or hold_continue:
                     action_data[i, col] = ManiaMapData.HOLD
 
         return action_data
