@@ -14,33 +14,34 @@ from cli.cmd_osu import CmdOsu
 
 class Column(Enum):
 
-    PLAYER_NAME = 0
-    MODS        = 1
-    SCORE       = 2
-    COMBO       = 3
-    ACCURACY    = 4
-    HITS_300    = 5
-    HITS_100    = 6
-    HITS_50     = 7
-    HITS_0      = 8
-    NUM_COLS    = 9
+    NUM         = 0
+    PLAYER_NAME = 1
+    MODS        = 2
+    SCORE       = 3
+    COMBO       = 4
+    ACCURACY    = 5
+    HITS_300    = 6
+    HITS_100    = 7
+    HITS_50     = 8
+    HITS_0      = 9
+    NUM_COLS    = 10
 
 
 class ReplayManagerItem(QTreeWidgetItem):
 
-    def __init__(self, replay):
+    def __init__(self, replay, num):
         self.replay      = replay
         self.replay_data = None
         
         if self.replay.game_mode == GameMode.Standard: 
-            columns = (replay.player_name, replay.get_mods_name(), str(replay.score), str(replay.max_combo), str(replay.get_acc()),
+            columns = (str(num), replay.player_name, replay.get_mods_name(), str(replay.score), str(replay.max_combo), str(replay.get_acc()),
                         str(replay.number_300s + replay.gekis), str(replay.number_100s + replay.katus), str(replay.number_50s), str(replay.misses))
         #elif self.replay.game_mode == GameMode.Taiko:        
         #    columns = ()
         #elif self.replay.game_mode == GameMode.CatchTheBeat:
         #    columns = ()
         elif self.replay.game_mode == GameMode.Osumania:    
-             columns = (replay.player_name, replay.get_mods_name(), str(replay.score), str(replay.max_combo), str(replay.get_acc()),
+             columns = (str(num), replay.player_name, replay.get_mods_name(), str(replay.score), str(replay.max_combo), str(replay.get_acc()),
                         str(replay.gekis), str(replay.number_300s), str(replay.katus), str(replay.number_100s), str(replay.number_50s), str(replay.misses))
         else:
             RuntimeError('Unsupported gamemode: ' + str(self.replay.game_mode))
@@ -51,6 +52,7 @@ class ReplayManagerItem(QTreeWidgetItem):
     def __lt__(self, other):
         column = self.treeWidget().sortColumn()
 
+        if column == Column.NUM.value:         return int(self.text(column)) < int(other.text(column))      # numeric sort
         if column == Column.PLAYER_NAME.value: return QTreeWidgetItem.__lt__(self, other)                   # string sort
         if column == Column.MODS.value:        return QTreeWidgetItem.__lt__(self, other)                   # string sort
         if column == Column.SCORE.value:       return float(self.text(column)) < float(other.text(column))  # numeric sort
@@ -108,16 +110,16 @@ class ReplayManager(QWidget):
 
     def add_replay(self, replay):
         if self.replay_list.topLevelItemCount() == 0:
-            if   replay.game_mode == GameMode.Standard: columns = ('player', 'mods', 'score', 'combo', 'acc', '300', '100', '50', 'miss')
+            if   replay.game_mode == GameMode.Standard: columns = ('#', 'player', 'mods', 'score', 'combo', 'acc', '300', '100', '50', 'miss')
             #elif self.replay.game_mode == GameMode.Taiko:        self.replay_data = TaikoReplayData.get_replay_data(self.replay.play_data)
             #elif self.replay.game_mode == GameMode.CatchTheBeat: self.replay_data = CatchReplayData.get_replay_data(self.replay.play_data)
-            elif replay.game_mode == GameMode.Osumania: columns = ('player', 'mods', 'score', 'combo', 'acc', 'MAX', '300', '200', '100', '50', 'miss')
+            elif replay.game_mode == GameMode.Osumania: columns = ('#', 'player', 'mods', 'score', 'combo', 'acc', 'MAX', '300', '200', '100', '50', 'miss')
             else:
                 RuntimeError('Unsupported gamemode: ' + str(replay.game_mode))
             
             self.replay_list.setHeaderLabels(columns)
 
-        self.replay_list.addTopLevelItem(ReplayManagerItem(replay))
+        self.replay_list.addTopLevelItem(ReplayManagerItem(replay, self.replay_list.topLevelItemCount()))
 
         for i in range(Column.NUM_COLS.value):
             self.replay_list.resizeColumnToContents(i)
