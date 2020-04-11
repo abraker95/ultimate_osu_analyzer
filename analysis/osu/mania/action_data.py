@@ -13,7 +13,6 @@ class ManiaActionData():
     HOLD    = 2
     RELEASE = 3
 
-
     @staticmethod
     def get_action_data(hitobjects, min_press_duration=50):
         """
@@ -44,12 +43,12 @@ class ManiaActionData():
                 # Record press state
                 try:             action_data[note_start]
                 except KeyError: action_data[note_start] = np.zeros(len(hitobject_data)) 
-                action_data[note_start] += np.asarray([ ManiaMapData.PRESS if col==c else ManiaMapData.FREE for c in range(len(hitobject_data)) ])
+                action_data[note_start] += np.asarray([ ManiaActionData.PRESS if col==c else ManiaActionData.FREE for c in range(len(hitobject_data)) ])
 
                 # Record release state
                 try:             action_data[note_end]
                 except KeyError: action_data[note_end] = np.zeros(len(hitobject_data))
-                action_data[note_end] += np.asarray([ ManiaMapData.RELEASE if col==c else ManiaMapData.FREE for c in range(len(hitobject_data)) ])
+                action_data[note_end] += np.asarray([ ManiaActionData.RELEASE if col==c else ManiaActionData.FREE for c in range(len(hitobject_data)) ])
 
         # Convert the dictionary of recorded timings and states into a sorted numpy array
         action_data = np.asarray([ np.concatenate(([timing], action_data[timing])) for timing in np.sort(list(action_data.keys())) ])
@@ -58,13 +57,13 @@ class ManiaActionData():
         for col in range(action_data.shape[1]):
             for i in range(1, len(action_data[:,col]) - 1):
                 # Every press must have a release, so if there is no RELEASE after a press then it muct be a hold
-                press_with_no_hold = (action_data[i - 1, col] == ManiaMapData.PRESS) and (action_data[i, col] != ManiaMapData.RELEASE)
+                press_with_no_hold = (action_data[i - 1, col] == ManiaActionData.PRESS) and (action_data[i, col] != ManiaActionData.RELEASE)
 
                 # If there is a FREE after a HOLD and the current state is not a RELEASE, then it must be a continuing HOLD
-                hold_continue = (action_data[i - 1, col] == ManiaMapData.HOLD) and (action_data[i, col] != ManiaMapData.RELEASE)
+                hold_continue = (action_data[i - 1, col] == ManiaActionData.HOLD) and (action_data[i, col] != ManiaActionData.RELEASE)
                 
                 if press_with_no_hold or hold_continue:
-                    action_data[i, col] = ManiaMapData.HOLD
+                    action_data[i, col] = ManiaActionData.HOLD
 
         return action_data
 
@@ -77,7 +76,7 @@ class ManiaActionData():
         Parameters
         ----------
         action_data : numpy.array
-            Action data from ``ManiaMapData.get_action_data``
+            Action data from ``ManiaActionData.get_action_data``
 
         Returns
         -------
@@ -95,7 +94,7 @@ class ManiaActionData():
         Parameters
         ----------
         action_data : numpy.array
-            Action data from ``ManiaMapData.get_action_data``
+            Action data from ``ManiaActionData.get_action_data``
 
         left_handed : bool
             Whether to prefer spliting odd even keys for left hand or right hand.

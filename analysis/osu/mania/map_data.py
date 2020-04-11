@@ -10,11 +10,6 @@ class ManiaMapData():
     START_TIME = 0
     END_TIME   = 1
 
-    FREE    = 0
-    PRESS   = 1
-    HOLD    = 2
-    RELEASE = 3
-
     @staticmethod
     def get_hitobject_data(hitobjects):
         """
@@ -28,7 +23,7 @@ class ManiaMapData():
         
         for column, column_hitobjects in zip(range(len(hitobjects)), hitobjects):
             for hitobject in column_hitobjects:
-                hitobject_data[column].append((hitobject.time, hitobject.get_end_time()))
+                hitobject_data[column].append([hitobject.time, hitobject.get_end_time()])
 
         return hitobject_data
 
