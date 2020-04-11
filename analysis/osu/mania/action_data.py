@@ -164,7 +164,35 @@ class ManiaActionData():
     @staticmethod
     def count_actions(action_data, actions, index_start=None, index_end=None):
         """
-        Gets number of specified ``actions`` between ``index_start`` and ``index_end`` per entry.
+        Gets number of specified ``actions`` between ``index_start`` and ``index_end`` throughout all timings.
+
+        Parameters
+        ----------
+        action_data : numpy.array
+            Action data from ``ManiaActionData.get_action_data``
+
+        index_start : int
+            Starting index of data in action data in which to count number of actions for. ``None`` by default.
+
+        index_end : int
+            Ending index of data in action data in which to count number of actions for. ``None`` by default
+
+        actions : list
+            A list of actions which to count
+
+        Returns
+        -------
+        numpy.array
+        ``action_data_count`` Action data representing number of actions specified for each entry
+        """
+        action_mask = ManiaActionData.mask_actions(action_data, actions, index_start, index_end)
+        return np.sum(action_mask[:, 1:])
+
+
+    @staticmethod
+    def count_actions_per_timing(action_data, actions, index_start=None, index_end=None):
+        """
+        Gets number of specified ``actions`` between ``index_start`` and ``index_end`` per timing.
 
         Parameters
         ----------
