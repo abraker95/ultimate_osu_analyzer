@@ -14,7 +14,7 @@ class ManiaActionData():
     RELEASE = 3
 
     @staticmethod
-    def get_action_data(hitobjects, min_press_duration=50):
+    def get_action_data(hitobjects, min_press_duration=1):
         """
         0 = Finger free float
         1 = Finger must impart force to press key
@@ -29,33 +29,34 @@ class ManiaActionData():
         """
         # It's easier to deal with start and end timings
         hitobject_data = ManiaMapData.get_hitobject_data(hitobjects)
+        num_columns = len(hitobject_data)
 
         # Record data via dictionary to identify timings
         action_data = {}
 
-        for col in range(len(hitobject_data)):
-            for n in range(len(hitobject_data[col])):
+        for col in range(num_columns):
+            for hitobject in hitobject_data[col]:
                 # Extract note timings
-                note_start = hitobject_data[col][n][0]
-                note_end   = hitobject_data[col][n][1]
+                note_start = hitobject[0]
+                note_end   = hitobject[1]
                 note_end   = note_end if (note_end - note_start >= min_press_duration) else (note_start + min_press_duration)
 
                 # Record press state
                 try:             action_data[note_start]
-                except KeyError: action_data[note_start] = np.zeros(len(hitobject_data)) 
-                action_data[note_start] += np.asarray([ ManiaActionData.PRESS if col==c else ManiaActionData.FREE for c in range(len(hitobject_data)) ])
+                except KeyError: action_data[note_start] = np.zeros(num_columns) 
+                action_data[note_start] += np.asarray([ ManiaActionData.PRESS if col==c else ManiaActionData.FREE for c in range(num_columns) ])
 
                 # Record release state
                 try:             action_data[note_end]
-                except KeyError: action_data[note_end] = np.zeros(len(hitobject_data))
-                action_data[note_end] += np.asarray([ ManiaActionData.RELEASE if col==c else ManiaActionData.FREE for c in range(len(hitobject_data)) ])
+                except KeyError: action_data[note_end] = np.zeros(num_columns)
+                action_data[note_end] += np.asarray([ ManiaActionData.RELEASE if col==c else ManiaActionData.FREE for c in range(num_columns) ])
 
         # Convert the dictionary of recorded timings and states into a sorted numpy array
         action_data = np.asarray([ np.concatenate(([timing], action_data[timing])) for timing in np.sort(list(action_data.keys())) ])
         
         # Fill in hold states
         for col in range(action_data.shape[1]):
-            for i in range(1, len(action_data[:,col]) - 1):
+            for i in range(1, len(action_data[:, col]) - 1):
                 # Every press must have a release, so if there is no RELEASE after a press then it muct be a hold
                 press_with_no_hold = (action_data[i - 1, col] == ManiaActionData.PRESS) and (action_data[i, col] != ManiaActionData.RELEASE)
 
