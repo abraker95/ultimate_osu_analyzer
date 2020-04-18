@@ -87,6 +87,25 @@ class ManiaActionData():
         return action_data.shape[1] - 1
 
 
+
+    @staticmethod
+    def filter_free(action_data):
+        """
+        Removes timings that have no actions in any column (anything but FREE)
+
+        Parameters
+        ----------
+        action_data : numpy.array
+            Action data from ``ManiaActionData.get_action_data``
+
+        Returns
+        -------
+         numpy.array
+        Filtered ``action_data``
+        """
+        return action_data[~np.all(action_data[:, 1:] == 0, 1)]
+
+
     @staticmethod
     def split_by_hand(action_data, left_handed=True):
         """
