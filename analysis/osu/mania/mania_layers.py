@@ -59,6 +59,7 @@ class ManiaLayers():
         action_data = action_data[np.logical_and(start_time <= action_data[:,0], action_data[:,0] <= end_time)]
         for data in action_data:
             for col in range(1, len(data)):
+                if data[col] == ManiaActionData.FREE:    continue
                 if data[col] == ManiaActionData.PRESS:   painter.setPen(QColor(0,   150, 0,   255))
                 if data[col] == ManiaActionData.HOLD:    painter.setPen(QColor(255,   0, 255, 255))
                 if data[col] == ManiaActionData.RELEASE: painter.setPen(QColor(255, 255, 0,   255))
@@ -72,9 +73,8 @@ class ManiaLayers():
         painter.setPen(QPen(QColor(0, 0, 200, 255), 5))
 
         start_time, end_time = spatial_data[0], spatial_data[1]
-        print(columns)
-
         chord_data = chord_data[np.logical_and(start_time <= chord_data[:,0], chord_data[:,0] <= end_time)]
+
         for data in chord_data:
             for col in range(1, len(data)):
                 if data[col] != 1: continue
