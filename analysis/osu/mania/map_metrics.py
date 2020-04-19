@@ -157,15 +157,11 @@ class ManiaMapMetrics():
         """
         hold_note_mask = action_data.copy()
 
-        # Get idx where presses and releases occur. This is 2D data: (timings, columns)
-        where_release = np.where(np.isin(action_data[:, 1:], ManiaActionData.RELEASE))
-        where_press   = np.where(np.isin(action_data[:, 1:], ManiaActionData.PRESS))
-
         # Operate per column (because idk how to make numpy operate on all columns like this)
         for col in range(ManiaActionData.num_keys(action_data)):
             # For current column, get where PRESS and RELEASE occur
-            where_release_timing = where_release[0][where_release[1] == col]
-            where_press_timing   = where_press[0][where_press[1] == col]
+            where_release_timing = np.where(np.isin(action_data[:, col + 1], ManiaActionData.RELEASE))[0]
+            where_press_timing   = np.where(np.isin(action_data[:, col + 1], ManiaActionData.PRESS))[0]
 
             # Get timings for those PRESS and RELEASE
             release_timings = action_data[where_release_timing][:,0]
@@ -231,15 +227,11 @@ class ManiaMapMetrics():
         # Keep just the information associated with hold notes
         hold_note_data[:, 1:][~hold_note_mask[:, 1:].astype(np.bool, copy=False)] = 0
 
-        # Get idx where presses and releases occur. This is 2D data: (timings, columns)
-        where_release = np.where(np.isin(hold_note_data[:, 1:], ManiaActionData.RELEASE))
-        where_press   = np.where(np.isin(hold_note_data[:, 1:], ManiaActionData.PRESS))
-
         # Operate per column (because idk how to make numpy operate on all columns like this)
         for col in range(ManiaActionData.num_keys(action_data)):
             # For current column, get where PRESS and RELEASE occur
-            where_release_timing = where_release[0][where_release[1] == col]
-            where_press_timing   = where_press[0][where_press[1] == col]
+            where_release_timing = np.where(np.isin(hold_note_data[:, col + 1], ManiaActionData.RELEASE))[0]
+            where_press_timing   = np.where(np.isin(hold_note_data[:, col + 1], ManiaActionData.PRESS))[0]
 
             # Get timings for those PRESS and RELEASE
             release_timings = action_data[where_release_timing][:,0]
@@ -299,15 +291,11 @@ class ManiaMapMetrics():
         # Keep just the information associated with hold notes
         hold_note_data[:, 1:][~hold_note_mask[:, 1:].astype(np.bool, copy=False)] = 0
 
-        # Get idx where presses and releases occur. This is 2D data: (timings, columns)
-        where_release = np.where(np.isin(hold_note_data[:, 1:], ManiaActionData.RELEASE))
-        where_press   = np.where(np.isin(hold_note_data[:, 1:], ManiaActionData.PRESS))
-
         # Operate per column (because idk how to make numpy operate on all columns like this)
         for col in range(ManiaActionData.num_keys(action_data)):
             # For current column, get where PRESS and RELEASE occur
-            where_release_timing = where_release[0][where_release[1] == col]
-            where_press_timing   = where_press[0][where_press[1] == col]
+            where_release_timing = np.where(np.isin(hold_note_data[:, col + 1], ManiaActionData.RELEASE))[0]
+            where_press_timing   = np.where(np.isin(hold_note_data[:, col + 1], ManiaActionData.PRESS))[0]
 
             # Get timings for those PRESS and RELEASE. We drop the last release timing because
             # There is no press after that, hence no anti-press. We drop the first press timing
