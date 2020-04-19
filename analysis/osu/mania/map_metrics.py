@@ -140,7 +140,6 @@ class ManiaMapMetrics():
         return press_mask
 
 
-
     @staticmethod
     def detect_hold_notes(action_data):
         """
@@ -187,6 +186,73 @@ class ManiaMapMetrics():
             hold_note_mask[:, col + 1][hold_note_mask[:, col + 1] == 2] = 1
 
         return hold_note_mask
+
+
+    @staticmethod
+    def data_to_hold_note_durations(action_data):
+        """
+        Takes action_data, filters out non hold notes, and reduces them to
+        durations they last for. For example,
+        ::
+            [138317.,      1.,      0.],
+            [138567.,      3.,      0.],
+            [138651.,      1.,      1.],
+            [138901.,      2.,      2.],
+            [138984.,      2.,      2.],
+            [139234.,      3.,      3.],
+
+        becomes
+        ::
+            [138317.,      250.,    0.  ],
+            [138567.,      0.,      0.  ],
+            [138651.,      583.,    583.],
+            [138901.,      0.,      0.  ],
+            [138984.,      0.,      0.  ],
+            [139234.,      0.,      0.  ],
+
+        Parameters
+        ----------
+        action_data : numpy.array
+            Action data from ``ManiaActionData.get_action_data``
+
+        Returns
+        -------
+        numpy.array
+        action_data with hold note durations
+        """
+        # Make a copy of the data and keep just the timings
+        hold_note_duration_data = action_data.copy()
+        hold_note_duration_data[:, 1:] = 0
+
+        # Make another copy of the data to have just stuff related to hold notes
+        hold_note_mask = ManiaMapMetrics.detect_hold_notes(action_data)
+        hold_note_data = action_data.copy()
+
+        # Keep just the information associated with hold notes
+        hold_note_data[:, 1:][~hold_note_mask[:, 1:].astype(np.bool)] = 0
+
+        # Get idx where presses and releases occur. This is 2D data: (timings, columns)
+        where_release = np.where(np.isin(hold_note_data[:, 1:], ManiaActionData.RELEASE))
+        where_press   = np.where(np.isin(hold_note_data[:, 1:], ManiaActionData.PRESS))
+
+        # Operate per column (because idk how to make numpy operate on all columns like this)
+        for col in range(ManiaActionData.num_keys(action_data)):
+            # For current column, get where PRESS and RELEASE occur
+            where_release_timing = where_release[0][where_release[1] == col]
+            where_press_timing   = where_press[0][where_press[1] == col]
+
+            # Get timings for those PRESS and RELEASE
+            release_timings = action_data[where_release_timing][:,0]
+            press_timings   = action_data[where_press_timing][:,0]
+
+            # This contains a list of hold note durations. The locations of the hold note durations are
+            # resolved via where_press_timing
+            hold_note_durations = release_timings - press_timings
+
+            # Now fill in the blank data with hold note durations
+            hold_note_duration_data[:, col + 1][where_press_timing] = hold_note_durations
+        
+        return hold_note_duration_data
 
 
     @staticmethod
