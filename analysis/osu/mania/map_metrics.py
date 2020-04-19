@@ -143,7 +143,7 @@ class ManiaMapMetrics():
     @staticmethod
     def detect_hold_notes(action_data):
         """
-        Masks hold notes
+        Masks hold notes; removes single notes from data.
 
         Parameters
         ----------
@@ -229,7 +229,7 @@ class ManiaMapMetrics():
         hold_note_data = action_data.copy()
 
         # Keep just the information associated with hold notes
-        hold_note_data[:, 1:][~hold_note_mask[:, 1:].astype(np.bool)] = 0
+        hold_note_data[:, 1:][~hold_note_mask[:, 1:].astype(np.bool, copy=False)] = 0
 
         # Get idx where presses and releases occur. This is 2D data: (timings, columns)
         where_release = np.where(np.isin(hold_note_data[:, 1:], ManiaActionData.RELEASE))
