@@ -140,6 +140,55 @@ class ManiaMapMetrics():
         return press_mask
 
 
+
+    @staticmethod
+    def detect_hold_notes(action_data):
+        """
+        Masks hold notes
+
+        Parameters
+        ----------
+        action_data : numpy.array
+            Action data from ``ManiaActionData.get_action_data``
+
+        Returns
+        -------
+        numpy.array
+        action_data mask of actions detected
+        """
+        hold_note_mask = action_data.copy()
+
+        # Get idx where presses and releases occur. This is 2D data: (timings, columns)
+        where_release = np.where(np.isin(action_data[:, 1:], ManiaActionData.RELEASE))
+        where_press   = np.where(np.isin(action_data[:, 1:], ManiaActionData.PRESS))
+
+        # Operate per column (because idk how to make numpy operate on all columns like this)
+        for col in range(ManiaActionData.num_keys(action_data)):
+            # For current column, get where PRESS and RELEASE occur
+            where_release_timing = where_release[0][where_release[1] == col]
+            where_press_timing   = where_press[0][where_press[1] == col]
+
+            # Get timings for those PRESS and RELEASE
+            release_timings = action_data[where_release_timing][:,0]
+            press_timings   = action_data[where_press_timing][:,0]
+
+            # Filter out idx in where_release_timing and where_press_timing that are 1 or less ms apart
+            hold_note_start_mask = (release_timings - press_timings) > 1
+        
+            # Since we want to also include HOLD actions, let's assign 2 to PRESS and RELEASE actions associated
+            # with hold notes so everything else can later be easily filtered out.
+            hold_note_mask[:, col + 1][where_release_timing[hold_note_start_mask]] = 2
+            hold_note_mask[:, col + 1][where_press_timing[hold_note_start_mask]] = 2
+
+            # Filter out everthing else
+            hold_note_mask[:, col + 1][hold_note_mask[:, col + 1] != 2] = 0
+
+            # Set all the 2's to 1's
+            hold_note_mask[:, col + 1][hold_note_mask[:, col + 1] == 2] = 1
+
+        return hold_note_mask
+
+
     @staticmethod
     def detect_holds_during_release(action_data):
         """
