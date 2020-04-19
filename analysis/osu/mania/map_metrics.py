@@ -256,6 +256,76 @@ class ManiaMapMetrics():
 
 
     @staticmethod
+    def data_to_anti_press_durations(action_data):
+        """
+        Takes action_data, and reduces them to durations of anti-presses. Anti-presses
+        are associated with points in LN type patterns where there is a spot between 
+        two holdnotes where the finger is released. For example,
+        ::
+            [138317.,      1.,      0.],
+            [138567.,      3.,      0.],
+            [138651.,      1.,      1.],
+            [138901.,      2.,      2.],
+            [138984.,      2.,      2.],
+            [139234.,      3.,      3.],
+
+        becomes
+        ::
+            [138317.,      0.,      0.  ],
+            [138567.,      84.,     0.  ],
+            [138651.,      0.,      0.  ],
+            [138901.,      0.,      0.  ],
+            [138984.,      0.,      0.  ],
+            [139234.,      0.,      0.  ],
+
+        Parameters
+        ----------
+        action_data : numpy.array
+            Action data from ``ManiaActionData.get_action_data``
+
+        Returns
+        -------
+        numpy.array
+        action_data with hold note durations
+        """
+        # Make a copy of the data and keep just the timings
+        anti_press_duration_data = action_data.copy()
+        anti_press_duration_data[:, 1:] = 0
+
+        # Make another copy of the data to have just stuff related to hold notes
+        hold_note_mask = ManiaMapMetrics.detect_hold_notes(action_data)
+        hold_note_data = action_data.copy()
+
+        # Keep just the information associated with hold notes
+        hold_note_data[:, 1:][~hold_note_mask[:, 1:].astype(np.bool, copy=False)] = 0
+
+        # Get idx where presses and releases occur. This is 2D data: (timings, columns)
+        where_release = np.where(np.isin(hold_note_data[:, 1:], ManiaActionData.RELEASE))
+        where_press   = np.where(np.isin(hold_note_data[:, 1:], ManiaActionData.PRESS))
+
+        # Operate per column (because idk how to make numpy operate on all columns like this)
+        for col in range(ManiaActionData.num_keys(action_data)):
+            # For current column, get where PRESS and RELEASE occur
+            where_release_timing = where_release[0][where_release[1] == col]
+            where_press_timing   = where_press[0][where_press[1] == col]
+
+            # Get timings for those PRESS and RELEASE. We drop the last release timing because
+            # There is no press after that, hence no anti-press. We drop the first press timing
+            # because there is no release before that, hence no anti-press
+            release_timings = action_data[where_release_timing][:-1,0]
+            press_timings   = action_data[where_press_timing][1:,0]
+
+            # This contains a list of anti-press durations. The locations of the anti-press durations are
+            # resolved via where_release_timing
+            anti_press_durations = press_timings - release_timings
+
+            # Now fill in the blank data with anti-press durations
+            anti_press_duration_data[:, col + 1][where_release_timing[:-1]] = anti_press_durations
+        
+        return anti_press_duration_data
+
+
+    @staticmethod
     def detect_holds_during_release(action_data):
         """
         Masks holds that occur when there is at least one release in one of the columns
