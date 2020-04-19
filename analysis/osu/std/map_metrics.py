@@ -86,7 +86,7 @@ class StdMapMetrics():
         if len(p) < 2: return [], []
         
         x, y = p[:,0], p[:,1]
-        return t[1:], Metrics.dists(x, y, t)
+        return t[1:], Metrics.dists(x, y)
 
     
     @staticmethod
