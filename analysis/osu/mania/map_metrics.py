@@ -141,6 +141,34 @@ class ManiaMapMetrics():
 
 
     @staticmethod
+    def detect_holds_during_release(action_data):
+        """
+        Masks holds that occur when there is at least one release in one of the columns
+
+        This is useful for determining which holds are harder due to finger independence.
+        Releases have a tendency to make affected fingers release prematurely.
+
+        Parameters
+        ----------
+        action_data : numpy.array
+            Action data from ``ManiaActionData.get_action_data``
+
+        Returns
+        -------
+        numpy.array
+        action_data mask of actions detected
+        """
+        hold_mask = ManiaActionData.mask_actions(action_data, ManiaActionData.HOLD)
+
+        release_mask_any = np.any(action_data[:, 1:] == ManiaActionData.RELEASE, 1)
+        hold_mask_any    = np.any(action_data[:, 1:] == ManiaActionData.HOLD, 1)
+        release_and_hold = np.logical_and(release_mask_any, hold_mask_any)
+
+        hold_mask[:, 1:] = release_and_hold[:, None] * hold_mask[:, 1:]
+        return hold_mask
+
+
+    @staticmethod
     def detect_hold_notes(action_data):
         """
         Masks hold notes; removes single notes from data.
@@ -314,12 +342,9 @@ class ManiaMapMetrics():
 
 
     @staticmethod
-    def detect_holds_during_release(action_data):
+    def detect_inverse(action_data):
         """
-        Masks holds that occur when there is at least one release in one of the columns
-
-        This is useful for determining which holds are harder due to finger independence.
-        Releases have a tendency to make affected fingers release prematurely.
+        Masks notes that are detected as inverses
 
         Parameters
         ----------
@@ -331,15 +356,36 @@ class ManiaMapMetrics():
         numpy.array
         action_data mask of actions detected
         """
-        hold_mask = ManiaActionData.mask_actions(action_data, ManiaActionData.HOLD)
+        inverse_mask = action_data.copy()
+        inverse_mask[:, 1:] = 0
 
-        release_mask_any = np.any(action_data[:, 1:] == ManiaActionData.RELEASE, 1)
-        hold_mask_any    = np.any(action_data[:, 1:] == ManiaActionData.HOLD, 1)
-        release_and_hold = np.logical_and(release_mask_any, hold_mask_any)
+        # Ratio of release to hold duration that qualifies as inverse
+        # For example 0.6 - Release duration needs to be 0.6*hold_duration to qualify as inverse
+        ratio_free_to_hold = 0.6
 
-        hold_mask[:, 1:] = release_and_hold[:, None] * hold_mask[:, 1:]
-        return hold_mask
+        anti_press_durations = ManiaMapMetrics.data_to_anti_press_durations(action_data)
+        hold_press_durations = ManiaMapMetrics.data_to_hold_note_durations(action_data)
 
+        # Go through each column on left hand
+        for col in range(ManiaActionData.num_keys(action_data)):
+            anti_press_durations_col = anti_press_durations[:, col + 1]
+            hold_press_durations_col = hold_press_durations[:, col + 1]
+
+            # For filtering out timings with FREE
+            is_anti_press = anti_press_durations_col != 0
+            is_hold_press = hold_press_durations_col != 0
+
+            # Compare release duration against hold durations of previous and next hold notes
+            free_ratio_prev_hold = anti_press_durations_col[is_anti_press] <= ratio_free_to_hold*hold_press_durations_col[is_hold_press][:-1]
+            free_ratio_next_hold = anti_press_durations_col[is_anti_press] <= ratio_free_to_hold*hold_press_durations_col[is_hold_press][1:]
+            is_inverse = np.logical_and(free_ratio_prev_hold, free_ratio_next_hold)
+
+            # Resolve inverse location and assign
+            where_inverse = np.where(is_anti_press)[0][is_inverse]
+            inverse_mask[:, 1:][where_inverse] = 1
+       
+        return inverse_mask
+        
 
     @staticmethod
     def detect_chords(action_data):
