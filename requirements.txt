@@ -8,3 +8,5 @@ qtconsole
 requests
 sphinx
 sphinx-rtd-theme
+notebook==6.0.1
+jupyter-client==5.3.1
