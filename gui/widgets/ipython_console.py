@@ -1,4 +1,6 @@
 import os
+import sys
+import asyncio
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -19,6 +21,10 @@ class IPythonConsole(RichJupyterWidget):
         if customBanner is not None:
             self.banner = customBanner
         
+        # IPython Python 3.8 support fix
+        if sys.platform == 'win32' and sys.version_info >= (3, 8):
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
         self.font_size = 6
         self.kernel_manager = QtInProcessKernelManager()
 
