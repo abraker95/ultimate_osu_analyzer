@@ -213,6 +213,60 @@ class ManiaMapMetrics():
 
 
     @staticmethod
+    def data_to_press_intervals(action_data):
+        """
+        Takes action_data, and turns it into time intervals since last press.
+        For example,
+        ::
+            [138317.,      1.,      0.],
+            [138567.,      3.,      0.],
+            [138651.,      1.,      1.],
+            [138901.,      2.,      2.],
+            [138984.,      2.,      2.],
+            [139234.,      3.,      3.],
+
+        becomes
+        ::
+            [138317.,      0.,      0.  ],
+            [138567.,      0.,      0.  ],
+            [138651.,      334.,    0.  ],
+            [138901.,      0.,      0.  ],
+            [138984.,      0.,      0.  ],
+            [139234.,      0.,      0.  ],
+
+        Parameters
+        ----------
+        action_data : numpy.array
+            Action data from ``ManiaActionData.get_action_data``
+
+        Returns
+        -------
+        numpy.array
+        action_data with intervals between presses
+        """
+        # Make a copy of the data and keep just the timings
+        press_intervals_data = action_data.copy()
+        press_intervals_data[:, 1:] = 0
+
+        # Operate per column (because idk how to make numpy operate on all columns like this)
+        for col in range(ManiaActionData.num_keys(action_data)):
+            # For current column, get where PRESS occur
+            where_press_timing = np.where(np.isin(action_data[:, col + 1], ManiaActionData.PRESS))[0]
+
+            # Get timings for PRESS
+            press_timings = action_data[where_press_timing][:,0]
+
+            # This contains a list of press intervals. The locations of the press intervals are
+            # resolved via where_press_timing starting with the second press
+            press_intervals = press_timings[1:] - press_timings[:-1]
+
+            # Now fill in the blank data with press intervals
+            press_intervals_data[:, col + 1][where_press_timing[1:]] = press_intervals
+        
+        return press_intervals_data
+
+
+    @staticmethod
     def data_to_hold_note_durations(action_data):
         """
         Takes action_data, filters out non hold notes, and reduces them to
