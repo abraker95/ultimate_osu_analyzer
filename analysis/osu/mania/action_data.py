@@ -55,8 +55,8 @@ class ManiaActionData():
         action_data = np.asarray([ np.concatenate(([timing], action_data[timing])) for timing in np.sort(list(action_data.keys())) ])
         
         # Fill in hold states
-        for col in range(action_data.shape[1]):
-            for i in range(1, len(action_data[:, col]) - 1):
+        for col in range(1, action_data.shape[1]):
+            for i in range(1, len(action_data[:, col])):
                 # Every press must have a release, so if there is no RELEASE after a press then it muct be a hold
                 press_with_no_hold = (action_data[i - 1, col] == ManiaActionData.PRESS) and (action_data[i, col] != ManiaActionData.RELEASE)
 
@@ -85,7 +85,6 @@ class ManiaActionData():
         Number of keys
         """
         return action_data.shape[1] - 1
-
 
 
     @staticmethod
