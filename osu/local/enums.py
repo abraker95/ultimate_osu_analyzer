@@ -52,3 +52,4 @@ class Mod(Enum):
     Key3           = 134217728
     Key2           = 268435456
     ScoreV2        = 536870912
+    Mirror         = 1073741824
