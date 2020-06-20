@@ -1,7 +1,10 @@
+import math
+
 from PyQt5.QtCore import QObject, pyqtSignal
 from misc.callback import callback
 from misc.frozen_cls import FrozenCls
 
+from osu.local.enums import Mod
 from osu.local.hitobject.std.std import Std
 from osu.local.hitobject.mania.mania import Mania
 
@@ -241,6 +244,48 @@ class Beatmap():
 
     def get_od_val(self):
         return self.difficulty.od
+
+
+    def get_od_ms(self, mod_combination):
+        if self.gamemode == Beatmap.GAMEMODE_OSU:   print('TODO: Standard'); return None
+        if self.gamemode == Beatmap.GAMEMODE_TAIKO: print('TODO: Taiko'); return None
+        if self.gamemode == Beatmap.GAMEMODE_CATCH: print('TODO: Catch'); return None
+        if self.gamemode == Beatmap.GAMEMODE_MANIA:
+            # See https://osu.ppy.sh/community/forums/posts/3346134
+            _300g = 16                        
+            _300  = 64  - (3*self.difficulty.od)
+            _200  = 97  - (3*self.difficulty.od)
+            _100  = 127 - (3*self.difficulty.od)
+            _50   = 151 - (3*self.difficulty.od)
+            _miss = 188 - (3*self.difficulty.od)
+
+            if   Mod.NoMod    in mod_combination: mul = 1.0
+            elif Mod.HardRock in mod_combination: mul = 1/1.4
+            elif Mod.Easy     in mod_combination: mul = 1.4
+            else: 
+                print(f'Unknown mod combination: {mod_combination}')
+                return
+            
+            return (math.floor(mul*_300g), 
+                    math.floor(mul*_300), 
+                    math.floor(mul*_200), 
+                    math.floor(mul*_100), 
+                    math.floor(mul*_50), 
+                    math.floor(mul*_miss))
+
+
+    def get_od_sigma(self, mod_combination):
+        if self.gamemode == Beatmap.GAMEMODE_OSU:   print('TODO: Standard'); return None
+        if self.gamemode == Beatmap.GAMEMODE_TAIKO: print('TODO: Taiko'); return None
+        if self.gamemode == Beatmap.GAMEMODE_CATCH: print('TODO: Catch'); return None
+        if self.gamemode == Beatmap.GAMEMODE_MANIA:
+            # See https://www.desmos.com/calculator/kjxmejofuy and https://www.desmos.com/calculator/awvnbk5hz1
+            if   Mod.NoMod    in mod_combination: return -1.356*self.difficulty.od + 52.0409
+            elif Mod.HardRock in mod_combination: return -0.965455*self.difficulty.od + 37.1545
+            elif Mod.Easy     in mod_combination: return -1.88909*self.difficulty.od + 72.8682
+            else: 
+                print(f'Unknown mod combination: {mod_combination}')
+                return
 
 
     def apply_mods(self, mods):
