@@ -102,7 +102,7 @@ class ManiaActionData():
          numpy.array
         Filtered ``action_data``
         """
-        return action_data[~np.all(action_data[:, 1:] == 0, 1)]
+        return action_data[~np.all(action_data[:, 1:] == ManiaActionData.FREE, 1)]
 
 
     @staticmethod
@@ -137,7 +137,7 @@ class ManiaActionData():
         left[:, 1:]  = action_data[:, 1:left_half + 1]
         right[:, 1:] = action_data[:, left_half + 1:]
 
-        return (left, right)
+        return left, right
 
     
     @staticmethod
