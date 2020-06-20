@@ -8,18 +8,14 @@ from misc.numpy_utils import NumpyUtils
 
 class ManiaActionData():
 
-    FREE    = 0
-    PRESS   = 1
-    HOLD    = 2
-    RELEASE = 3
+    FREE    = 0  # Finger free to float
+    PRESS   = 1  # Finger must impart force to press key
+    HOLD    = 2  # Finger must keep imparting force to keep key down
+    RELEASE = 3  # Finger must depart force to unpress key
 
     @staticmethod
     def get_action_data(hitobjects, min_press_duration=1):
         """
-        0 = Finger free float
-        1 = Finger must impart force to press key
-        2 = Finger must keep imparting force to keep key down
-        3 = Finger must depart force to unpress key
         [
             [ time, col1_state, col2_state, ..., colN_state ],
             [ time, col1_state, col2_state, ..., colN_state ],
@@ -57,7 +53,7 @@ class ManiaActionData():
         # Fill in hold states
         for col in range(1, action_data.shape[1]):
             for i in range(1, len(action_data[:, col])):
-                # Every press must have a release, so if there is no RELEASE after a press then it muct be a hold
+                # Every press must have a release, so if there is no RELEASE after a press then it must be a hold
                 press_with_no_hold = (action_data[i - 1, col] == ManiaActionData.PRESS) and (action_data[i, col] != ManiaActionData.RELEASE)
 
                 # If there is a FREE after a HOLD and the current state is not a RELEASE, then it must be a continuing HOLD
