@@ -113,6 +113,40 @@ class ManiaMapMetrics():
 
 
     @staticmethod
+    def filter_single_note_releases(action_data):
+        """
+        Removes releases associated with single notes by setting them to FREE
+
+        Parameters
+        ----------
+        action_data : numpy.array
+            Action data from ``ManiaActionData.get_action_data``
+
+        Returns
+        -------
+        numpy.array
+        filtered action_data
+        """
+        filtered_action_data = action_data.copy()
+
+        # Operate per column (because idk how to make numpy operate on all columns like this)
+        for col in range(ManiaActionData.num_keys(action_data)):
+            # For current column, get where PRESS and RELEASE occur
+            where_release_timing = np.where(np.isin(action_data[:, col + 1], ManiaActionData.RELEASE))[0]
+            where_press_timing   = np.where(np.isin(action_data[:, col + 1], ManiaActionData.PRESS))[0]
+
+            # Get timings for those PRESS and RELEASE
+            release_timings = action_data[where_release_timing][:,0]
+            press_timings   = action_data[where_press_timing][:,0]
+
+            # For filtering out releases associated with single notes
+            non_release = (release_timings - press_timings) <= 1
+            filtered_action_data[:, col + 1][where_release_timing[non_release]] = 0
+
+        return filtered_action_data
+
+
+    @staticmethod
     def detect_presses_during_holds(action_data):
         """
         Masks presses that occur when there is at least one hold in one of the columns
