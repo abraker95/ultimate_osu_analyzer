@@ -17,7 +17,7 @@ from analysis.osu.mania.score_data import ManiaScoreData
 
 
 def get_draw_data(ratio_x, ratio_y, ratio_t, x_offset, y_offset, column, time, event_time):
-    scaled_note_width  = ManiaSettings.note_width*ratio_x
+    scaled_note_width = ManiaSettings.note_width*ratio_x
     
     pos_x = x_offset + column*(ManiaSettings.note_width + ManiaSettings.note_seperation)*ratio_x
     pos_y = y_offset + (time - event_time)*ratio_t
@@ -31,29 +31,8 @@ class ManiaLayers():
     Sample use case: ``add_mania_layer('layer group', 'layer name', hitobject_data, ManiaLayers.ManiaNoteLayer)``
     """
 
-    '''
     @staticmethod
-    def ManiaNoteLayer(painter, spatial_data, time, hitobject_data):
-        """
-        Displays notes in map data
-        """
-        num_columns  = int(self.beatmap.difficulty.cs)
-        space_data   = widget.width(), widget.height(), num_columns, self.time
-        spatial_data = ManiaSettings.get_spatial_data(*space_data)
-
-        start_time, end_time = spatial_data[0], spatial_data[1]
-
-        for column in range(num_columns):
-            start_idx = find(self.beatmap.hitobjects[column], start_time, selector=lambda hitobject: hitobject.time)
-            end_idx   = find(self.beatmap.hitobjects[column], end_time,   selector=lambda hitobject: hitobject.get_end_time())
-
-            visible_hitobjects = self.beatmap.hitobjects[column][start_idx : end_idx + 2]
-            for visible_hitobject in visible_hitobjects:
-                visible_hitobject.render_hitobject(painter, spatial_data[2:], self.time)
-    '''
-
-    @staticmethod
-    def ManiaActionLayer(painter, columns, time, spatial_data, action_data, pen_width=1):
+    def ManiaActionLayer(painter, columns, time, spatial_data, action_data, pen_width=5):
         start_time, end_time = spatial_data[0], spatial_data[1]
         action_data = action_data[np.logical_and(start_time <= action_data[:,0], action_data[:,0] <= end_time)]
 
@@ -69,16 +48,45 @@ class ManiaLayers():
 
 
     @staticmethod
-    def ManiaChordLayer(painter, columns, time, spatial_data, chord_data):
-        painter.setPen(QPen(QColor(0, 0, 200, 255), 5))
-
+    def ManiaActionFillLayer(painter, columns, time, spatial_data, action_data, pen_width=1):
         start_time, end_time = spatial_data[0], spatial_data[1]
-        chord_data = chord_data[np.logical_and(start_time <= chord_data[:,0], chord_data[:,0] <= end_time)]
+        brush = QBrush(QColor(0, 50, 255, 50))
 
-        for data in chord_data:
-            for col in range(1, len(data)):
-                if data[col] != 1: continue
+        for col in range(1, action_data.shape[1]):
+            press_times   = action_data[action_data[:, col] == 1][:, 0]
+            release_times = action_data[action_data[:, col] == 3][:, 0]
 
-                pos_x, pos_y, scaled_note_width = get_draw_data(*spatial_data[2:], col - 1, time, data[0])
-                painter.drawLine(pos_x, pos_y, pos_x + scaled_note_width, pos_y)
-        
+            # Get visible press and release ranges
+            press_time_start = np.where(press_times >= start_time)[0]
+            if len(press_time_start) != 0: press_time_start = press_time_start[0]
+            else: return
+
+            press_time_end = np.where(press_times <= end_time)[0]
+            if len(press_time_end) != 0: press_time_end = press_time_end[-1] + 1
+            else: press_time_end = press_time_start + 1
+
+            release_time_start = np.where(release_times >= start_time)[0]
+            if len(release_time_start) != 0: release_time_start = release_time_start[0]
+            else: return
+
+            release_time_end = np.where(release_times <= end_time)[0]
+            if len(release_time_end) != 0: release_time_end = release_time_end[-1] + 1
+            else: release_time_end = release_time_start + 1
+
+            # Make sure presses and releases match up 1:1
+            release_time_start = min(release_time_start, press_time_start)
+            press_time_start = min(press_time_start, release_time_start)
+
+            release_time_end = max(release_time_end, press_time_end)
+            press_time_end = max(press_time_end, release_time_end)
+
+            # Resolve to indices to timings
+            press_times   = press_times[press_time_start : press_time_end]
+            release_times = release_times[release_time_start : release_time_end]
+
+            for i in range(len(press_times)):
+                pos_x_beg, pos_y_beg, scaled_note_width = get_draw_data(*spatial_data[2:], col - 1, time, press_times[i])
+                pos_x_end, pos_y_end, scaled_note_width = get_draw_data(*spatial_data[2:], col - 1, time, release_times[i])
+
+                height = max(ManiaSettings.note_height, pos_y_beg - pos_y_end)
+                painter.fillRect(QRectF(pos_x_beg, pos_y_beg, scaled_note_width, -height), brush)
