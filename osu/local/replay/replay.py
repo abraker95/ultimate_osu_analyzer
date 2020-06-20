@@ -53,6 +53,10 @@ class Replay(osrparse.replay.Replay):
         return round(acc, 3)
 
 
+    def get_num_hits(self):
+        return self.number_300s + self.gekis + self.katus + self.number_100s + self.number_50s + self.misses
+
+
     def get_mods_name(self):
         if Mod.NoMod in self.mod_combination: return ''
         mods_str = '+'
