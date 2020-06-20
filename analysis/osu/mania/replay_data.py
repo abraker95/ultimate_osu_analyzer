@@ -19,16 +19,23 @@ class ManiaReplayData():
 
     @staticmethod
     def get_replay_data(replay_events, columns):
-        event_data   = list([ [] for _ in range(columns) ])
+        # event_data contains a list of PRESS/RELEASE states for each column
+        event_data = list([ [] for _ in range(columns) ])
+
+        # press_states contains a timings for when presses begin for each column.
+        # Its purpose also doubles as a press flag. So if it has a timing then
+        # press_flag is True, and if it is None then press_flag is False.
         press_states = list([ None for _ in range(columns) ])
 
         for replay_event in replay_events:
             for column in range(columns):
                 is_key_press = ((int(replay_event.x) & (1 << column)) > 0)
 
+                # Check if key went from being release to being pressed
                 if press_states[column] == None and is_key_press:
                     press_states[column] = replay_event.t
 
+                # Check if key went from being pressed to being released
                 if press_states[column] != None and not is_key_press:
                     event_data[column].append(np.asarray([ press_states[column], replay_event.t ]))
                     press_states[column] = None
