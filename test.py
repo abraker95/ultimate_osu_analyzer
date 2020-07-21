@@ -1,77 +1,78 @@
-import sys
-import time
+import unittest
 
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+# GUI & Core test
+from unit_tests.test_callback import TestCallback
+from unit_tests.test_graph import TestGraph
+from unit_tests.test_graph_manager import TestGraphManager
+from unit_tests.test_manager_switch import TestManagerSwitch
 
-from unit_tests.callback_test import CallbackTest
-from unit_tests.beatmap_tests import BeatmapTests
-from unit_tests.replay_read_tests import ReplayReadTests
-from unit_tests.collection_tests import CollectionTests
-from unit_tests.temporal_graph_test import TemporalGraphTest
-from unit_tests.graph_manager_test import GraphManagerTest
-from unit_tests.manager_switch_test import ManagerSwitchTest
-from unit_tests.std_replay_test import StdReplayTest
-from unit_tests.display_test import DisplayTest
+# File tests
+from unit_tests.test_beatmap import TestBeatmap
+from unit_tests.test_replay import TestReplay
+
+# Visualization tests
+from unit_tests.test_std_replay_visualization import TestStdReplayVisualization
 
 
-sys._excepthook = sys.excepthook 
-def exception_hook(exctype, value, traceback):
-    print(exctype, value, traceback)
-    sys._excepthook(exctype, value, traceback) 
-    sys.exit(1) 
 
-sys.excepthook = exception_hook 
+# Override function so that stdout output is not polluted with 
+# the short descriptions it gets from commented out function 
+# description text
+unittest.TestCase.shortDescription = lambda x: None
+
+
+# Thanks https://stackoverflow.com/questions/35930811/how-to-sort-unittest-testcases-properly
+def suiteFactory(
+        *testcases,
+        testSorter   = None,
+        suiteMaker   = unittest.makeSuite,
+        newTestSuite = unittest.TestSuite
+    ):
+    """
+    make a test suite from test cases, or generate test suites from test cases.
+    *testcases     = TestCase subclasses to work on
+    testSorter     = sort tests using this function over sorting by line number
+    suiteMaker     = should quack like unittest.makeSuite.
+    newTestSuite   = should quack like unittest.TestSuite.
+    """
+
+    if testSorter is None:
+        ln         = lambda f:    getattr(tc, f).__code__.co_firstlineno
+        testSorter = lambda a, b: ln(a) - ln(b)
+
+    test_suite = newTestSuite()
+    for tc in testcases:
+        test_suite.addTest(suiteMaker(tc, sortUsing=testSorter))
+
+    return test_suite
+
+
+def caseFactory(
+        scope        = globals().copy(),
+        caseSorter   = lambda f: __import__("inspect").findsource(f)[1],
+        caseSuperCls = unittest.TestCase,
+        caseMatches  = __import__("re").compile("^Test")
+    ):
+    """
+    get TestCase-y subclasses from frame "scope", filtering name and attribs
+    scope        = iterable to use for a frame; preferably a hashable (dictionary).
+    caseMatches  = regex to match function names against; blank matches every TestCase subclass
+    caseSuperCls = superclass of test cases; unittest.TestCase by default
+    caseSorter   = sort test cases using this function over sorting by line number
+    """
+
+    import re
+
+    return sorted(
+        [
+            scope[obj] for obj in scope
+                if re.match(caseMatches, obj) and issubclass(scope[obj], caseSuperCls)
+        ],
+        key=caseSorter
+    )
 
 
 if __name__ == '__main__':
-    
-    app = QApplication(sys.argv)
-
-    CallbackTest.run_tests()
-
-    print('Running beatmap loading test mania . . .')
-    BeatmapTests.test_beatmap_loading_mania('unit_tests\\maps\\mania\\playable\\Camellia - GHOST (qqqant) [Collab PHANTASM [MX]].osu')
-    print('OK\n\n')
-
-    print('Running beatmap loading test std . . .')
-    BeatmapTests.test_beatmap_loading_std('unit_tests\\maps\\std\\playable\\Mutsuhiko Izumi - Red Goose (nold_1702) [ERT Basic].osu')
-    print('OK\n\n')
-
-    print('Running std hitobject visibility test . . .')
-    # BeatmapTests.test_hitobject_visibility_std()
-    print('OK\n\n')
-
-    print('Running collection loading test . . .')
-    CollectionTests.test_collection_loading('unit_tests\\collections\\collection.db')
-    print('OK\n\n')
-
-    print('Running replay loading test . . .')
-    ReplayReadTests.test_replay_loading('unit_tests\\replays\\osu\\agility_test.osr')
-    ReplayReadTests.test_replay_loading('unit_tests\\replays\\osu\\abraker - Mutsuhiko Izumi - Red Goose [ERT Basic] (2019-08-24) Osu.osr')
-    ReplayReadTests.test_replay_loading('unit_tests\\replays\\osu\\LeaF - I (Maddy) [Terror] replay_0.osr')
-    ReplayReadTests.test_replay_loading('unit_tests\\replays\\osu\\so bad - Nakamura Meiko - Aka no Ha [Extra] (2020-03-01) std Osu.osr')
-    ReplayReadTests.test_replay_loading('unit_tests\\replays\\osu\\so bad - Nakamura Meiko - Aka no Ha [Extra] (2020-03-01) std ripple.osr')
-    ReplayReadTests.test_replay_loading('unit_tests\\replays\\mania\\osu!topus! - DJ Genericname - Dear You [S.Star\'s 4K HD+] (2019-05-29) OsuMania.osr')
-    ReplayReadTests.test_replay_loading('unit_tests\\replays\\osu\\Toy - Within Temptation - The Unforgiving [Marathon] (2018-02-06) Osu.osr')
-    print('OK\n\n')
-    display_test = DisplayTest(app, 'unit_tests\\maps\\std\\playable\\Mutsuhiko Izumi - Red Goose (nold_1702) [ERT Basic].osu')
-    display_test.switcher_test()
-    display_test.time_browse_test(app)
-    display_test.close()
-
-    std_replay_test = StdReplayTest(app)
-    std_replay_test.close()
-
-    manager_switch_test = ManagerSwitchTest()
-    manager_switch_test.manager_switch_test()
-    manager_switch_test.manager_add_remove_test()
-
-    temporal_graph_test = TemporalGraphTest()
-    temporal_graph_test.time_minupilation_test(app)
-    temporal_graph_test.close()
-
-    graph_manager_test = GraphManagerTest()
-    graph_manager_test.run_tests(app)
-    graph_manager_test.close()
+    cases = suiteFactory(*caseFactory())
+    runner = unittest.TextTestRunner(verbosity=2)
+    runner.run(cases)

@@ -1,3 +1,4 @@
+import unittest
 import time
 
 from PyQt5.QtCore import *
@@ -35,7 +36,7 @@ class DummyManager(QWidget):
 
 
 
-class ManagerSwitchTest():
+class TestManagerSwitch(unittest.TestCase):
 
     def do_something(self, old_manager, new_manager):
         print('old_manager - num items: ' + str(len(old_manager)) + ' structure: ')
@@ -49,13 +50,18 @@ class ManagerSwitchTest():
         print()
 
 
-    def manager_switch_test(self):
+    @classmethod
+    def setUpClass(cls):
+        cls.app = QApplication([])
+
+
+    def test_manager_switch(self):
         """
-        Switches back and forth betwee the two managers and checks if the current manager
+        test_manager_switch
+
+        Switches back and forth between the two managers and checks if the current manager
         has expected number of items
         """
-        print('manager_switch_test')
-
         # Setup
         manager_switch = ManagerSwitch()
 
@@ -70,30 +76,31 @@ class ManagerSwitchTest():
 
         manager_switch.switch.connect(self.do_something, inst=manager_switch)
 
-        # Test
         for t in range(4):
+            # Even vals
             if t % 2 == 0:
                 manager_switch.switch('manager_1')
                 manager = manager_switch.get()
 
-                assert len(manager) == 2, 'manager_1 has an unexpected number of items:  Expected: %s,  Result: %s' % (str(2), str(len(manager)))
-                assert 'item_1' in manager.stuff.keys(), 'manager_1 does not contain an item named "item_1"'
-                assert 'item_2' in manager.stuff.keys(), 'manager_1 does not contain an item named "item_2"'
+                self.assertEqual(len(manager), 2, 'manager_1 has an unexpected number of items')
+                self.assertTrue('item_1' in manager.stuff.keys(), 'manager_1 does not contain an item named "item_1"')
+                self.assertTrue('item_2' in manager.stuff.keys(), 'manager_1 does not contain an item named "item_2"')
 
+            # Odd vals
             elif t % 2 == 1: 
                 manager_switch.switch('manager_2')
                 manager = manager_switch.get()
 
-                assert len(manager) == 1, 'manager_2 has an unexpected number of items:  Expected: %s,  Result: %s' % (str(1), str(len(manager)))
-                assert 'item_3' in manager.stuff.keys(), 'manager_2 does not contain an item named "item_3"'
+                self.assertEqual(len(manager), 1, 'manager_2 has an unexpected number of items')
+                self.assertTrue('item_3' in manager.stuff.keys(), 'manager_2 does not contain an item named "item_3"')
 
 
-    def manager_add_remove_test(self):
+    def test_manager_add_remove(self):
         """
-        Creates two managers, and removes first one created then second one
-        """
-        print('manager_add_remove_test')
+        test_manager_add_remove
 
+        Creates two managers, removes first one created, and then second one
+        """
         # Setup
         manager_switch = ManagerSwitch()
 
@@ -109,20 +116,20 @@ class ManagerSwitchTest():
         manager_switch.switch.connect(self.do_something, inst=manager_switch)
 
         manager = manager_switch.get()
-        assert manager_switch.active == 'manager_2', 'manager_2 is not the active manager. Active manager: %s' % (manager_switch.active, )
-        assert len(manager) == 1, 'manager_2 has an unexpected number of items:  Expected: %s,  Result: %s' % (str(1), str(len(manager)))
-        assert 'item_3' in manager.stuff.keys(), 'manager_2 does not contain an item named "item_3"'
+        self.assertEqual(manager_switch.active, 'manager_2', f'manager_2 is not the active manager. Active manager: {(manager_switch.active, )}')
+        self.assertEqual(len(manager), 1, 'manager_2 has an unexpected number of items')
+        self.assertTrue('item_3' in manager.stuff.keys(), 'manager_2 does not contain an item named "item_3"')
 
         manager_switch.switch('manager_1')
         manager_switch.rmv('manager_2')
         
         manager = manager_switch.get()
-        assert manager_switch.active == 'manager_1', 'manager_1 is not the active manager. Active manager: %s' % (manager_switch.active, )
-        assert len(manager) == 2, 'manager_1 has an unexpected number of items:  Expected: %s,  Result: %s' % (str(2), str(len(manager)))
-        assert 'item_1' in manager.stuff.keys(), 'manager_1 does not contain an item named "item_1"'
-        assert 'item_2' in manager.stuff.keys(), 'manager_1 does not contain an item named "item_2"'
+        self.assertEqual(manager_switch.active, 'manager_1', f'manager_1 is not the active manager. Active manager: {(manager_switch.active, )}')
+        self.assertEqual(len(manager), 2, 'manager_1 has an unexpected number of items')
+        self.assertTrue('item_1' in manager.stuff.keys(), 'manager_1 does not contain an item named "item_1"')
+        self.assertTrue('item_2' in manager.stuff.keys(), 'manager_1 does not contain an item named "item_2"')
 
         manager_switch.rmv('manager_1')
         manager = manager_switch.get()
 
-        assert manager == None, 'There still exist a manager'
+        self.assertIsNone(manager, 'There still exists a manager')

@@ -1,7 +1,9 @@
+import unittest
+
 from osu.local.collection.collectionIO import CollectionIO
 
 
-class CollectionTests():
+class TestCollections(unittest.TestCase):
 
     @staticmethod
     def test_collection_loading(filepath):
