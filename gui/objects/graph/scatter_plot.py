@@ -16,4 +16,6 @@ class ScatterPlot(pyqtgraph.ScatterPlotItem):
 
     def update_data(self, data):
         data_x, data_y = data
+
+        self.clear()
         self.addPoints(x=data_x, y=data_y)
