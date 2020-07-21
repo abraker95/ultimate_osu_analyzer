@@ -110,7 +110,6 @@ class MainWindow(QMainWindow):
         self.layer_manager_switch_gui  = self.main_frame.center_frame.right_frame.layer_manager_switch
         self.replay_manager_switch_gui = self.main_frame.center_frame.right_frame.replay_manager_switch
         self.graph_manager_switch_gui  = self.main_frame.center_frame.right_frame.graph_manager_switch
-        self.analysis_controls         = self.main_frame.center_frame.right_frame.analysis_controls
         self.ipython_console           = self.main_frame.center_frame.right_frame.ipython_console
         self.map_manager               = self.main_frame.center_frame.mid_frame.map_manager
         self.display                   = self.main_frame.center_frame.mid_frame.display
