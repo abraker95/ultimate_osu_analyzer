@@ -32,8 +32,8 @@ class Data2DGraph(pyqtgraph.PlotWidget):
         else:
             self.plot_item = ScatterPlot()
 
-        self.addItem(self.plot_item)
         self.update_data(data_2d)
+        self.addItem(self.plot_item)
 
         self.__init__.emit(self)
 

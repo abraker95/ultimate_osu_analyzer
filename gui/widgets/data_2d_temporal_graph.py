@@ -31,6 +31,8 @@ class Data2DTemporalGraph(pyqtgraph.PlotWidget):
         if   plot_type == Data2DTemporalGraph.SCATTER_PLOT: self.plot_item = ScatterPlot()
         elif plot_type == Data2DTemporalGraph.LINE_PLOT:    self.plot_item = LinePlot()
         else:                                               self.plot_item = ScatterPlot()
+
+        self.update_data(data_2d)
         self.addItem(self.plot_item)
 
         self.timeline_marker = pyqtgraph.InfiniteLine(angle=90, movable=True)
@@ -38,7 +40,6 @@ class Data2DTemporalGraph(pyqtgraph.PlotWidget):
         self.timeline_marker.sigPositionChanged.connect(self.time_changed_event)
         self.addItem(self.timeline_marker, ignoreBounds=True)
         
-        self.update_data(data_2d)
         self.__init__.emit(self)
 
 
