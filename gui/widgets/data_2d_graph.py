@@ -5,12 +5,14 @@ import pyqtgraph
 from misc.callback import callback
 from gui.objects.graph.scatter_plot import ScatterPlot
 from gui.objects.graph.line_plot import LinePlot
+from gui.objects.graph.bar_plot import BarPlot
 
 
 class Data2DGraph(pyqtgraph.PlotWidget):
 
     SCATTER_PLOT = 0
     LINE_PLOT    = 1
+    BAR_PLOT     = 2
 
     @callback
     def __init__(self, name, data_2d, plot_type=None):
@@ -25,12 +27,10 @@ class Data2DGraph(pyqtgraph.PlotWidget):
         self.getViewBox().setMouseEnabled(y=False)
         self.getPlotItem().setTitle(name)
 
-        if plot_type == Data2DGraph.SCATTER_PLOT:
-            self.plot_item = ScatterPlot()
-        elif plot_type == Data2DGraph.LINE_PLOT:
-            self.plot_item = LinePlot()
-        else:
-            self.plot_item = ScatterPlot()
+        if   plot_type == Data2DGraph.SCATTER_PLOT: self.plot_item = ScatterPlot()
+        elif plot_type == Data2DGraph.LINE_PLOT:    self.plot_item = LinePlot()
+        elif plot_type == Data2DGraph.BAR_PLOT:     self.plot_item = BarPlot()
+        else:                                       self.plot_item = ScatterPlot()
 
         self.update_data(data_2d)
         self.addItem(self.plot_item)

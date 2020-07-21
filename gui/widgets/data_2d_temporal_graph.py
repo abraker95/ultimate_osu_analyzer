@@ -6,12 +6,14 @@ import pyqtgraph
 from misc.callback import callback
 from gui.objects.graph.scatter_plot import ScatterPlot
 from gui.objects.graph.line_plot import LinePlot
+from gui.objects.graph.bar_plot import BarPlot
 
 
 class Data2DTemporalGraph(pyqtgraph.PlotWidget):
 
     SCATTER_PLOT = 0
     LINE_PLOT    = 1
+    BAR_PLOT     = 2
 
     MIN_TIME     = -5000
 
@@ -30,6 +32,7 @@ class Data2DTemporalGraph(pyqtgraph.PlotWidget):
 
         if   plot_type == Data2DTemporalGraph.SCATTER_PLOT: self.plot_item = ScatterPlot()
         elif plot_type == Data2DTemporalGraph.LINE_PLOT:    self.plot_item = LinePlot()
+        elif plot_type == Data2DTemporalGraph.BAR_PLOT:     self.plot_item = BarPlot()
         else:                                               self.plot_item = ScatterPlot()
 
         self.update_data(data_2d)
