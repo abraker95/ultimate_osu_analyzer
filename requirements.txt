@@ -1,5 +1,6 @@
 numpy
 unittest
+pandas
 scipy
 matplotlib
 pyqtgraph==0.11.0rc0

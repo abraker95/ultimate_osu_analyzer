@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import pandas as pd
 
 from analysis.osu.mania.map_data import ManiaMapData
 from osu.local.hitobject.mania.mania import Mania
@@ -14,12 +15,12 @@ class ManiaActionData():
     RELEASE = 3  # Finger must depart force to unpress key
 
     @staticmethod
-    def get_action_data(hitobjects, min_press_duration=1):
+    def get_map_data(hitobjects, min_press_duration=1):
         """
         [
-            [ time, col1_state, col2_state, ..., colN_state ],
-            [ time, col1_state, col2_state, ..., colN_state ],
-            [ time, col1_state, col2_state, ..., colN_state ],
+            [ col1_state, col2_state, ..., colN_state ],
+            [ col1_state, col2_state, ..., colN_state ],
+            [ col1_state, col2_state, ..., colN_state ],
             ... 
         ]
         """
@@ -27,7 +28,7 @@ class ManiaActionData():
         hitobject_data = ManiaMapData.get_hitobject_data(hitobjects)
         num_columns = len(hitobject_data)
 
-        # Record data via dictionary to identify timings
+        # Record data via dictionary to identify unique timings
         action_data = {}
 
         for col in range(num_columns):
@@ -35,7 +36,9 @@ class ManiaActionData():
                 # Extract note timings
                 note_start = hitobject[0]
                 note_end   = hitobject[1]
-                note_end   = note_end if (note_end - note_start >= min_press_duration) else (note_start + min_press_duration)
+
+                # Adjust note ending based on whether it is single or hold note (determined via min_press_duration)
+                note_end = note_end if (note_end - note_start >= min_press_duration) else (note_start + min_press_duration)
 
                 # Record press state
                 try:             action_data[note_start]
@@ -47,22 +50,56 @@ class ManiaActionData():
                 except KeyError: action_data[note_end] = np.zeros(num_columns)
                 action_data[note_end] += np.asarray([ ManiaActionData.RELEASE if col==c else ManiaActionData.FREE for c in range(num_columns) ])
 
-        # Convert the dictionary of recorded timings and states into a sorted numpy array
-        action_data = np.asarray([ np.concatenate(([timing], action_data[timing])) for timing in np.sort(list(action_data.keys())) ])
-        
-        # Fill in hold states
-        for col in range(1, action_data.shape[1]):
-            for i in range(1, len(action_data[:, col])):
-                # Every press must have a release, so if there is no RELEASE after a press then it must be a hold
-                press_with_no_hold = (action_data[i - 1, col] == ManiaActionData.PRESS) and (action_data[i, col] != ManiaActionData.RELEASE)
+        # Sort data by timings
+        action_data = dict(sorted(action_data.items()))
 
-                # If there is a FREE after a HOLD and the current state is not a RELEASE, then it must be a continuing HOLD
-                hold_continue = (action_data[i - 1, col] == ManiaActionData.HOLD) and (action_data[i, col] != ManiaActionData.RELEASE)
-                
-                if press_with_no_hold or hold_continue:
-                    action_data[i, col] = ManiaActionData.HOLD
+        # Convert the dictionary of recorded timings and states into a pandas data
+        action_data = pd.DataFrame.from_dict(action_data, orient='index')
+
+        # Fill in HOLD data
+        ManiaActionData.fill_holds(action_data)
 
         return action_data
+
+
+    @staticmethod
+    def get_replay_data(replay_events, cols):
+        """
+        [
+            [ col1_state, col2_state, ..., colN_state ],
+            [ col1_state, col2_state, ..., colN_state ],
+            [ col1_state, col2_state, ..., colN_state ],
+            ... 
+        ]
+        """
+        cols = int(cols)
+
+        # Record data via dictionary to identify unique timings
+        replay_data = {}
+
+        # Previous state of whether finger is holding key down
+        hold_state = np.asarray([ False for _ in range(cols) ])
+
+        for replay_event in replay_events:
+            is_key_hold = np.asarray([ ((int(replay_event.x) & (1 << col)) > 0) for col in range(cols) ])
+            if np.equal(hold_state, is_key_hold).all():
+                continue
+
+            data = np.asarray([ ManiaActionData.FREE for _ in range(cols) ])
+            data[~hold_state &  is_key_hold] = ManiaActionData.PRESS
+            data[ hold_state &  is_key_hold] = ManiaActionData.HOLD
+            data[ hold_state & ~is_key_hold] = ManiaActionData.RELEASE
+
+            replay_data[replay_event.t] = data
+            hold_state = is_key_hold
+
+        # Sort data by timings
+        replay_data = dict(sorted(replay_data.items()))
+
+        # Convert the dictionary of recorded timings and states into a pandas data
+        replay_data = pd.DataFrame.from_dict(replay_data, orient='index')
+
+        return replay_data
 
 
     @staticmethod
@@ -80,7 +117,49 @@ class ManiaActionData():
         int
         Number of keys
         """
-        return action_data.shape[1] - 1
+        return action_data.shape[1]
+
+
+    @staticmethod
+    def press_times(action_data, col):
+        """
+        Gets list of press timings in ``action_data`` for column ``col``
+
+        Parameters
+        ----------
+        action_data : numpy.array
+            Action data from ``ManiaActionData.get_action_data``
+
+        col : int
+            Column to get timings for
+
+        Returns
+        -------
+        numpy.array
+        Press timings
+        """
+        return action_data[col].index[action_data[col] == ManiaActionData.PRESS]
+        
+
+    @staticmethod
+    def release_times(action_data, col):
+        """
+        Gets list of release timings in ``action_data`` for column ``col``
+
+        Parameters
+        ----------
+        action_data : numpy.array
+            Action data from ``ManiaActionData.get_action_data``
+
+        col : int
+            Column to get timings for
+
+        Returns
+        -------
+        numpy.array
+        Release timings
+        """
+        return action_data[col].index[action_data[col] == ManiaActionData.RELEASE]
 
 
     @staticmethod
@@ -95,10 +174,50 @@ class ManiaActionData():
 
         Returns
         -------
-         numpy.array
+        numpy.array
         Filtered ``action_data``
         """
-        return action_data[~np.all(action_data[:, 1:] == ManiaActionData.FREE, 1)]
+        return action_data[~np.all(action_data == ManiaActionData.FREE, 1)]
+
+
+    @staticmethod
+    def fill_holds(action_data):
+        """
+        Fill hold press states where they need to be. For example, if there are FREE between
+        where PRESS and RELEASE occur, those will be filled with HOLD
+
+        Thanks: DeltaEpsilon#7787
+
+        Parameters
+        ----------
+        action_data : numpy.array
+            Action data from ``ManiaActionData.get_action_data``
+
+        Returns
+        -------
+        numpy.array
+        Filtered ``action_data``
+        """
+        data = action_data.values.T
+
+        for col in range(len(data)):
+            hold_flag = False
+
+            for row in range(len(data[col])):
+                elem = data[col, row]
+                
+                if hold_flag:
+                    if elem == ManiaActionData.PRESS:
+                        raise ValueError(f'Two consequtive hold starts: ({col}, {row})')
+                    elif elem == ManiaActionData.RELEASE: 
+                        hold_flag = False
+                    elif elem == ManiaActionData.FREE: 
+                        data[col, row] = ManiaActionData.HOLD
+                else:
+                    if elem == ManiaActionData.PRESS:
+                        hold_flag = True
+                    elif elem == ManiaActionData.RELEASE: 
+                        raise ValueError(f'Hold ended before it started: ({col}, {row})')
 
 
     @staticmethod
@@ -120,20 +239,9 @@ class ManiaActionData():
         (numpy.array, numpy.array)
         A tuple of ``action_data`` for left hand and right hand
         """
-        keys = action_data.shape[1] - 1
-        left_half  = math.ceil(keys/2)  if left_handed else math.floor(keys/2)
-        right_half = math.floor(keys/2) if left_handed else math.ceil(keys/2)
-
-        left  = np.zeros((action_data.shape[0], left_half + 1))
-        right = np.zeros((action_data.shape[0], right_half + 1))
-
-        left[:, 0]  = action_data[:, 0]
-        right[:, 0] = action_data[:, 0]
-
-        left[:, 1:]  = action_data[:, 1:left_half + 1]
-        right[:, 1:] = action_data[:, left_half + 1:]
-
-        return left, right
+        keys = action_data.shape[1]
+        left_half = math.ceil(keys/2) if left_handed else math.floor(keys/2)
+        return action_data.loc[:, :left_half - 1], action_data.loc[:, left_half:]
 
     
     @staticmethod
@@ -165,13 +273,11 @@ class ManiaActionData():
         numpy.array
         ``masked_action_data`` mask of the actions specified
         """
-        masked_action_data = np.zeros(action_data.shape)
-        masked_action_data[:, 0] = action_data[:, 0]
-        masked_action_data[:, 1:][np.isin(action_data[:, 1:], actions)] = 1
-        masked_action_data = masked_action_data[index_start : index_end]
+        if type(actions) != list: actions = [ actions ]
+        masked_action_data = action_data.loc[index_start : index_end].isin(actions)
 
         if filter_free:
-            masked_action_data = masked_action_data[masked_action_data[:, 1:].any(axis=1)]
+            masked_action_data = ManiaActionData.filter_free(masked_action_data)
 
         return masked_action_data
 
@@ -197,13 +303,13 @@ class ManiaActionData():
 
         Returns
         -------
-        numpy.array
-        ``action_data_count`` Action data representing number of actions specified for each entry
+        int
+        ``action_count`` Number of actions in data
         """
-        action_mask = ManiaActionData.mask_actions(action_data, actions, index_start, index_end)
-        return np.sum(action_mask[:, 1:])
+        action_mask = ManiaActionData.mask_actions(action_data, actions, index_start, index_end).to_numpy()
+        return np.sum(action_mask)
 
-
+    '''
     @staticmethod
     def count_actions_per_timing(action_data, actions, index_start=None, index_end=None):
         """
@@ -235,10 +341,11 @@ class ManiaActionData():
         count[:, 1] = np.sum(count[:, 1:], axis=1)
 
         return count
+    '''
 
 
     @staticmethod
-    def get_actions_between(action_data, ms_start, ms_end, inclusive=True):
+    def get_actions_between(action_data, ms_start, ms_end):
         """
         Gets a slice of ``action_data`` between ``ms_start`` and ``ms_end``, inclusively
 
@@ -253,20 +360,16 @@ class ManiaActionData():
         ms_end : int
             Ending time in milliseconds of data in action data in which to get actions for
 
-        inclusive : bool
-            Flag indicating whether range is inclusive or exclusive. Inclusive by default.
-
         Returns
         -------
         numpy.array
         ``action_data`` slice of data between the times specified
         """
-        if inclusive: return action_data[np.logical_and(action_data[:, 0] <= ms_end, action_data[:, 0] >= ms_start)]
-        else:         return action_data[np.logical_and(action_data[:, 0] <  ms_end, action_data[:, 0] >  ms_start)]
+        return action_data.loc[ms_start : ms_end]
 
 
     @staticmethod
-    def is_action(action_data, index_start, index_end, actions, columns):
+    def is_action_in(action_data, actions, columns, index_start=None, index_end=None):
         """
         Checks whether specied ``actions`` in ``columns`` exist in slice of ``action_data`` 
         between ``index_start`` and ``index_end``
@@ -293,12 +396,12 @@ class ManiaActionData():
         bool
         ``found_actions`` Whether the ``actions`` have been found
         """
-        column_mask = np.isin(np.arange(action_data.shape[1]), columns)
-        return np.any(np.isin(action_data[index_start:, column_mask], actions))
+        if type(columns) != list: columns = [ columns ]
+        return np.any(ManiaActionData.mask_actions(action_data.loc[:, columns], actions, index_start, index_end))
 
 
     @staticmethod
-    def idx_next_action(action_data, index_start, actions, columns):
+    def idx_next_action(action_data, index_start, actions, columns=[]):
         """
         Gets the next index of where one of ``actions`` occurs in one of specified ``columns``
 
@@ -321,6 +424,8 @@ class ManiaActionData():
         int
         ``idx`` index where the next action occurs. Returns -1 if there is no action found.
         """
-        column_mask = np.isin(np.arange(action_data.shape[1]), columns)
-        try: return np.where[np.isin(action_data[index_start:, column_mask], actions)][0][0] + index_start
-        except IndexError: return -1
+        action_data = ManiaActionData.mask_actions(action_data.loc[:, columns], actions, index_start)
+        masked_data = ManiaActionData.filter_free(action_data)
+        
+        try: return masked_data.index[0]
+        except: return index_start

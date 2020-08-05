@@ -44,12 +44,14 @@ class Data2DGraph(pyqtgraph.PlotWidget):
 
 
     def update_data(self, data_2d):
-        # Filter out infinities
+        if data_2d == None: return
         data_x, data_y = data_2d
-        inf_idx_filter = np.where(np.isfinite(data_y.astype(np.float64)))
-        data_x, data_y = data_x[inf_idx_filter], data_y[inf_idx_filter]
 
-        self.plot_item.update_data((data_x, data_y))
+        data_2d = self.plot_item.update_data(data_x, data_y)
+        if data_2d == None: return
+
+        # Update view
+        data_x, data_y = data_2d
         data_width = data_x[-1] - data_x[0]
 
         if len(data_x) > 0: self.setRange(xRange=(data_x[0] - data_width*0.1, data_x[-1] + data_width*0.1))

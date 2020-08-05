@@ -6,7 +6,6 @@ from enum import Enum
 from analysis.osu.std.replay_data import StdReplayData
 #from analysis.osu.taiko.replay_data import TaikoReplayData
 #from analysis.osu.catch.replay_data import CatchReplayData
-from analysis.osu.mania.replay_data import ManiaReplayData
 
 from osrparse.enums import GameMode
 from cli.cmd_osu import CmdOsu

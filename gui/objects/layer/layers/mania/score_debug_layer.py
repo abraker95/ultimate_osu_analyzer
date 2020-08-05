@@ -5,7 +5,6 @@ from PyQt5.QtGui import *
 import numpy as np
 
 from analysis.osu.mania.map_data import ManiaMapData
-from analysis.osu.mania.replay_data import ManiaReplayData
 from analysis.osu.mania.score_data import ManiaScoreData
 
 from misc.math_utils import *
@@ -13,6 +12,7 @@ from generic.temporal import Temporal
 from gui.objects.layer.layer import Layer
 
 from osu.local.hitobject.mania.mania import Mania, ManiaSettings
+from analysis.osu.mania.action_data import ManiaActionData
 
 
 
@@ -27,7 +27,7 @@ class ManiaScoreDebugLayer(Layer, Temporal):
         self.map_data = ManiaMapData.get_hitobject_data(beatmap.hitobjects)
         self.columns  = len(self.map_data)
 
-        self.replay_data = ManiaReplayData.get_replay_data(replay.play_data, self.columns)
+        self.replay_data = ManiaActionData.get_replay_data(replay.play_data, self.columns)
         self.score_data  = ManiaScoreData.get_score_data(self.replay_data, self.map_data)
 
         time_updater.connect(self.time_changed)

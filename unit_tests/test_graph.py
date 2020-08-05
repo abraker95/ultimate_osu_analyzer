@@ -23,7 +23,7 @@ class TestGraph(unittest.TestCase):
 
 
     def test_scatter_plot(self):
-        temporal_graph = Data2DTemporalGraph('Test', np.asarray([self.data_x, self.data_y]), plot_type=Data2DTemporalGraph.SCATTER_PLOT)
+        temporal_graph = Data2DTemporalGraph('Test', None, plot_type=Data2DTemporalGraph.SCATTER_PLOT)
         temporal_graph.show()
 
         for t in range(0, 30*10, 1):
@@ -31,13 +31,13 @@ class TestGraph(unittest.TestCase):
 
             temporal_graph.timeline_marker.setValue(t/10)
             temporal_graph.update_data((self.data_x, self.data_y))
-            
+
             time.sleep(0.01)
             self.app.processEvents()
 
 
     def test_line_plot(self):
-        temporal_graph = Data2DTemporalGraph('Test', np.asarray([self.data_x, self.data_y]), plot_type=Data2DTemporalGraph.LINE_PLOT)
+        temporal_graph = Data2DTemporalGraph('Test', None, plot_type=Data2DTemporalGraph.LINE_PLOT)
         temporal_graph.show()
 
         for t in range(0, 30*10, 1):
@@ -51,14 +51,14 @@ class TestGraph(unittest.TestCase):
 
 
     def test_bar_plot(self):
-        temporal_graph = Data2DTemporalGraph('Test', np.asarray([self.data_x, self.data_y]), plot_type=Data2DTemporalGraph.BAR_PLOT)
+        temporal_graph = Data2DTemporalGraph('Test', None, plot_type=Data2DTemporalGraph.BAR_PLOT)
         temporal_graph.show()
 
         for t in range(0, 30*10, 1):
             self.data_y = np.sin(self.data_x/4 + t/10)
 
             temporal_graph.timeline_marker.setValue(t/10)
-            temporal_graph.update_data((self.data_x, self.data_y))
+            temporal_graph.update_data((10, self.data_y))
 
             time.sleep(0.01)
             self.app.processEvents()

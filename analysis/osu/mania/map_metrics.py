@@ -16,37 +16,10 @@ class ManiaMapMetrics():
     Raw metrics
     """
     @staticmethod
-    def calc_press_rate(action_data, window_ms=1000):
+    def calc_press_rate(action_data, col=None, window_ms=1000):
         """
-        Calculates presses per second across all columns within indicated ``window_ms`` of time
-
-        Parameters
-        ----------
-        action_data : numpy.array
-            Action data from ``ManiaMapData.get_action_data``
-
-        window_ms : int
-            Duration in milliseconds for which actions are counted up
-
-        Returns
-        -------
-        (numpy.array, numpy.array)
-        Tuple of ``(times, aps)``. ``times`` are timings corresponding to recorded actions per second. 
-            ``aps`` are actions per second at indicated time.
-        """
-        aps = []
-        for i in range(len(action_data)):
-            actions_in_range = ManiaActionData.get_actions_between(action_data, action_data[i, 0] - window_ms, action_data[i, 0])
-            num_actions = ManiaActionData.count_actions(actions_in_range, ManiaActionData.PRESS)
-            aps.append([ action_data[i, 0], 1000*num_actions/window_ms ])
-
-        return np.asarray(aps)
-
-
-    @staticmethod
-    def calc_press_rate_col(action_data, col, window_ms=1000):
-        """
-        Calculates presses per second in the specified column within indicated ``window_ms`` of time
+        Calculates presses per second across all columns within indicated ``window_ms`` of time.
+        Has a moving that shifts to next note occuring on new timing
 
         Parameters
         ----------
@@ -65,15 +38,45 @@ class ManiaMapMetrics():
         Tuple of ``(times, aps)``. ``times`` are timings corresponding to recorded actions per second. 
             ``aps`` are actions per second at indicated time.
         """
-        action_data = action_data[:, [0, col]]
-        aps = []
+        times, aps = [], []
 
-        for i in range(len(action_data)):
-            actions_in_range = ManiaActionData.get_actions_between(action_data, action_data[i, 0] - window_ms, action_data[i, 0])
-            num_actions = ManiaActionData.count_actions(actions_in_range, ManiaActionData.PRESS)
-            aps.append([ action_data[i, 0], 1000*num_actions/window_ms ])
+        if col != None:
+            action_data = action_data[col]
 
-        return np.asarray(aps)
+        for timing in action_data.index:
+            actions_in_range = action_data.loc[timing - window_ms : timing]
+            num_actions = (actions_in_range == ManiaActionData.PRESS).to_numpy().sum()
+            
+            times.append(timing)
+            aps.append(1000*num_actions/window_ms)
+
+        return np.asarray(times), np.asarray(aps)
+
+
+    @staticmethod
+    def calc_note_intervals(action_data, col):
+        """
+        Gets the duration (time interval) between each note in the specified ``col``
+
+        Parameters
+        ----------
+        action_data : numpy.array
+            Action data from ``ManiaActionData.get_action_data``
+
+        col : int
+            Which column number to get note intervals for
+
+        Returns
+        -------
+        (numpy.array, numpy.array)
+            Tuple of ``(start_times, intervals)``. ``start_times`` are timings corresponding to start of notes. 
+            ``intervals`` are the timings difference between current and previous notes' starting times. 
+            Resultant array size is ``len(hitobject_data) - 1``.
+        """
+        press_timings = action_data.index[action_data[col] == ManiaActionData.PRESS]
+        if len(press_timings) < 2: return [], []
+    
+        return press_timings[1:].to_numpy(), np.diff(press_timings.to_numpy())
 
 
     @staticmethod
@@ -95,21 +98,21 @@ class ManiaMapMetrics():
         Tuple of ``(times, max_aps_per_col)``. ``times`` are timings corresponding to recorded actions per second. 
             ``max_aps_per_col`` are max actions per second at indicated time.
         """
-        keys = ManiaActionData.num_keys(action_data)
-        max_aps_per_col = []
+        times, aps = [], []
 
-        for i in range(len(action_data)):
-            aps_col = []
-            for col in range(1, keys + 1):
-                col_data = action_data[:, [0, col]]
+        # iterate through timings
+        for timing in action_data.index:
+            aps_per_col = []
 
-                actions_in_range = ManiaActionData.get_actions_between(col_data, col_data[i, 0] - window_ms, col_data[i, 0])
-                num_actions = ManiaActionData.count_actions(actions_in_range, ManiaActionData.PRESS)
-                aps_col.append(1000*num_actions/window_ms)
+            # iterate through columns
+            for _, data in action_data.loc[timing - window_ms : timing].iteritems():
+                num_actions = (data == ManiaActionData.PRESS).to_numpy().sum()
+                aps_per_col.append(1000*num_actions/window_ms)
             
-            max_aps_per_col.append([ action_data[i, 0], max(aps_col) ])
+            times.append(timing)
+            aps.append(max(aps_per_col))
 
-        return np.asarray(max_aps_per_col)
+        return np.asarray(times), np.asarray(aps) 
 
 
     @staticmethod
@@ -132,16 +135,13 @@ class ManiaMapMetrics():
         # Operate per column (because idk how to make numpy operate on all columns like this)
         for col in range(ManiaActionData.num_keys(action_data)):
             # For current column, get where PRESS and RELEASE occur
-            where_release_timing = np.where(np.isin(action_data[:, col + 1], ManiaActionData.RELEASE))[0]
-            where_press_timing   = np.where(np.isin(action_data[:, col + 1], ManiaActionData.PRESS))[0]
+            release_timings = action_data.index[action_data[col] == ManiaActionData.RELEASE]
+            press_timings   = action_data.index[action_data[col] == ManiaActionData.PRESS]
 
-            # Get timings for those PRESS and RELEASE
-            release_timings = action_data[where_release_timing][:,0]
-            press_timings   = action_data[where_press_timing][:,0]
-
-            # For filtering out releases associated with single notes
+            # For filtering out releases associated with single notes 
+            # (assumes single note press interval is 1 ms)
             non_release = (release_timings - press_timings) <= 1
-            filtered_action_data[:, col + 1][where_release_timing[non_release]] = 0
+            filtered_action_data.loc[release_timings[non_release]] = 0
 
         return filtered_action_data
 
@@ -164,13 +164,13 @@ class ManiaMapMetrics():
         numpy.array
         action_data mask of actions detected
         """
-        press_mask = ManiaActionData.mask_actions(action_data, ManiaActionData.PRESS)
+        press_mask = (action_data == ManiaActionData.PRESS).to_numpy()
 
-        press_mask_any = np.any(action_data[:, 1:] == ManiaActionData.PRESS, 1)
-        hold_mask_any  = np.any(action_data[:, 1:] == ManiaActionData.HOLD, 1)
+        press_mask_any = np.any(action_data == ManiaActionData.PRESS, 1)
+        hold_mask_any  = np.any(action_data == ManiaActionData.HOLD, 1)
         press_and_hold = np.logical_and(press_mask_any, hold_mask_any)
 
-        press_mask[:, 1:] = press_and_hold[:, None] * press_mask[:, 1:]
+        press_mask = press_and_hold[:, None] * press_mask
         return press_mask
 
 
@@ -192,13 +192,13 @@ class ManiaMapMetrics():
         numpy.array
         action_data mask of actions detected
         """
-        hold_mask = ManiaActionData.mask_actions(action_data, ManiaActionData.HOLD)
+        hold_mask = (action_data == ManiaActionData.HOLD).to_numpy()
 
-        release_mask_any = np.any(action_data[:, 1:] == ManiaActionData.RELEASE, 1)
-        hold_mask_any    = np.any(action_data[:, 1:] == ManiaActionData.HOLD, 1)
+        release_mask_any = np.any(action_data == ManiaActionData.RELEASE, 1)
+        hold_mask_any    = np.any(action_data == ManiaActionData.HOLD, 1)
         release_and_hold = np.logical_and(release_mask_any, hold_mask_any)
 
-        hold_mask[:, 1:] = release_and_hold[:, None] * hold_mask[:, 1:]
+        hold_mask = release_and_hold[:, None] * hold_mask
         return hold_mask
 
 
@@ -222,32 +222,29 @@ class ManiaMapMetrics():
         # Operate per column (because idk how to make numpy operate on all columns like this)
         for col in range(ManiaActionData.num_keys(action_data)):
             # For current column, get where PRESS and RELEASE occur
-            where_release_timing = np.where(np.isin(action_data[:, col + 1], ManiaActionData.RELEASE))[0]
-            where_press_timing   = np.where(np.isin(action_data[:, col + 1], ManiaActionData.PRESS))[0]
-
-            # Get timings for those PRESS and RELEASE
-            release_timings = action_data[where_release_timing][:,0]
-            press_timings   = action_data[where_press_timing][:,0]
+            release_timings = action_data.index[action_data[col] == ManiaActionData.RELEASE]
+            press_timings   = action_data.index[action_data[col] == ManiaActionData.PRESS]
 
             # Filter out idx in where_release_timing and where_press_timing that are 1 or less ms apart
+            # (assumes single note press interval is 1 ms)
             hold_note_start_mask = (release_timings - press_timings) > 1
         
             # Since we want to also include HOLD actions, let's assign 2 to PRESS and RELEASE actions associated
             # with hold notes so everything else can later be easily filtered out.
-            hold_note_mask[:, col + 1][where_release_timing[hold_note_start_mask]] = 2
-            hold_note_mask[:, col + 1][where_press_timing[hold_note_start_mask]] = 2
+            hold_note_mask[col].loc[release_timings[hold_note_start_mask]] = 2
+            hold_note_mask[col].loc[press_timings[hold_note_start_mask]] = 2
 
             # Filter out everthing else
-            hold_note_mask[:, col + 1][hold_note_mask[:, col + 1] != 2] = 0
+            hold_note_mask[col][hold_note_mask[col] != 2] = 0
 
             # Set all the 2's to 1's
-            hold_note_mask[:, col + 1][hold_note_mask[:, col + 1] == 2] = 1
+            hold_note_mask[col][hold_note_mask[col] == 2] = 1
 
         return hold_note_mask
 
 
     @staticmethod
-    def data_to_press_intervals(action_data):
+    def data_to_press_durations(action_data):
         """
         Takes action_data, and turns it into time intervals since last press.
         For example,
@@ -280,28 +277,25 @@ class ManiaMapMetrics():
         """
         # Make a copy of the data and keep just the timings
         press_intervals_data = action_data.copy()
-        press_intervals_data[:, 1:] = 0
+        press_intervals_data[:] = 0
 
         # Operate per column (because idk how to make numpy operate on all columns like this)
         for col in range(ManiaActionData.num_keys(action_data)):
-            # For current column, get where PRESS occur
-            where_press_timing = np.where(np.isin(action_data[:, col + 1], ManiaActionData.PRESS))[0]
-
             # Get timings for PRESS
-            press_timings = action_data[where_press_timing][:,0]
+            press_timings = action_data.index[action_data[col] == ManiaActionData.PRESS]
 
             # This contains a list of press intervals. The locations of the press intervals are
             # resolved via where_press_timing starting with the second press
             press_intervals = press_timings[1:] - press_timings[:-1]
 
             # Now fill in the blank data with press intervals
-            press_intervals_data[:, col + 1][where_press_timing[1:]] = press_intervals
+            press_intervals_data[col].loc[press_timings[1:]] = press_intervals
         
         return press_intervals_data
 
 
     @staticmethod
-    def data_to_hold_note_durations(action_data):
+    def data_to_hold_durations(action_data):
         """
         Takes action_data, filters out non hold notes, and reduces them to
         durations they last for. For example,
@@ -322,6 +316,9 @@ class ManiaMapMetrics():
             [138984.,      0.,      0.  ],
             [139234.,      0.,      0.  ],
 
+        .. note:: This does not filter out single notes and 
+        will show process single note press/release times as well
+
         Parameters
         ----------
         action_data : numpy.array
@@ -334,31 +331,27 @@ class ManiaMapMetrics():
         """
         # Make a copy of the data and keep just the timings
         hold_note_duration_data = action_data.copy()
-        hold_note_duration_data[:, 1:] = 0
+        hold_note_duration_data[:] = 0
 
         # Make another copy of the data to have just stuff related to hold notes
         hold_note_mask = ManiaMapMetrics.detect_hold_notes(action_data)
         hold_note_data = action_data.copy()
 
         # Keep just the information associated with hold notes
-        hold_note_data[:, 1:][~hold_note_mask[:, 1:].astype(np.bool, copy=False)] = 0
+        hold_note_data[~hold_note_mask.astype(np.bool, copy=False)] = 0
 
         # Operate per column (because idk how to make numpy operate on all columns like this)
         for col in range(ManiaActionData.num_keys(action_data)):
             # For current column, get where PRESS and RELEASE occur
-            where_release_timing = np.where(np.isin(hold_note_data[:, col + 1], ManiaActionData.RELEASE))[0]
-            where_press_timing   = np.where(np.isin(hold_note_data[:, col + 1], ManiaActionData.PRESS))[0]
-
-            # Get timings for those PRESS and RELEASE
-            release_timings = action_data[where_release_timing][:,0]
-            press_timings   = action_data[where_press_timing][:,0]
+            press_timings = action_data.index[action_data[col] == ManiaActionData.PRESS]
+            release_timings = action_data.index[action_data[col] == ManiaActionData.RELEASE]
 
             # This contains a list of hold note durations. The locations of the hold note durations are
             # resolved via where_press_timing
             hold_note_durations = release_timings - press_timings
 
             # Now fill in the blank data with hold note durations
-            hold_note_duration_data[:, col + 1][where_press_timing] = hold_note_durations
+            hold_note_duration_data[col].loc[release_timings] = hold_note_durations
         
         return hold_note_duration_data
 
@@ -386,6 +379,9 @@ class ManiaMapMetrics():
             [138984.,      0.,      0.  ],
             [139234.,      0.,      0.  ],
 
+        .. note:: This does not filter out single notes and 
+        will show process single note press/release times as well
+
         Parameters
         ----------
         action_data : numpy.array
@@ -398,33 +394,29 @@ class ManiaMapMetrics():
         """
         # Make a copy of the data and keep just the timings
         anti_press_duration_data = action_data.copy()
-        anti_press_duration_data[:, 1:] = 0
+        anti_press_duration_data[:] = 0
 
         # Make another copy of the data to have just stuff related to hold notes
         hold_note_mask = ManiaMapMetrics.detect_hold_notes(action_data)
         hold_note_data = action_data.copy()
 
         # Keep just the information associated with hold notes
-        hold_note_data[:, 1:][~hold_note_mask[:, 1:].astype(np.bool, copy=False)] = 0
+        hold_note_data[~hold_note_mask.astype(np.bool, copy=False)] = 0
 
         # Operate per column (because idk how to make numpy operate on all columns like this)
         for col in range(ManiaActionData.num_keys(action_data)):
-            # For current column, get where PRESS and RELEASE occur
-            where_release_timing = np.where(np.isin(hold_note_data[:, col + 1], ManiaActionData.RELEASE))[0]
-            where_press_timing   = np.where(np.isin(hold_note_data[:, col + 1], ManiaActionData.PRESS))[0]
-
             # Get timings for those PRESS and RELEASE. We drop the last release timing because
             # There is no press after that, hence no anti-press. We drop the first press timing
             # because there is no release before that, hence no anti-press
-            release_timings = action_data[where_release_timing][:-1,0]
-            press_timings   = action_data[where_press_timing][1:,0]
+            press_timings = action_data.index[action_data[col] == ManiaActionData.PRESS]
+            release_timings = action_data.index[action_data[col] == ManiaActionData.RELEASE]
 
             # This contains a list of anti-press durations. The locations of the anti-press durations are
             # resolved via where_release_timing
-            anti_press_durations = press_timings - release_timings
+            anti_press_durations = press_timings[1:] - release_timings[:-1]
 
             # Now fill in the blank data with anti-press durations
-            anti_press_duration_data[:, col + 1][where_release_timing[:-1]] = anti_press_durations
+            anti_press_duration_data[col].loc[press_timings[1:]] = anti_press_durations
         
         return anti_press_duration_data
 
@@ -445,23 +437,23 @@ class ManiaMapMetrics():
         action_data mask of actions detected
         """
         inverse_mask = action_data.copy()
-        inverse_mask[:, 1:] = 0
+        inverse_mask[:] = 0
 
         # Ratio of release to hold duration that qualifies as inverse
         # For example 0.6 - Release duration needs to be 0.6*hold_duration to qualify as inverse
         ratio_free_to_hold = 0.6
 
         anti_press_durations = ManiaMapMetrics.data_to_anti_press_durations(action_data)
-        hold_press_durations = ManiaMapMetrics.data_to_hold_note_durations(action_data)
+        hold_press_durations = ManiaMapMetrics.data_to_hold_durations(action_data)
 
         # Go through each column on left hand
         for col in range(ManiaActionData.num_keys(action_data)):
-            anti_press_durations_col = anti_press_durations[:, col + 1]
-            hold_press_durations_col = hold_press_durations[:, col + 1]
+            anti_press_durations_col = anti_press_durations[col].to_numpy()
+            hold_press_durations_col = hold_press_durations[col].to_numpy()
 
             # For filtering out timings with FREE
-            is_anti_press = anti_press_durations_col != 0
-            is_hold_press = hold_press_durations_col != 0
+            is_anti_press = anti_press_durations_col != ManiaActionData.FREE
+            is_hold_press = hold_press_durations_col != ManiaActionData.FREE
 
             # Compare release duration against hold durations of previous and next hold notes
             free_ratio_prev_hold = anti_press_durations_col[is_anti_press] <= ratio_free_to_hold*hold_press_durations_col[is_hold_press][:-1]
@@ -470,7 +462,7 @@ class ManiaMapMetrics():
 
             # Resolve inverse location and assign
             where_inverse = np.where(is_anti_press)[0][is_inverse]
-            inverse_mask[:, 1:][where_inverse] = 1
+            inverse_mask[col].iloc[where_inverse] = 1
        
         return inverse_mask
         
@@ -490,18 +482,17 @@ class ManiaMapMetrics():
         numpy.array
         action_data mask of actions detected that correspond to chord patterns. 1 if chord pattern 0 otherwise
         """
-        mask = ManiaActionData.mask_actions(action_data, [ ManiaActionData.PRESS ])
         
         '''
         A note is chord if:
             - It is among 3 or more other notes in same action
             - TODO: It is among 3 or more other notes in range of actions within tolerance interval
         '''
-        for action in mask:
-            presses = action[1:][action[1:] == ManiaActionData.PRESS]
-            if len(presses) < 3: action[1:][action[1:] == ManiaActionData.PRESS] = 0
+        presses = action_data[action_data == ManiaActionData.PRESS]
+        #for action in mask:
+        #    if len(presses) < 3: action[1:][action[1:] == ManiaActionData.PRESS] = 0
 
-        return mask
+        #return mask
 
 
     
@@ -520,41 +511,14 @@ class ManiaMapMetrics():
         numpy.array
         action_data mask of actions detected that correspond to jack patterns. 1 if jack pattern 0 otherwise
         """
-        mask = np.zeros(action_data.shape)
-        mask[:, 0] = action_data[:, 0]
+        mask = action_data.copy()
+        state = np.zeros(action_data.shape[1])
 
-        state = np.zeros(action_data.shape[1] - 1)
-        for i in range(1, len(action_data)):
-            state = np.logical_and(np.logical_or(action_data[i - 1, 1:], state), np.logical_or(action_data[i, 1:], ~np.any(action_data[i, 1:])))
-            mask[i, 1:] = np.logical_and(action_data[i, 1:], state)
+        #for i in range(1, len(action_data)):
+        #    state = np.logical_and(np.logical_or(action_data.iloc[i - 1], state), np.logical_or(action_data.iloc[i], ~np.any(action_data.iloc[i])))
+        #    mask[i, 1:] = np.logical_and(action_data[i, 1:], state)
 
         return mask
-
-
-    @staticmethod
-    def calc_note_intervals(hitobject_data, column):
-        """
-        Gets the duration (time interval) between each note in the specified ``column``
-
-        Parameters
-        ----------
-        hitobject_data : numpy.array
-            Hitobject data from ``ManiaMapData.get_hitobject_data``
-
-        column : int
-            Which column number to get note intervals for
-
-        Returns
-        -------
-        (numpy.array, numpy.array)
-            Tuple of ``(start_times, intervals)``. ``start_times`` are timings corresponding to start of notes. 
-            ``intervals`` are the timings difference between current and previous notes' starting times. 
-            Resultant array size is ``len(hitobject_data) - 1``.
-        """
-        start_times = ManiaMapData.start_times(hitobject_data, column)
-        if len(start_times) < 2: return [], []
-    
-        return start_times[1:], np.diff(start_times)
 
 
     @staticmethod

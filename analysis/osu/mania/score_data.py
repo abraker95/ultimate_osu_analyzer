@@ -1,10 +1,12 @@
 from enum import Enum
 import numpy as np
+import pandas as pd
 import scipy.stats
 import math
 
+from analysis.osu.mania.action_data import ManiaActionData
 from osu.local.hitobject.mania.mania import Mania
-from analysis.osu.mania.replay_data import ManiaReplayData
+
 from misc.numpy_utils import NumpyUtils
 from misc.math_utils import prob_trials
 
@@ -17,29 +19,23 @@ class ManiaScoreDataEnums(Enum):
     HITOBJECT_IDX = 4
 
 
-'''
-[
-    [
-        [ press_time, column, offset, hitobject_idx ],
-        [ press_time, column, offset, hitobject_idx ],
-        ... N events in col 
-    ],
-    [
-        [ press_time, column, offset, hitobject_idx ],
-        [ press_time, column, offset, hitobject_idx ],
-        ... N events in col 
-    ],
-    ... N cols
-]
-'''
 class ManiaScoreData():
 
-    pos_hit_range      = 100   # ms range of the late hit window
-    neg_hit_range      = 100   # ms range of the early hit window
-    pos_hit_miss_range = 50    # ms range of the late miss window
-    neg_hit_miss_range = 50    # ms range of the early miss window
+    TYPE_HITP  = 0  # A hit press has a hitobject and offset associated with it
+    TYPE_HITR  = 1  # A hit release has a hitobject and offset associated with it
+    TYPE_MISS  = 2  # A miss has a hitobject associated with it, but not offset
+    TYPE_EMPTY = 3  # An empty has neither hitobject nor offset associated with it
 
-    dist_miss_range = 50       # ms range the cursor can deviate from aimpoint distance threshold before it's a miss
+    DATA_OFFSET  = 0 
+    DATA_TYPE    = 1
+    DATA_MAP_IDX = 2
+
+    pos_hit_range       = 100  # ms range of the late hit window
+    neg_hit_range       = 100  # ms range of the early hit window
+    pos_hit_miss_range  = 50   # ms range of the late miss window
+    neg_hit_miss_range  = 50   # ms range of the early miss window
+
+    dist_miss_range     = 50   # ms range the cursor can deviate from aimpoint distance threshold before it's a miss
 
     pos_rel_range       = 100  # ms range of the late release window
     neg_rel_range       = 100  # ms range of the early release window
@@ -60,7 +56,7 @@ class ManiaScoreData():
     blank_miss = False
 
     # If True, remove release miss window for sliders. This allows to hit sliders and release them whenever
-    lazy_sliders = False
+    lazy_sliders = True  # Release timings are currently not processed, TODO
 
     # There are cases for which parts of the hitwindow of multiple notes may overlap. If True, all 
     # overlapped miss parts are processed for one key event. If False, each overlapped miss part is 
@@ -73,26 +69,53 @@ class ManiaScoreData():
     overlap_hit_handling  = False
 
     @staticmethod
-    def get_score_data(replay_data, map_data):
+    def get_score_data(map_data, replay_data):
+        """
+        [
+            [
+                [ offset, type, action_idx ],
+                [ offset, type, action_idx ],
+                ... N events in col 
+            ],
+            [
+                [ offset, type, action_idx ],
+                [ offset, type, action_idx ],
+                ... N events in col 
+            ],
+            ... N cols
+        ]
+        """
         pos_nothing_range = ManiaScoreData.pos_hit_range + ManiaScoreData.pos_hit_miss_range
         neg_nothing_range = ManiaScoreData.neg_hit_range + ManiaScoreData.neg_hit_miss_range
 
         score_data = []
 
         # Go through each column
-        for column in range(len(map_data)):
-            event_data  = ManiaReplayData.start_end_times(replay_data, column)
-            curr_key_event_idx = 0
-            column_data = []
+        for map_col_idx, replay_col_idx in zip(map_data, replay_data):
+            presses_map  = map_data[map_col_idx][map_data[map_col_idx] == ManiaActionData.PRESS]
+            releases_map = map_data[map_col_idx][map_data[map_col_idx] == ManiaActionData.RELEASE]
+
+            replay_col = replay_data[replay_col_idx]
+
+            column_data = {}
+
+            map_idx = 0
+            replay_idx = 0
 
             # Go through each hitobject in column
-            for hitobject_idx in range(len(map_data[column])):
+            while True:
+                # Condition checks whether we processed all notes in the column
+                if map_idx >= len(presses_map): break
+
                 # Get note timings
-                note_start_time = map_data[column][hitobject_idx][0]
-                note_end_time   = map_data[column][hitobject_idx][-1]
+                note_start_time = presses_map.index[map_idx]
+                note_end_time   = releases_map.index[map_idx]
+                
+                # Single notes have different behavior than long notes
+                is_single_note = ((note_end_time - note_start_time) <= 1)
 
                 # To keep track of whether there was a tap that corresponded to this hitobject
-                is_hitobject_consumed = False
+                is_note_consumed = False
 
                 # Modify hit windows
                 if ManiaScoreData.notelock:
@@ -104,75 +127,158 @@ class ManiaScoreData():
                 if ManiaScoreData.dynamic_window:
                     # TODO
                     pass
-
-                if len(event_data) == 0: key_event_idx = 0
+                
+                '''
+                if len(replay_data[col]) == 0: replay_idx = 0
                 else:
-                    # Get first replay event that leaeves the hitobject's positive miss window
+                    # Get first replay event that leaves the hitobject's positive miss window
                     lookforward_time = note_start_time + ManiaScoreData.pos_hit_range + ManiaScoreData.pos_hit_miss_range
-                    key_event_idx = np.where(event_data[:,0] >= lookforward_time)[0]
+                    replay_idx = replay_data[col][replay_data[col].index >= lookforward_time]
 
                     # If there are no replay events after the hitobject, get up to the last one;
                     # if curr_key_event_idx is equal to it, then the for loop isn't going to run anyway
                     if len(key_event_idx) == 0: key_event_idx = len(event_data)
                     else:                       key_event_idx = key_event_idx[0]
+                '''
                 
-                # Go through unprocessed replay events
-                for idx in range(curr_key_event_idx, key_event_idx):
-                    press_time, release_time = event_data[idx]
-                    time_offset = press_time - note_start_time
+                # Go through replay events
+                while True:
+                    # Condition check whether all player actions in the column have been processed
+                    # It's possible that the player never pressed any keys, so this may hit more
+                    # often than one may expect
+                    if replay_idx >= len(replay_col): break
 
-                    #column_data.append([ press_time, column, time_offset, hitobject_idx, idx ])
-                    
-                    # Way early taps. Doesn't matter where, is a miss if blank miss is on, otherwise ignore these
-                    is_in_neg_nothing_range = time_offset < -neg_nothing_range
-                    if is_in_neg_nothing_range:
-                        if ManiaScoreData.blank_miss:
-                            column_data.append([ press_time, column, np.nan, np.nan ])
-                        curr_key_event_idx = idx + 1  # consume event
-                        continue                      # next key press
+                    # Advance map_idx before continuing going through replay_idx
+                    if is_note_consumed: break
 
-                    # Way late taps. Doesn't matter where, ignore these
-                    is_in_pos_nothing_range = time_offset > pos_nothing_range
-                    if is_in_pos_nothing_range:
-                        if ManiaScoreData.blank_miss:
-                            column_data.append([ press_time, column, np.nan, np.nan ])
-                        curr_key_event_idx = idx + 1  # consume event
-                        continue                      # next key press
+                    # Time at which press or release occurs
+                    replay_timing = replay_col.index[replay_idx]
 
-                    # Early miss tap if on circle
-                    is_in_neg_miss_range = time_offset < -ManiaScoreData.neg_hit_range
-                    if is_in_neg_miss_range:
-                        column_data.append([ press_time, column, -float(ManiaScoreData.pos_hit_range + ManiaScoreData.pos_hit_miss_range), hitobject_idx ])
-                        curr_key_event_idx    = idx + 1      # consume event
-                        is_hitobject_consumed = True; break  # consume hitobject
+                    # If a press occurs at this time
+                    if replay_col.iloc[replay_idx] == ManiaActionData.PRESS:
+                        time_offset = replay_timing - note_start_time
 
-                    # Late miss tap if on circle
-                    is_in_pos_miss_range = time_offset > ManiaScoreData.pos_hit_range
-                    if is_in_pos_miss_range:
-                        column_data.append([ press_time, column, float(ManiaScoreData.pos_hit_range + ManiaScoreData.pos_hit_miss_range), hitobject_idx ])
-                        curr_key_event_idx    = idx + 1      # consume event
-                        is_hitobject_consumed = True; break  # consume hitobject
+                        # Way early taps. Miss if blank miss is on -> record miss, otherwise ignore
+                        is_in_neg_nothing_range = time_offset < -neg_nothing_range
+                        if is_in_neg_nothing_range:
+                            if ManiaScoreData.blank_miss:
+                                column_data[replay_timing] = np.asarray([ np.nan, ManiaScoreData.TYPE_EMPTY, None ])
+                            
+                            replay_idx += 1
+                            continue
 
-                    # If a tap is anything else, it's a hit
-                    column_data.append([ press_time, column, time_offset, hitobject_idx ])
+                        # Way late taps. Doesn't matter where, ignore these
+                        is_in_pos_nothing_range = time_offset > pos_nothing_range
+                        if is_in_pos_nothing_range:
+                            if ManiaScoreData.blank_miss:
+                                column_data[replay_timing] = np.asarray([ np.nan, ManiaScoreData.TYPE_EMPTY, None ])
 
-                    if not ManiaScoreData.lazy_sliders:
-                        # TODO: Handle sliders here
-                        # TODO: compare release_time against slider release window
-                        pass
+                            replay_idx += 1
+                            continue
 
-                    curr_key_event_idx    = idx + 1      # consume event
-                    is_hitobject_consumed = True; break  # consume hitobject
+                        # Early miss tap if on circle
+                        is_in_neg_miss_range = time_offset < -ManiaScoreData.neg_hit_range
+                        if is_in_neg_miss_range:
+                            column_data[replay_timing] = np.asarray([ -float(neg_nothing_range), ManiaScoreData.TYPE_MISS, map_idx ])
+                            
+                            # Consume if release timing processing isn't needed
+                            if is_single_note or ManiaScoreData.lazy_sliders:
+                                is_note_consumed = True
 
-                # If the hitobject is not consumed after all that, it's a miss.
-                # The player never tapped this hitobject. 
-                if not is_hitobject_consumed:
-                    idx = min(curr_key_event_idx, len(event_data) - 1)
-                    column_data.append([ note_start_time, column, float(ManiaScoreData.pos_hit_range + ManiaScoreData.pos_hit_miss_range), hitobject_idx ])
+                            replay_idx += 1
+                            continue
 
-            score_data.append(np.asarray(column_data))
+                        # Late miss tap if on circle
+                        is_in_pos_miss_range = time_offset > ManiaScoreData.pos_hit_range
+                        if is_in_pos_miss_range:
+                            column_data[replay_timing] = np.asarray([ float(pos_nothing_range), ManiaScoreData.TYPE_MISS, map_idx ])
+                            
+                            # Consume if release timing processing isn't needed
+                            if is_single_note or ManiaScoreData.lazy_sliders:
+                                is_note_consumed = True
 
-        return np.asarray(score_data)
+                            replay_idx += 1
+                            continue
+
+                        # If none of the above, then it's a hit
+                        column_data[replay_timing] = np.asarray([ time_offset, ManiaScoreData.TYPE_HITP, map_idx ])
+
+                        # Consume if release timing processing isn't needed
+                        if is_single_note or ManiaScoreData.lazy_sliders:
+                            is_note_consumed = True
+
+                        replay_idx += 1
+                        continue
+
+                    # If a release occurs at this time
+                    if replay_col.iloc[replay_idx] == ManiaActionData.RELEASE:
+                        # If this is true, then release timings are ignored
+                        if ManiaScoreData.lazy_sliders:
+                            # This assumes there is a press associated with this release
+                            #is_note_consumed = True
+
+                            replay_idx += 1
+                            continue
+
+                        time_offset = replay_timing - note_end_time
+
+                        # TODO: Handle release
+
+                        # If none of the above, then it's a hit
+                        column_data[replay_timing] = np.asarray([ time_offset, ManiaScoreData.TYPE_HITR, map_idx ])
+
+                        # This assumes there is a press associated with this release
+                        #is_note_consumed = True
+
+                        replay_idx += 1
+                        continue                        
+
+                    # If we are here then it's a HOLD or RELEASE. Ignore.
+                    replay_idx += 1
+                    continue
+
+                if not is_note_consumed:
+                    process_as_release = not is_single_note and not ManiaScoreData.lazy_sliders
+                    replay_timing = replay_col.index[replay_idx]
+
+                    if process_as_release:
+                        time_offset = replay_timing - note_end_time
+                        note_timing = note_end_time
+                    else:
+                        time_offset = replay_timing - note_start_time
+                        note_timing = note_start_time
+
+                    # If the note is not consumed, check if replay timing has passed it
+                    # If it did, then it's a miss. Otherwise don't consume it yet
+                    if time_offset > pos_nothing_range:
+                        column_data[note_timing] = np.asarray([ float(pos_nothing_range), ManiaScoreData.TYPE_MISS, map_idx ])
+                        map_idx += 1
+                # Note was consumed
+                else:
+                    map_idx += 1
+                    is_note_consumed = False
+
+            # Sort data by timings
+            column_data = dict(sorted(column_data.items()))
+
+            # Convert the dictionary of recorded timings and states into a pandas data
+            column_data = pd.DataFrame.from_dict(column_data, orient='index')
+            score_data.append(column_data)
+
+        # This turns out to be 3 dimensional data (indexed by columns, timings, and attributes)
+        return pd.concat(score_data, axis=0, keys=range(len(map_data)))
+
+
+    @staticmethod
+    def filter_by_hit_type(score_data, hit_types, invert=False):
+        if type(hit_types) != list: hit_types = [ hit_types ]
+        
+        mask = score_data[ManiaScoreData.DATA_TYPE] == hit_types[0]
+        if len(hit_types) > 1:
+            for hit_type in hit_types[1:]:
+                mask |= score_data[ManiaScoreData.DATA_TYPE] == hit_type
+
+        return score_data[~mask] if invert else score_data[mask]
 
 
     @staticmethod
@@ -185,35 +291,23 @@ class ManiaScoreData():
 
     @staticmethod
     def tap_offset_mean(score_data):
-        hit_offsets = np.vstack(score_data)[:, ManiaScoreDataEnums.HIT_OFFSET.value]
-        
-        hit_offsets[hit_offsets == float('inf')]  = ManiaScoreData.pos_hit_range + ManiaScoreData.pos_hit_miss_range
-        hit_offsets[hit_offsets == float('-inf')] = -(ManiaScoreData.neg_hit_range + ManiaScoreData.neg_hit_miss_range)
-        hit_offsets = hit_offsets[~np.isnan(hit_offsets.astype(float))]
-
-        return np.mean(hit_offsets)
+        score_data = ManiaScoreData.filter_by_hit_type(score_data, [ManiaScoreData.TYPE_EMPTY], invert=True)
+        score_data = score_data[ManiaScoreData.DATA_OFFSET]
+        return np.mean(score_data)
 
 
     @staticmethod
     def tap_offset_var(score_data):
-        hit_offsets = np.vstack(score_data)[:, ManiaScoreDataEnums.HIT_OFFSET.value]
-        
-        hit_offsets[hit_offsets == float('inf')]  = ManiaScoreData.pos_hit_range + ManiaScoreData.pos_hit_miss_range
-        hit_offsets[hit_offsets == float('-inf')] = -(ManiaScoreData.neg_hit_range + ManiaScoreData.neg_hit_miss_range)
-        hit_offsets = hit_offsets[~np.isnan(hit_offsets.astype(float))]
-
-        return np.var(hit_offsets)
+        score_data = ManiaScoreData.filter_by_hit_type(score_data, [ManiaScoreData.TYPE_EMPTY], invert=True)
+        score_data = score_data[ManiaScoreData.DATA_OFFSET]
+        return np.var(score_data)
 
 
     @staticmethod
     def tap_offset_stdev(score_data):
-        hit_offsets = np.vstack(score_data)[:, ManiaScoreDataEnums.HIT_OFFSET.value]
-        
-        hit_offsets[hit_offsets == float('inf')]  = ManiaScoreData.pos_hit_range + ManiaScoreData.pos_hit_miss_range
-        hit_offsets[hit_offsets == float('-inf')] = -(ManiaScoreData.neg_hit_range + ManiaScoreData.neg_hit_miss_range)
-        hit_offsets = hit_offsets[~np.isnan(hit_offsets.astype(float))]
-
-        return np.std(hit_offsets)
+        score_data = ManiaScoreData.filter_by_hit_type(score_data, [ManiaScoreData.TYPE_EMPTY], invert=True)
+        score_data = score_data[ManiaScoreData.DATA_OFFSET]
+        return np.std(score_data)
 
 
     @staticmethod
@@ -249,7 +343,10 @@ class ManiaScoreData():
         Returns: probability all random values [X] are between -offset <= X <= offset
                 TL;DR: look at all the hits for scores; What are the odds all of them are between -offset and offset?
         """
-        return ManiaScoreData.odds_some_tap_within(score_data, offset)**len(np.vstack(score_data))
+        score_data = ManiaScoreData.filter_by_hit_type(score_data, [ManiaScoreData.TYPE_EMPTY], invert=True)
+        num_taps = len(score_data[ManiaScoreData.DATA_OFFSET])
+
+        return ManiaScoreData.odds_some_tap_within(score_data, offset)**num_taps
 
     
     @staticmethod
@@ -295,9 +392,9 @@ class ManiaScoreData():
         """
         mean      = ManiaScoreData.tap_offset_mean(score_data)
         stdev     = ManiaScoreData.tap_offset_stdev(score_data)
-        num_notes = len(np.vstack(score_data))
+        num_taps  = len(score_data[ManiaScoreData.DATA_OFFSET])
 
-        return ManiaScoreData.model_ideal_acc(mean, stdev, num_notes, score_point_judgements)
+        return ManiaScoreData.model_ideal_acc(mean, stdev, num_taps, score_point_judgements)
 
 
     @staticmethod

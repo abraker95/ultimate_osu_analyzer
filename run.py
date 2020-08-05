@@ -34,13 +34,7 @@ from gui.objects.layer.layers.std.replay_cursor_layer import StdReplayCursorLaye
 from gui.objects.layer.layers.std.replay_hold_layer import StdReplayHoldLayer
 from gui.objects.layer.layers.std.score_debug_layer import StdScoreDebugLayer
 
-from gui.objects.layer.layers.mania.raw_replay_layer import ManiaRawReplayLayer
-from gui.objects.layer.layers.mania.press_replay_layer import ManiaPressReplayLayer
-from gui.objects.layer.layers.mania.release_replay_layer import ManiaReleaseReplayLayer
-from gui.objects.layer.layers.mania.hold_replay_layer import ManiaHoldReplayLayer
 from gui.objects.layer.layers.mania.score_debug_layer import ManiaScoreDebugLayer
-
-from gui.objects.layer.layers.mania.hitobject_render_layer import HitobjectRenderLayer
 
 from gui.widgets.layer_manager import LayerManager
 from gui.widgets.replay_manager import ReplayManager
@@ -63,7 +57,6 @@ from analysis.osu.std.std_layers import StdLayers
 from analysis.osu.mania.map_data import ManiaMapData
 from analysis.osu.mania.action_data import ManiaActionData
 from analysis.osu.mania.map_metrics import ManiaMapMetrics
-from analysis.osu.mania.replay_data import ManiaReplayData
 from analysis.osu.mania.score_data import ManiaScoreData, ManiaScoreDataEnums
 from analysis.osu.mania.mania_layers import ManiaLayers
 
@@ -150,7 +143,6 @@ class MainWindow(QMainWindow):
         self.std_settings_action.triggered.connect(self.show_std_settings)
         self.mania_settings_action.triggered.connect(self.show_mania_settings)
 
-        #self.analysis_controls.create_graph_event.connect(lambda: self.graph_manager_switch_gui.get().add_graph)
         self.map_manager.map_changed_event.connect(self.change_map)
         self.map_manager.map_close_event.connect(self.close_map)
 
@@ -191,6 +183,10 @@ class MainWindow(QMainWindow):
         self.ipython_console.push_vars({ 'add_mania_layer'   : self.add_mania_layer })
         self.ipython_console.push_vars({ 'add_graph_2d_data' : self.add_graph_2d_data })
 
+        self.ipython_console.push_vars({ 'LINE_PLOT' : Data2DGraph.LINE_PLOT })
+        self.ipython_console.push_vars({ 'SCATTER_PLOT' : Data2DGraph.SCATTER_PLOT })
+        self.ipython_console.push_vars({ 'BAR_PLOT' : Data2DGraph.BAR_PLOT })
+
         self.ipython_console.push_vars({ 'StdMapData'       : StdMapData })
         self.ipython_console.push_vars({ 'StdMapMetrics'    : StdMapMetrics })
         self.ipython_console.push_vars({ 'StdMapPatterns'   : StdMapPatterns })
@@ -207,7 +203,6 @@ class MainWindow(QMainWindow):
         self.ipython_console.push_vars({ 'ManiaMapData'    : ManiaMapData })
         self.ipython_console.push_vars({ 'ManiaActionData' : ManiaActionData })
         self.ipython_console.push_vars({ 'ManiaMapMetrics' : ManiaMapMetrics })
-        self.ipython_console.push_vars({ 'ManiaReplayData' : ManiaReplayData })
         self.ipython_console.push_vars({ 'ManiaScoreData'  : ManiaScoreData })
         self.ipython_console.push_vars({ 'ManiaLayers'     : ManiaLayers })
 
@@ -276,7 +271,8 @@ class MainWindow(QMainWindow):
             self.layer_manager_switch_gui.get().add_layer('map', HitobjectAimpointLayer(beatmap, self.timeline.time_changed_event))
 
         if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
-            self.layer_manager_switch_gui.get().add_layer('map', HitobjectRenderLayer(beatmap, self.timeline.time_changed_event))
+            map_data = ManiaActionData.get_map_data(beatmap.hitobjects)
+            self.add_mania_layer('Map', 'map', map_data, ManiaLayers.ManiaActionFillLayer, color=(255, 0, 0, 255))
 
         self.graph_manager_switch_gui.add(beatmap.metadata.name, GraphManager())
         self.graph_manager_switch_gui.switch(beatmap.metadata.name)
@@ -333,12 +329,10 @@ class MainWindow(QMainWindow):
             #self.layer_manager_switch_gui.get().add_layer(group, StdScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
 
         if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
-            num_columns = beatmap.difficulty.cs
-            #self.layer_manager_switch_gui.get().add_layer(group, ManiaRawReplayLayer((replay, num_columns), self.timeline.time_changed_event))
-            #self.layer_manager_switch_gui.get().add_layer(group, ManiaPressReplayLayer((replay, num_columns), self.timeline.time_changed_event))
-            #self.layer_manager_switch_gui.get().add_layer(group, ManiaReleaseReplayLayer((replay, num_columns), self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer(group, ManiaHoldReplayLayer((replay, num_columns), self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer(group, ManiaScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
+            #self.layer_manager_switch_gui.get().add_layer(group, ManiaScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
+
+            replay_data = ManiaActionData.get_replay_data(replay.play_data, beatmap.difficulty.cs)
+            self.add_mania_layer('Replays', f'[ {replay.timestamp} ] {replay.player_name}', replay_data, ManiaLayers.ManiaActionFillLayer)
 
         self.status_bar.showMessage('Replay applied. Check replay tab.')
 
@@ -398,8 +392,8 @@ class MainWindow(QMainWindow):
         self.layer_manager_switch_gui.get().add_layer(group, StdData2DLayer(layer_name, data, draw_func, self.timeline.time_changed_event))
 
 
-    def add_mania_layer(self, group, layer_name, columns, data, draw_func):
-        self.layer_manager_switch_gui.get().add_layer(group, ManiaData2DLayer(layer_name, columns, data, draw_func, self.timeline.time_changed_event))
+    def add_mania_layer(self, group, layer_name, data, draw_func, color=(0, 50, 255, 50)):
+        self.layer_manager_switch_gui.get().add_layer(group, ManiaData2DLayer(layer_name, data, draw_func, self.timeline.time_changed_event, color))
 
 
     def add_graph_2d_data(self, name, data_2d, temporal=False, plot_type=Data2DGraph.SCATTER_PLOT):
