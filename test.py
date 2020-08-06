@@ -12,6 +12,19 @@ from unit_tests.test_replay import TestReplay
 
 # Visualization tests
 from unit_tests.test_std_replay_visualization import TestStdReplayVisualization
+from unit_tests.test_mania_layers import TestManiaLayers
+
+# Analysis tests
+from unit_tests.test_mania_action_data import TestManiaActionData
+from unit_tests.test_mania_metric_data import TestManiaMetricData
+from unit_tests.test_mania_score_data import TestManiaScoreData
+
+from unit_tests.test_std_map_data import TestStdMapData
+from unit_tests.test_std_map_metrics import TestStdMapMetrics
+from unit_tests.test_std_map_patterns import TestStdMapPatterns
+from unit_tests.test_std_replay_data import TestStdReplayData
+from unit_tests.test_std_score_data import TestStdScoreData
+from unit_tests.test_std_score_metrics import TestStdScoreMetrics
 
 
 
