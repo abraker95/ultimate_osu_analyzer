@@ -4,13 +4,13 @@ import numpy as np
 class Metrics():
 
     @staticmethod
-    def dists(x, y, t):
+    def dists(x, y):
         return np.sqrt(np.diff(x)**2 + np.diff(y)**2)
 
 
     @staticmethod
     def vel_2d(x, y, t):
-        return Metrics.dists(x, y, t)/np.diff(t)
+        return Metrics.dists(x, y)/np.diff(t)
 
 
     @staticmethod
