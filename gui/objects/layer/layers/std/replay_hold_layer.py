@@ -36,17 +36,21 @@ class StdReplayHoldLayer(Layer, Temporal):
         ratio_x = widget.width()/Std.PLAYFIELD_WIDTH
         ratio_y = widget.height()/Std.PLAYFIELD_HEIGHT
 
-        start_idx = StdReplayData.get_idx_time(self.replay_data, self.time - StdSettings.view_time_back)
-        end_idx   = StdReplayData.get_idx_time(self.replay_data, self.time + StdSettings.view_time_ahead)
+        start_time  = self.time - StdSettings.view_time_back
+        end_time    = self.time + StdSettings.view_time_ahead
+        replay_data = self.replay_data[(start_time <= self.replay_data.index) & (self.replay_data.index <= end_time)]
 
-        for prev_event, curr_event in zip(self.replay_data[start_idx:end_idx - 1], self.replay_data[start_idx + 1:end_idx]):
-            prev_pos_x, curr_pos_x = prev_event[StdReplayData.XPOS]*ratio_x, curr_event[StdReplayData.XPOS]*ratio_x
-            prev_pos_y, curr_pos_y = prev_event[StdReplayData.YPOS]*ratio_y, curr_event[StdReplayData.YPOS]*ratio_y
+        for prev_event, curr_event in zip(replay_data.iloc[:-1].iterrows(), replay_data.iloc[1:].iterrows()):
+            _, prev_event = prev_event
+            _, curr_event = curr_event
 
-            if   prev_event[StdReplayData.K1]: painter.setPen(StdSettings.k1_color)
-            elif prev_event[StdReplayData.K2]: painter.setPen(StdSettings.k2_color)
-            elif prev_event[StdReplayData.M1]: painter.setPen(StdSettings.m1_color)
-            elif prev_event[StdReplayData.M2]: painter.setPen(StdSettings.m2_color)
-            else:                              painter.setPen(QColor(0, 0, 0, 0))
+            prev_pos_x, curr_pos_x = prev_event['x']*ratio_x, curr_event['x']*ratio_x
+            prev_pos_y, curr_pos_y = prev_event['y']*ratio_y, curr_event['y']*ratio_y
+
+            if   prev_event['k1'] != 0: painter.setPen(StdSettings.k1_color)
+            elif prev_event['k2'] != 0: painter.setPen(StdSettings.k2_color)
+            elif prev_event['m1'] != 0: painter.setPen(StdSettings.m1_color)
+            elif prev_event['m2'] != 0: painter.setPen(StdSettings.m2_color)
+            else:                       painter.setPen(QColor(0, 0, 0, 0))
 
             painter.drawLine(prev_pos_x, prev_pos_y, curr_pos_x, curr_pos_y)

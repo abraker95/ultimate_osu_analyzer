@@ -14,19 +14,15 @@ class HitobjectPlot(pyqtgraph.GraphItem):
         self.pen = pyqtgraph.mkPen(width=HitobjectPlot.HITOBJECT_RADIUS)
         self.pen.setCapStyle(QtCore.Qt.RoundCap)
         self.setPen(self.pen)
-
-        self.data = None
     
 
-    def update_data(self, data, y_pos=0):
+    def update_data(self, start_times, end_times, y_pos=0):
         try: 
-            if len(data) == 0:
+            if len(start_times) == 0 or len(end_times) == 0:
                 self.scatter.clear()
                 self.pos = None
                 return
         except ValueError: return
-            
-        self.data = data
 
         pos  = []
         adj  = []
@@ -34,14 +30,16 @@ class HitobjectPlot(pyqtgraph.GraphItem):
 
         obj_num = -1
 
-        for (time_start, time_end) in data:
-            pos.append([ time_start, y_pos ])
+        for time in zip(start_times, end_times):
+            start_time, end_time = time
+
+            pos.append([ start_time, y_pos ])
             size.append(HitobjectPlot.HITOBJECT_RADIUS)
             obj_num += 1
 
             # Slider end
-            if time_start != time_end:
-                pos.append([ time_end, y_pos ])
+            if start_time != end_time:
+                pos.append([ end_time, y_pos ])
                 size.append(0)
                 obj_num += 1
 

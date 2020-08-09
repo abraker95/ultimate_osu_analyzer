@@ -41,11 +41,11 @@ class Timeline(pyqtgraph.PlotWidget, Switcher):
 
     def set_map(self, beatmap):
         if beatmap == None:
-            self.hitobjects_plot.update_data([], 0)
+            self.hitobjects_plot.update_data([], [], 0)
             return
 
-        map_data = StdMapData.get_aimpoint_data(beatmap.hitobjects)
-        self.hitobjects_plot.update_data(StdMapData.start_end_times(map_data), self.y_mid_pos)
+        map_data = StdMapData.get_map_data(beatmap.hitobjects)
+        self.hitobjects_plot.update_data(StdMapData.start_times(map_data), StdMapData.end_times(map_data), self.y_mid_pos)
 
 
     def save(self, name=None):

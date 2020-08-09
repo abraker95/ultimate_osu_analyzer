@@ -34,10 +34,8 @@ class StdReplayCursorLayer(Layer, Temporal):
         ratio_y = widget.height()/Std.PLAYFIELD_HEIGHT
         radius  = StdSettings.cursor_radius
 
-        idx = StdReplayData.get_idx_time(self.replay_data, self.time)
-        pos_x, pos_y = self.replay_data[idx][StdReplayData.XPOS], self.replay_data[idx][StdReplayData.YPOS]
-        
-        pos_x = (pos_x - radius)*ratio_x
-        pos_y = (pos_y - radius)*ratio_y
+        frame = self.replay_data[self.replay_data.index <= self.time].iloc[-1]        
+        pos_x = (frame['x'] - radius)*ratio_x
+        pos_y = (frame['y'] - radius)*ratio_y
 
         painter.drawEllipse(pos_x, pos_y, 2*radius, 2*radius)
