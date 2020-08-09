@@ -42,8 +42,8 @@ class StdMapPatterns():
             ::
                 [ bool, bool, bool ]
         """
-        start_positions = StdMapData.start_positions(map_data)
-        end_positions   = StdMapData.end_positions(map_data)
+        start_x, start_y = StdMapData.start_positions(map_data)
+        end_x, end_y = StdMapData.end_positions(map_data)
 
         # TODO: Aimpoints in between slider ends are being ignored. That can make a long slider
         # marked as a short one. This function was inteaded to be used to determine whether to
@@ -52,7 +52,7 @@ class StdMapPatterns():
         # be skipped.
 
         dists = lambda x1, x2, y1, y2: np.sqrt((x1 - x2)**2 + (y1 - y2)**2)
-        data  = end_positions[:, 0], start_positions[:, 0], end_positions[:, 1], start_positions[:, 1]
+        data  = end_x, start_x, end_y, start_y
         return dists(*data) < cs_px
 
 
