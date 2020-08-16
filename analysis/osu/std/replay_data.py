@@ -86,7 +86,7 @@ class StdReplayData():
 
 
     @staticmethod
-    def press_times(replay_data, btn):
+    def press_times(replay_data, btn=['m1', 'm2', 'k1', 'k2']):
         """
         Gets list of press timings in ``replay_data`` for button(s) ``btn``
 
@@ -104,11 +104,12 @@ class StdReplayData():
         numpy.array
         Press timings
         """
-        return replay_data[btn].index[replay_data[btn] == StdReplayData.PRESS]
+        btn_data = replay_data[btn]
+        return btn_data.index[np.any(btn_data == StdReplayData.PRESS, 1)]
 
 
     @staticmethod
-    def release_times(replay_data, btn):
+    def release_times(replay_data, btn=['m1', 'm2', 'k1', 'k2']):
         """
         Gets list of release timings in ``replay_data`` for button(s) ``btn``
 
@@ -126,4 +127,5 @@ class StdReplayData():
         numpy.array
         Release timings
         """
-        return replay_data[btn].index[replay_data[btn] == StdReplayData.RELEASE]
+        btn_data = replay_data[btn]
+        return btn_data.index[np.any(btn_data == StdReplayData.RELEASE, 1)]
