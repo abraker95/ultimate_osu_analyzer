@@ -25,9 +25,9 @@ class StdMapData():
     POSY = 2
     TYPE = 3
 
-    TYPE_PRESS   = 0
-    TYPE_HOLD    = 1
-    TYPE_RELEASE = 2
+    TYPE_PRESS   = 1
+    TYPE_HOLD    = 2
+    TYPE_RELEASE = 3
 
     @staticmethod 
     def std_hitobject_to_aimpoints(std_hitobject, min_press_duration=1):
