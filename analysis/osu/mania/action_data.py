@@ -55,7 +55,8 @@ class ManiaActionData():
 
         # Convert the dictionary of recorded timings and states into a pandas data
         action_data = pd.DataFrame.from_dict(action_data, orient='index')
-
+        action_data.index.name = 'time'
+        
         # Fill in HOLD data
         ManiaActionData.fill_holds(action_data)
 
@@ -98,7 +99,7 @@ class ManiaActionData():
 
         # Convert the dictionary of recorded timings and states into a pandas data
         replay_data = pd.DataFrame.from_dict(replay_data, orient='index')
-
+        replay_data.index.name = 'time'
         return replay_data
 
 
