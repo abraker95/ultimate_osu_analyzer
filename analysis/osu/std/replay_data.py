@@ -73,7 +73,11 @@ class StdReplayData():
             data[ hold_state &  is_key_hold] = StdReplayData.HOLD
             data[ hold_state & ~is_key_hold] = StdReplayData.RELEASE
 
-            replay_data[replay_event.t] = [ replay_event.x, replay_event.y ] + list(data)
+            # Handles autoplay key press & release occuring at same time
+            time = replay_event.t
+            while time in replay_data: time +=1
+
+            replay_data[time] = [ replay_event.x, replay_event.y ] + list(data)
             hold_state = is_key_hold
 
         # Sort data by timings
