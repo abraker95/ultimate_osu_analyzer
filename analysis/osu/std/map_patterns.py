@@ -86,10 +86,9 @@ class StdMapPatterns():
                     ... N aimpoints
                 ]
         """
-        start_time_idxs  = np.where(map_data[:, StdMapData.TYPE] == StdMapData.TYPE_PRESS)[0]
-        end_time_idxs    = np.where(map_data[:, StdMapData.TYPE] == StdMapData.TYPE_RELEASE)[0]
+        presses = StdMapData.get_presses(map_data)
+        releases = StdMapData.get_releases(map_data)
         is_short_sliders = StdMapPatterns.detect_short_sliders(map_data, cs_px)
-        new_map_data     = []
 
         for data in zip(start_time_idxs, end_time_idxs, is_short_sliders):
             start_time_idx, end_time_idx, is_short_slider = data
