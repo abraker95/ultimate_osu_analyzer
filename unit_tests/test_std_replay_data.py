@@ -1,7 +1,6 @@
 import unittest
 
 from osu.local.replay.replayIO import ReplayIO
-
 from analysis.osu.std.replay_data import StdReplayData
 
 
@@ -10,7 +9,6 @@ class TestStdReplayData(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        #cls.reply = ReplayIO
         pass
 
 
@@ -20,8 +18,13 @@ class TestStdReplayData(unittest.TestCase):
 
 
     def test_get_replay_data(self):
-        # TODO
-        pass    def test_press_times(self):
+        replay = ReplayIO.open_replay('unit_tests/replays/osu/LeaF - I (Maddy) [Terror] replay_0.osr')
+        replay_data = StdReplayData.get_replay_data(replay.play_data)
+
+        replay = ReplayIO.open_replay('unit_tests/replays/osu/osu! - perfect_test [score_test] (2019-06-07) Osu.osr')
+        replay_data = StdReplayData.get_replay_data(replay.play_data)
+
+
     def test_press_times(self):
         replay = ReplayIO.open_replay('unit_tests/replays/osu/osu! - perfect_test [score_test] (2019-06-07) Osu.osr')
         replay_data = StdReplayData.get_replay_data(replay.play_data)
