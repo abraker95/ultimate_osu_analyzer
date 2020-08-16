@@ -35,8 +35,6 @@ class ManiaScoreData():
     pos_hit_miss_range  = 50   # ms range of the late miss window
     neg_hit_miss_range  = 50   # ms range of the early miss window
 
-    dist_miss_range     = 50   # ms range the cursor can deviate from aimpoint distance threshold before it's a miss
-
     pos_rel_range       = 100  # ms range of the late release window
     neg_rel_range       = 100  # ms range of the early release window
     pos_rel_miss_range  = 50   # ms range of the late release window
@@ -176,7 +174,7 @@ class ManiaScoreData():
                             replay_idx += 1
                             continue
 
-                        # Early miss tap if on circle
+                        # Early miss tap
                         is_in_neg_miss_range = time_offset < -ManiaScoreData.neg_hit_range
                         if is_in_neg_miss_range:
                             column_data[replay_timing] = np.asarray([ -float(neg_nothing_range), ManiaScoreData.TYPE_MISS, map_idx ])
@@ -188,7 +186,7 @@ class ManiaScoreData():
                             replay_idx += 1
                             continue
 
-                        # Late miss tap if on circle
+                        # Late miss tap
                         is_in_pos_miss_range = time_offset > ManiaScoreData.pos_hit_range
                         if is_in_pos_miss_range:
                             column_data[replay_timing] = np.asarray([ float(pos_nothing_range), ManiaScoreData.TYPE_MISS, map_idx ])
