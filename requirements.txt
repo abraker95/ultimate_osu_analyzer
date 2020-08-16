@@ -1,5 +1,4 @@
 numpy
-unittest
 pandas
 scipy
 matplotlib
