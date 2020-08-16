@@ -125,6 +125,24 @@ class StdMapData():
 
 
     @staticmethod
+    def get_num_hitobjects(map_data):
+        """
+        Gets number of hitobjects in the map
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to operate on
+        
+        Returns
+        -------
+        int
+        number of hitobjects in the map
+        """
+        return len(np.bincount(map_data.index.get_level_values('hitobject').values.astype(np.int32)))
+
+
+    @staticmethod
     def get_presses(map_data):
         """
         Gets aimpoints associated with the player pressing a key

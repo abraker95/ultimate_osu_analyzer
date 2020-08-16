@@ -26,6 +26,11 @@ class TestStdMapData(unittest.TestCase):
         map_data = StdMapData.get_map_data(self.beatmap.hitobjects)
 
 
+    def test_get_num_hitobjects(self):
+        map_data = StdMapData.get_map_data(self.beatmap.hitobjects)
+        num_hitobjects = StdMapData.get_num_hitobjects(map_data)
+
+
     def test_get_presses(self):
         map_data = StdMapData.get_map_data(self.beatmap.hitobjects)
         presses = StdMapData.get_presses(map_data)
