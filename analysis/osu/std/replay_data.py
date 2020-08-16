@@ -59,11 +59,10 @@ class StdReplayData():
         smoke_mask = (1 << 4)
 
         for replay_event in replay_events:
-            # "and not" because K1 is always used with M1; K2 is always used with M2. So make sure keys are not pressed along with mouse
             k1_pressed    = ((replay_event.keys_pressed & k1_mask) > 0)
             k2_pressed    = ((replay_event.keys_pressed & k2_mask) > 0) 
-            m1_pressed    = ((replay_event.keys_pressed & m1_mask) > 0) and not k1_pressed
-            m2_pressed    = ((replay_event.keys_pressed & m2_mask) > 0) and not k2_pressed
+            m1_pressed    = ((replay_event.keys_pressed & m1_mask) > 0)
+            m2_pressed    = ((replay_event.keys_pressed & m2_mask) > 0)
             smoke_pressed = (replay_event.keys_pressed & smoke_mask) > 0
 
             is_key_hold = np.asarray([ m1_pressed, m2_pressed, k1_pressed, k2_pressed, smoke_pressed ])
