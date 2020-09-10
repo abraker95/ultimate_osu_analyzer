@@ -4,3 +4,4 @@ tmp/
 /docs/_build/*
 /download/*
 /venv/*
+/osu/online/login.py

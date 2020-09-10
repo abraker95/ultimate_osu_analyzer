@@ -6,8 +6,7 @@ import os
 import io
 
 from osu.local.beatmap.beatmap import Beatmap
-from osu.online.session_manager import SessionMgr
-from osu.online.login import username, password
+from osu.online.SessionMgr import SessionMgr
 from osu.online.rate_limited import rate_limited
 
 
@@ -68,15 +67,11 @@ class OsuOnline():
     @staticmethod
     @rate_limited(rate_limit=3)
     def fetch_replay_file(gamemode, replay_id):
-        if not OsuOnline.session_manager:
-            OsuOnline.session_manager = SessionMgr()
-            OsuOnline.session_manager.login(username, password)
+        if not SessionMgr.is_logged_in(): 
+            SessionMgr.login()
 
-        xsrf_token = OsuOnline.session_manager.get_xsrf_token()
-        if xsrf_token == None: raise Exception('xsrf_token is None')
-
-        osu_session = OsuOnline.session_manager.get_osu_session()
-        if osu_session == None: raise Exception('osu_session is None')
+        if not SessionMgr.is_logged_in(): 
+            raise Exception('Not logged in')
 
         if type(gamemode) == int:
             if   gamemode == Beatmap.GAMEMODE_OSU:   gamemode = 'osu'
@@ -86,41 +81,27 @@ class OsuOnline():
             else: raise Exception('Unknown gamemode: ' + str(gamemode))
 
         url = 'https://osu.ppy.sh/scores/' + str(gamemode) + '/' + str(replay_id) + '/download'
-        headers = {
-            'X-CSRF-TOKEN': xsrf_token,
-            'osu_session' : osu_session
-        }
+        response = SessionMgr.fetch_web_data(url)
 
-        print(url)
-
-        response = OsuOnline.session_manager.get(url, headers=headers)
         return response.content
 
 
     # Only gets first 50 beatmapsets
     @staticmethod
     def fetch_latest_beatmapsets(gamemode, status):
-        if not OsuOnline.session_manager:
-            OsuOnline.session_manager = SessionMgr()
-            OsuOnline.session_manager.login(username, password)
+        if not SessionMgr.is_logged_in(): 
+            SessionMgr.login()
 
-        xsrf_token = OsuOnline.session_manager.get_xsrf_token()
-        if xsrf_token == None: raise Exception('xsrf_token is None')
-
-        osu_session = OsuOnline.session_manager.get_osu_session()
-        if osu_session == None: raise Exception('osu_session is None')
+        if not SessionMgr.is_logged_in(): 
+            raise Exception('Not logged in')
 
         url_param = [ 'm=' + str(gamemode) ]
         if status != None:
             url_param.append('s=' + str(status))
 
         url = 'https://osu.ppy.sh/beatmapsets/search?' + '&'.join(url_param)
-        headers = {
-            'X-CSRF-TOKEN': xsrf_token,
-            'osu_session' : osu_session
-        }
+        response = SessionMgr.fetch_web_data(url)
 
-        response = OsuOnline.session_manager.get(url, headers=headers)
         return response.json()['beatmapsets']
 
 
