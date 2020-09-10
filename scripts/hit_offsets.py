@@ -46,12 +46,12 @@ class HitOffsets():
         self.win.setWindowTitle(get_beatmap().metadata.name + ' ' + get_replays()[replay_idx].get_name())
 
         # Data extraction
-        map_data    = StdMapData.get_aimpoint_data(get_beatmap().hitobjects)
+        map_data    = StdMapData.get_map_data(get_beatmap().hitobjects)
         replay_data = get_replay_data()[replay_idx]
         score_data  = StdScoreData.get_score_data(replay_data, map_data)
 
-        timing_data    = score_data[:, 0]
-        hitoffset_data = score_data[:, 2]
+        timing_data    = score_data['replay_t']
+        hitoffset_data = score_data['replay_t'] - score_data['map_t']
 
         self.hit_offset_scatter_plot.addLine(x=None, y=0, pen=pyqtgraph.mkPen('r', width=1))
         self.hit_offset_scatter_plot.setLabel('left', 'Hit offset', units='ms', unitPrefix='')
