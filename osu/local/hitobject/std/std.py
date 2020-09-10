@@ -91,12 +91,12 @@ class Std():
 
     @staticmethod
     def cs_to_px(cs):
-        return (109 - 9*cs)/2
+        return (109 - 9*cs)/2   # radius -> osu!px
 
 
     @staticmethod
     def px_to_cs(px):
-        return 2*(109 - px)/9
+        return 2*(109 - px)/9   # osu!px -> radius
 
 
     @staticmethod
