@@ -439,8 +439,12 @@ class MainWindow(QMainWindow):
 
         valid = True
         for path in paths:
-            path      = path.split('///')[1]
-            file_type = path.split('.')[-1]
+            try:
+                path      = path.split('///')[1]
+                file_type = path.split('.')[-1]
+            except IndexError:
+                e.ignore()
+                return
         
             if file_type not in ['osu', 'osr']:
                 valid = False
