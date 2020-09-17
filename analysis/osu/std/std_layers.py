@@ -28,16 +28,37 @@ class StdLayers():
         """
         Displays player's cursor movement in replays
         """
-        painter.setPen(QPen(StdSettings.cursor_color, StdSettings.cursor_thickness))
-        radius = StdSettings.cursor_radius
+        radius  = StdSettings.cursor_radius
 
-        idx = StdReplayData.get_idx_time(replay_data, time)
-        pos_x, pos_y = replay_data[idx][StdReplayData.XPOS], replay_data[idx][StdReplayData.YPOS]
-        
-        pos_x = (pos_x - radius)*ratio_x
-        pos_y = (pos_y - radius)*ratio_y
+        try: frame = replay_data[replay_data['time'] <= time].iloc[-1]
+        except IndexError: return
+
+        pos_x = (frame['x'] - radius)*ratio_x
+        pos_y = (frame['y'] - radius)*ratio_y
 
         painter.drawEllipse(pos_x, pos_y, 2*radius, 2*radius)
+
+
+    @staticmethod
+    def StdReplayScatterLayer(painter, ratio_x, ratio_y, time, replay_data, color=[0, 0, 0, 255]):
+        """
+        Displays held keys in replay
+        """
+        start_time  = time - StdSettings.view_time_back
+        end_time    = time + StdSettings.view_time_ahead
+        replay_data = replay_data[(start_time <= replay_data['time']) & (replay_data['time'] <= end_time)]
+
+        radius = StdSettings.cursor_radius
+        painter.setPen(QColor(*color))
+
+        for prev_event, curr_event in zip(replay_data.iloc[:-1].iterrows(), replay_data.iloc[1:].iterrows()):
+            _, prev_event = prev_event
+            _, curr_event = curr_event
+
+            curr_pos_x = curr_event['x']*ratio_x
+            curr_pos_y = curr_event['y']*ratio_y
+
+            painter.drawEllipse(curr_pos_x, curr_pos_y, 2*radius, 2*radius)
 
 
     @staticmethod
@@ -45,18 +66,22 @@ class StdLayers():
         """
         Displays held keys in replay
         """
-        start_idx = StdReplayData.get_idx_time(replay_data, time - StdSettings.view_time_back)
-        end_idx   = StdReplayData.get_idx_time(replay_data, time + StdSettings.view_time_ahead)
+        start_time  = time - StdSettings.view_time_back
+        end_time    = time + StdSettings.view_time_ahead
+        replay_data = replay_data[(start_time <= replay_data['time']) & (replay_data['time'] <= end_time)]
 
-        for prev_event, curr_event in zip(replay_data[start_idx:end_idx - 1], replay_data[start_idx + 1:end_idx]):
-            prev_pos_x, curr_pos_x = prev_event[StdReplayData.XPOS]*ratio_x, curr_event[StdReplayData.XPOS]*ratio_x
-            prev_pos_y, curr_pos_y = prev_event[StdReplayData.YPOS]*ratio_y, curr_event[StdReplayData.YPOS]*ratio_y
+        for prev_event, curr_event in zip(replay_data.iloc[:-1].iterrows(), replay_data.iloc[1:].iterrows()):
+            _, prev_event = prev_event
+            _, curr_event = curr_event
 
-            if   prev_event[StdReplayData.K1]: painter.setPen(StdSettings.k1_color)
-            elif prev_event[StdReplayData.K2]: painter.setPen(StdSettings.k2_color)
-            elif prev_event[StdReplayData.M1]: painter.setPen(StdSettings.m1_color)
-            elif prev_event[StdReplayData.M2]: painter.setPen(StdSettings.m2_color)
-            else:                              painter.setPen(QColor(0, 0, 0, 0))
+            prev_pos_x, curr_pos_x = prev_event['x']*ratio_x, curr_event['x']*ratio_x
+            prev_pos_y, curr_pos_y = prev_event['y']*ratio_y, curr_event['y']*ratio_y
+
+            if   prev_event['k1'] != 0: painter.setPen(StdSettings.k1_color)
+            elif prev_event['k2'] != 0: painter.setPen(StdSettings.k2_color)
+            elif prev_event['m1'] != 0: painter.setPen(StdSettings.m1_color)
+            elif prev_event['m2'] != 0: painter.setPen(StdSettings.m2_color)
+            else:                       painter.setPen(QColor(0, 0, 0, 0))
 
             painter.drawLine(prev_pos_x, prev_pos_y, curr_pos_x, curr_pos_y)
 

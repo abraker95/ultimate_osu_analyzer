@@ -230,14 +230,13 @@ class ReplayManager(QWidget):
 
 
     def __replay_code_to_clipboard(self, item):
-        QApplication.clipboard().setText('replay_data = get_replays()[' + str(self.replay_list.currentIndex().row()) + ']')
-
+        QApplication.clipboard().setText(f'replay_data = StdReplayData.get_replay_data(get_replays()[{self.replay_list.currentIndex().row()}])')
 
     def __score_code_to_clipboard(self, item):
         gamemode = item.replay.game_mode
 
         if gamemode == GameMode.Standard:
-            map_data   = 'StdMapData.get_aimpoint_data'
+            map_data   = 'StdMapData.get_map_data'
             score_data = 'StdScoreData'
         elif gamemode == GameMode.Taiko:
             map_data   = 'TaikoMapData.get_map_data'
@@ -246,14 +245,14 @@ class ReplayManager(QWidget):
             map_data   = 'CatchMapData.get_map_data'
             score_data = 'CatchscoreData'
         elif gamemode == GameMode.Osumania:
-            map_data   = 'ManiaMapData.get_hitobject_data'
+            map_data   = 'ManiaMapData.get_map_data'
             score_data = 'ManiaScoreData'
         else:
             RuntimeError('Unsupported gamemode')
 
-        replay_data_code = 'get_replays()[' + str(self.replay_list.currentIndex().row()) + ']'
+        replay_data_code = f'get_replays()[{self.replay_list.currentIndex().row()}]'
         map_data_code    = map_data + '(get_beatmap().hitobjects)'
-        score_data_code  = 'score_data = ' + score_data + '.get_score_data(' + replay_data_code + ', ' + map_data_code + ')'
+        score_data_code  = f'score_data = {score_data}.get_score_data({replay_data_code}, {map_data_code})'
         
         QApplication.clipboard().setText(score_data_code)
 
@@ -262,21 +261,21 @@ class ReplayManager(QWidget):
         gamemode = items[0].replay.game_mode
 
         if gamemode == GameMode.Standard:
-            map_data           = 'StdMapData.get_aimpoint_data(get_beatmap().hitobjects)'
-            score_data         = '[ StdScoreData.get_score_data(get_replays()[i],' + map_data + ') for i in range(' + str(len(items)) + ') ]'
-            per_hitobject_data = 'StdScoreMetrics.get_per_hitobject_score_data(' + score_data + ')'
+            map_data           = 'StdMapData.get_map_data(get_beatmap().hitobjects)'
+            score_data         = f'[ StdScoreData.get_score_data(get_replays()[i], {map_data}) for i in range({len(items)}) ]'
+            per_hitobject_data = f'StdScoreMetrics.get_per_hitobject_score_data({score_data})'
         elif gamemode == GameMode.Taiko:
             map_data           = 'TaikoMapData.get_map_data(get_beatmap().hitobjects)'
-            score_data         = '[ TaikoScoreData.get_score_data(get_replays()[i], ' + map_data + ') for i in range(' + str(len(items)) + ') ]'
-            per_hitobject_data = 'TaikoScoreMetrics.get_per_hitobject_score_data(' + score_data + ')'
+            score_data         = f'[ TaikoScoreData.get_score_data(get_replays()[i], {map_data}) for i in range({len(items)}) ]'
+            per_hitobject_data = f'TaikoScoreMetrics.get_per_hitobject_score_data({score_data})'
         elif gamemode == GameMode.CatchTheBeat:
             map_data           = 'CatchMapData.get_map_data(get_beatmap().hitobjects)'
-            score_data         = '[ CatchscoreData.get_score_data(get_replays()[i], ' + map_data + ') for i in range(' + str(len(items)) + ') ]'
-            per_hitobject_data = 'CatchScoreMetrics.get_per_hitobject_score_data(' + score_data + ')'
+            score_data         = f'[ CatchscoreData.get_score_data(get_replays()[i], {map_data}) for i in range({len(items)}) ]'
+            per_hitobject_data = f'CatchScoreMetrics.get_per_hitobject_score_data({score_data})'
         elif gamemode == GameMode.Osumania:
-            map_data           = 'ManiaMapData.get_hitobject_data(get_beatmap().hitobjects)'
-            score_data         = '[ ManiaScoreData.get_score_data(get_replays()[i], ' + map_data + ') for i in range(' + str(len(items)) + ') ]'
-            per_hitobject_data = 'ManiaScoreMetrics.get_per_hitobject_score_data(' + score_data + ')'
+            map_data           = 'ManiaMapData.get_map_data(get_beatmap().hitobjects)'
+            score_data         = f'[ ManiaScoreData.get_score_data(get_replays()[i], {map_data}) for i in range({len(items)}) ]'
+            per_hitobject_data = f'ManiaScoreMetrics.get_per_hitobject_score_data({score_data})'
         else:
             RuntimeError('Unsupported gamemode')
 

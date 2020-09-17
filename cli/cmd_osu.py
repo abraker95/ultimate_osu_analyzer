@@ -44,27 +44,3 @@ class CmdOsu():
         plt.xlabel('offset from center (osu!px)')
         plt.ylabel('number of hits')
         plt.title('Top 50 players cursor offsets\n' + str(beatmap.metadata.name))
-
-
-    @staticmethod
-    @callback
-    def create_score_offset_graph(replay_data):
-        CmdOsu.create_score_offset_graph.emit(replay_data)
-
-
-    @staticmethod
-    @callback
-    def create_cursor_velocity_graph(replay_data):
-        CmdOsu.create_cursor_velocity_graph.emit(replay_data)
-
-
-    @staticmethod
-    @callback
-    def create_cursor_acceleration_graph(replay_data):
-        CmdOsu.create_cursor_acceleration_graph.emit(replay_data)
-
-
-    @staticmethod
-    @callback
-    def create_cursor_jerk_graph(replay_data):
-        CmdOsu.create_cursor_jerk_graph.emit(replay_data)

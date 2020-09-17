@@ -29,6 +29,16 @@ class StdMapData():
     TYPE_HOLD    = 2
     TYPE_RELEASE = 3
 
+    TYPE_CIRCLE  = 1
+    TYPE_SLIDER  = 2
+    TYPE_SPINNER = 3
+
+    IDX_TIME   = 0
+    IDX_X      = 1
+    IDX_Y      = 2
+    IDX_TYPE   = 3
+    IDX_OBJECT = 4
+
     @staticmethod 
     def std_hitobject_to_aimpoints(std_hitobject, min_press_duration=1):
         """
@@ -60,7 +70,7 @@ class StdMapData():
             [ time, pos ] in the map data
         """
         # Record data via dictionary to identify unique timings
-        aimpoint_data = {}
+        aimpoint_data = []
 
         # Hit circle recording
         if std_hitobject.is_hitobject_type(Hitobject.CIRCLE):
@@ -71,25 +81,21 @@ class StdMapData():
             # Adjust note ending based on whether it is single or hold note (determined via min_press_duration)
             note_end = note_end if (note_end - note_start >= min_press_duration) else (note_start + min_press_duration)
 
-            aimpoint_data[note_start] = np.asarray([ std_hitobject.pos.x, std_hitobject.pos.y, StdMapData.TYPE_PRESS ])
-            aimpoint_data[note_end]   = np.asarray([ std_hitobject.pos.x, std_hitobject.pos.y, StdMapData.TYPE_RELEASE ])
+            aimpoint_data.append(np.asarray([ note_start, std_hitobject.pos.x, std_hitobject.pos.y, StdMapData.TYPE_PRESS, StdMapData.TYPE_CIRCLE ]))
+            aimpoint_data.append(np.asarray([ note_end, std_hitobject.pos.x, std_hitobject.pos.y, StdMapData.TYPE_RELEASE, StdMapData.TYPE_CIRCLE ]))
         
         # Slider recording
         elif std_hitobject.is_hitobject_type(Hitobject.SLIDER):
             aimpoint_times = std_hitobject.get_aimpoint_times()
 
-            aimpoint_data[aimpoint_times[0]] = np.asarray([ std_hitobject.time_to_pos(aimpoint_times[0]).x, std_hitobject.time_to_pos(aimpoint_times[0]).y, StdMapData.TYPE_PRESS ])
+            aimpoint_data.append(np.asarray([ aimpoint_times[0], std_hitobject.time_to_pos(aimpoint_times[0]).x, std_hitobject.time_to_pos(aimpoint_times[0]).y, StdMapData.TYPE_PRESS, StdMapData.TYPE_SLIDER ]))
             if len(aimpoint_times) > 2:
                 for aimpoint_time in aimpoint_times[1:-1]:
-                    aimpoint_data[aimpoint_time] = np.asarray([ std_hitobject.time_to_pos(aimpoint_time).x, std_hitobject.time_to_pos(aimpoint_time).y, StdMapData.TYPE_HOLD ])
-            aimpoint_data[aimpoint_times[-1]] = np.asarray([ std_hitobject.time_to_pos(aimpoint_times[-1]).x, std_hitobject.time_to_pos(aimpoint_times[-1]).y, StdMapData.TYPE_RELEASE ])
-
-        # Sort data by timings
-        aimpoint_data = dict(sorted(aimpoint_data.items()))
+                    aimpoint_data.append(np.asarray([ aimpoint_time, std_hitobject.time_to_pos(aimpoint_time).x, std_hitobject.time_to_pos(aimpoint_time).y, StdMapData.TYPE_HOLD, StdMapData.TYPE_SLIDER ]))
+            aimpoint_data.append(np.asarray([ aimpoint_times[-1], std_hitobject.time_to_pos(aimpoint_times[-1]).x, std_hitobject.time_to_pos(aimpoint_times[-1]).y, StdMapData.TYPE_RELEASE, StdMapData.TYPE_SLIDER ]))
 
         # Convert the dictionary of recorded timings and states into a pandas data
-        aimpoint_data = pd.DataFrame.from_dict(aimpoint_data, orient='index', columns=['x', 'y', 'type'])
-        return aimpoint_data
+        return pd.DataFrame(aimpoint_data, columns=['time', 'x', 'y', 'type', 'object'])
 
 
     @staticmethod
@@ -97,6 +103,11 @@ class StdMapData():
         """
         .. note::
             This function is intended to be used directly
+
+        .. warning::
+            Some hitobject indices may not be present. These are hitobjects that are not processed and
+            ommited from map data. It is recommended to use StdMapData.get_next_hitobject_idx to get index
+            that follows
 
         Converts a list of ``Hitobject`` types into a numpy array equivalent that can 
         be used by the analysis framework.
@@ -111,17 +122,27 @@ class StdMapData():
         numpy.array
             Map data representing the following format:
             ::
-                [ 
-                    [ time, aimpoint_x, aimpoint_y, type ],
-                    [ time, aimpoint_x, aimpoint_y, type ],
-                    ... N aimpoints
-                ]
+                                            x      y  type
+                hitobject time                            
+                0         494.0    256.000000  192.0   1.0
+                          495.0    256.000000  192.0   3.0
+                1         994.0    256.000000  192.0   1.0
+                          995.0    256.000000  192.0   3.0
+                2         1494.0   256.000000  192.0   1.0
+                ...                      ...    ...   ...
+                48        49494.0  302.027397   32.0   2.0
+                          49994.0  160.000000   32.0   3.0
+                49        49494.0  320.000000   32.0   1.0
+                          49994.0  174.027397   32.0   2.0
+                          50494.0   32.000000   32.0   3.0
+
+                [109 rows x 3 columns]
         """
         map_data = []
         for hitobject in std_hitobjects:
             map_data.append(StdMapData.std_hitobject_to_aimpoints(hitobject))
 
-        return pd.concat(map_data, axis=0, keys=range(len(map_data)), names=[ 'hitobject', 'time' ])
+        return pd.concat(map_data, axis=0, keys=range(len(map_data)), names=[ 'hitobject', 'aimpoint' ])
 
 
     @staticmethod
@@ -163,7 +184,7 @@ class StdMapData():
                     ... N aimpoints
                 ]
         """
-        return map_data.query(f'type == {StdMapData.TYPE_PRESS}')
+        return map_data[map_data.values[:, StdMapData.IDX_TYPE] == StdMapData.TYPE_PRESS]
 
 
     @staticmethod
@@ -187,11 +208,34 @@ class StdMapData():
                     ... N aimpoints
                 ]
         """
-        return map_data.query(f'type == {StdMapData.TYPE_RELEASE}')
+        return map_data[map_data.values[:, StdMapData.IDX_TYPE] == StdMapData.TYPE_RELEASE]
+
 
 
     @staticmethod
-    def get_data_before(map_data, time):
+    def get_objects(map_data):
+        """
+        Gets list of hitobjects types
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to operate on
+        
+        Returns
+        -------
+        numpy.array
+            Map data representing the following format:
+            ::
+                [ 
+                    ... N hitobjects
+                ]
+        """
+        return map_data.values[:, StdMapData.IDX_OBJECT][map_data.values[:, StdMapData.IDX_TYPE] == StdMapData.TYPE_PRESS]
+
+
+    @staticmethod
+    def get_scorepoint_before(map_data, time):
         """
         Get the closest scorepoint right before the desired point in time
 
@@ -208,17 +252,19 @@ class StdMapData():
         numpy.array
             Scorepoint data
             ::
-                [ time, (scorepoint_x, scorepoint_y) ]
-
+                x       207.609756
+                y       192.000000
+                type      3.000000
+                Name: (8, 11994.0), dtype: float64
         """
-        try: return map_data.query(f'time < {time}').iloc[-1]
+        try: return map_data[map_data['time'] < time].iloc[-1]
         except IndexError: return None
 
 
     @staticmethod
-    def get_data_after(map_data, time):
+    def get_scorepoint_after(map_data, time):
         """
-        Get the closest scorepoints right after the desired point in time
+        Get the closest scorepoint right after the desired point in time
 
         Parameters
         ----------
@@ -233,11 +279,174 @@ class StdMapData():
         numpy.array
             Scorepoint data
             ::
-                [ time, aimpoint_x, aimpoint_y, type ]
+                x       207.609756
+                y       192.000000
+                type      3.000000
+                Name: (8, 11994.0), dtype: float64
+        """
+        try: return map_data[map_data['time'] > time].iloc[0]
+        except IndexError: return None
+
+
+    @staticmethod
+    def get_next_hitobject_idx(map_data, idx):
+        """
+        Gets the next hitobject index, automatically handling indexes for 
+        hitobjects that are not handled in map data.
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to operate on
+
+        idx : int
+            Index to get after this one
+
+        Returns
+        -------
+        int
+        Hitobject index following ``idx``, or number of hitobject there are, which ever is smaller
+        """
+        while True:
+            idx += 1
+            if idx >= len(map_data): 
+                return len(map_data)
+            
+            try: map_data.loc[idx]
+            except: continue
+            else: break
+
+        return idx
+        
+
+    @staticmethod
+    def get_note_before(map_data, time):
+        """
+        Get the closest note right before the desired point in time
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to operate on
+        
+        time : int
+            Desired point in time
+
+        Returns
+        -------
+        numpy.array
+            note data
+            ::
+                            x      y  type
+                time                      
+                1494.0  256.0  192.0   1.0
+                1495.0  256.0  192.0   3.0
+        """
+        try:
+            # Type == Press is needed to handle overlapping sliders
+            before_filter = map_data['time'] < time
+            press_filter  = map_data['type'] == StdMapData.TYPE_PRESS
+            idx = map_data[before_filter & press_filter].index[-1][0]
+            return map_data.loc[idx]
+        except IndexError: return None
+
+
+    @staticmethod
+    def get_note_after(map_data, time):
+        """
+        Get the closest note right after the desired point in time
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to operate on
+        
+        time : int
+            Desired point in time
+
+        Returns
+        -------
+        numpy.array
+            note data
+            ::
+                            x      y  type
+                time                      
+                1494.0  256.0  192.0   1.0
+                1495.0  256.0  192.0   3.0
+        """
+        try:
+            # Type == Press is needed to handle overlapping sliders
+            after_filter = map_data['time'] > time
+            press_filter = map_data['type'] == StdMapData.TYPE_PRESS
+            idx = map_data[after_filter & press_filter].index[0][0]
+            return map_data.loc[idx]
+        except IndexError: return None
+
+
+    @staticmethod
+    def start_times(map_data):
+        """
+        Gets the start times of all hitobjects
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to get hitobject start times for
+
+        Returns
+        -------
+        numpy.array
+            Hitobject start times
+            ::
+                [ time, time, time, ... ]
             
         """
-        try: return map_data.query(f'time > {time}').iloc[0]
-        except IndexError: return None
+        return map_data.values[map_data.values[:, StdMapData.IDX_TYPE] == StdMapData.TYPE_PRESS][:, StdMapData.IDX_TIME]
+
+
+    @staticmethod
+    def end_times(map_data):
+        """
+        Get gets the end times of all hitobjects
+
+        .. note::
+            Hitcircle hitobjects will have the same start and end times
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to get hitobject end times for
+
+        Returns
+        -------
+        numpy.array
+            End times of hitobjects
+            ::
+                [ time, time, time, ... ]
+            
+        """
+        return map_data.values[map_data.values[:, StdMapData.IDX_TYPE] == StdMapData.TYPE_RELEASE][:, StdMapData.IDX_TIME]
+
+
+    @staticmethod
+    def all_times(map_data):
+        """
+        Gets time data for all scorepoint in the map
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to get position data for
+
+        Returns
+        -------
+        numpy.array
+            Returns numpy array of scorepoint times
+            ::
+                [ time, time, time, ... ]
+            
+        """
+        return map_data.values[:, StdMapData.IDX_TIME]
 
 
     @staticmethod
@@ -268,74 +477,13 @@ class StdMapData():
                 ]
             
         """
-        eq = '' if exclusive else '='
-        return map_data.query(f'{start_time} <{eq} time <{eq} {end_time}')
+        all_times = StdMapData.all_times(map_data)
+        if exclusive:
+            time_slice = (start_time < all_times) & (all_times < end_time)
+        else:
+            time_slice = (start_time <= all_times) & (all_times <= end_time)
 
-
-    @staticmethod
-    def start_times(map_data):
-        """
-        Gets the start times of all hitobjects
-
-        Parameters
-        ----------
-        map_data : numpy.array
-            Map data to get hitobject start times for
-
-        Returns
-        -------
-        numpy.array
-            Hitobject start times
-            ::
-                [ time, time, time, ... ]
-            
-        """
-        return map_data.query(f'type == {StdMapData.TYPE_PRESS}').index.get_level_values('time').values
-
-
-    @staticmethod
-    def end_times(map_data):
-        """
-        Get gets the end times of all hitobjects
-
-        .. note::
-            Hitcircle hitobjects will have the same start and end times
-
-        Parameters
-        ----------
-        map_data : numpy.array
-            Map data to get hitobject end times for
-
-        Returns
-        -------
-        numpy.array
-            End times of hitobjects
-            ::
-                [ time, time, time, ... ]
-            
-        """
-        return map_data.query(f'type == {StdMapData.TYPE_RELEASE}').index.get_level_values('time').values
-
-
-    @staticmethod
-    def all_times(map_data):
-        """
-        Gets time data for all hitobjects in the map
-
-        Parameters
-        ----------
-        map_data : numpy.array
-            Map data to get position data for
-
-        Returns
-        -------
-        numpy.array
-            Returns numpy array of scorepoint times
-            ::
-                [ time, time, time, ... ]
-            
-        """
-        return map_data.index.get_level_values('time').values
+        return map_data[time_slice]
 
 
     @staticmethod
@@ -360,8 +508,8 @@ class StdMapData():
                 ]
             
         """
-        presses = map_data.query(f'type == {StdMapData.TYPE_PRESS}')
-        return presses['x'].values, presses['y'].values
+        presses = map_data.values[map_data.values[:, StdMapData.IDX_TYPE] == StdMapData.TYPE_PRESS]
+        return presses[:, StdMapData.IDX_X], presses[:, StdMapData.IDX_Y]
 
     
     @staticmethod
@@ -389,8 +537,8 @@ class StdMapData():
                 ]
             
         """
-        releases = map_data.query(f'type == {StdMapData.TYPE_RELEASE}')
-        return releases['x'].values, releases['y'].values
+        releases = map_data.values[map_data.values[:, StdMapData.IDX_TYPE] == StdMapData.TYPE_RELEASE]
+        return releases[:, StdMapData.IDX_X], releases[:, StdMapData.IDX_Y]
 
 
     @staticmethod
@@ -414,4 +562,4 @@ class StdMapData():
                     ... 
                 ]
         """
-        return map_data['x'].values, map_data['y'].values
+        return map_data.values[:, StdMapData.IDX_X], map_data.values[:, StdMapData.IDX_Y]

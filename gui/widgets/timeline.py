@@ -25,7 +25,7 @@ class Timeline(pyqtgraph.PlotWidget, Switcher):
         self.setRange(yRange=(-1, 1))
         self.getViewBox().setMouseEnabled(y=False)
 
-        self.hitobjects_plot = HitobjectPlot()
+        self.hitobjects_plot = HitobjectPlot([], [], [])
         self.getPlotItem().addItem(self.hitobjects_plot, ignoreBounds=True)
 
         self.response_plots = [ ]
@@ -41,11 +41,11 @@ class Timeline(pyqtgraph.PlotWidget, Switcher):
 
     def set_map(self, beatmap):
         if beatmap == None:
-            self.hitobjects_plot.update_data([], [], 0)
+            self.hitobjects_plot.update_data([], [], [])
             return
 
         map_data = StdMapData.get_map_data(beatmap.hitobjects)
-        self.hitobjects_plot.update_data(StdMapData.start_times(map_data), StdMapData.end_times(map_data), self.y_mid_pos)
+        self.hitobjects_plot.update_data(StdMapData.start_times(map_data), StdMapData.end_times(map_data), StdMapData.get_objects(map_data), y_pos=self.y_mid_pos)
 
 
     def save(self, name=None):

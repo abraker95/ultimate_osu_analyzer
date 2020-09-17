@@ -40,7 +40,6 @@ from gui.widgets.layer_manager import LayerManager
 from gui.widgets.replay_manager import ReplayManager
 from gui.widgets.graph_manager import GraphManager
 from gui.widgets.data_2d_graph import Data2DGraph
-from gui.widgets.data_2d_temporal_graph import Data2DTemporalGraph
 
 from gui.widgets.std_settings import StdSettingsGui
 from gui.widgets.mania_settings import ManiaSettingsGui
@@ -147,15 +146,10 @@ class MainWindow(QMainWindow):
         self.map_manager.map_close_event.connect(self.close_map)
 
         # Allows to forward signals from any temporal graph without having means to get the instance
-        Data2DTemporalGraph.__init__.connect(self.temporal_graph_creation_event)
-        Data2DTemporalGraph.__del__.connect(self.temporal_graph_deletion_event)
+        Data2DGraph.__init__.connect(self.temporal_graph_creation_event)
+        Data2DGraph.__del__.connect(self.temporal_graph_deletion_event)
 
         self.layer_manager_switch_gui.switch.connect(self.set_scene, inst=self.layer_manager_switch_gui)
-
-        CmdOsu.create_score_offset_graph.connect(self.create_score_offset_graph)
-        CmdOsu.create_cursor_velocity_graph.connect(self.create_cursor_velocity_graph)
-        CmdOsu.create_cursor_acceleration_graph.connect(self.create_cursor_acceleration_graph)
-        CmdOsu.create_cursor_jerk_graph.connect(self.create_cursor_jerk_graph)
 
 
     def update_gui(self):
@@ -397,10 +391,7 @@ class MainWindow(QMainWindow):
 
 
     def add_graph_2d_data(self, name, data_2d, temporal=False, plot_type=Data2DGraph.SCATTER_PLOT):
-        if not temporal:
-            self.graph_manager_switch_gui.get().add_graph(Data2DGraph(name, data_2d, plot_type))
-        else:
-            self.graph_manager_switch_gui.get().add_graph(Data2DTemporalGraph(name, data_2d, plot_type))
+        self.graph_manager_switch_gui.get().add_graph(Data2DGraph(name, data_2d, plot_type, temporal=temporal))
 
 
     def remove_layer(self, name):
@@ -489,59 +480,6 @@ class MainWindow(QMainWindow):
         else:
             # TODO: remove graph
             pass
-
-
-    def create_score_offset_graph(self, replay_data):
-        self.status_bar.showMessage('Creating replay hit offsets graph')
-
-        gamemode = self.map_manager.get_current_map().gamemode
-        hitobjects = self.map_manager.get_current_map().hitobjects
-
-        if gamemode == Beatmap.GAMEMODE_OSU:
-            aimpoint_data = StdMapData.get_aimpoint_data(hitobjects)
-            score_data = StdScoreData.get_score_data(replay_data, aimpoint_data)
-            times, offsets = score_data[:,StdScoreDataEnums.TIME.value], score_data[:,StdScoreDataEnums.HIT_OFFSET.value]
-        #elif gamemode == Beatmap.GAMEMODE_TAIKO: 
-        #    score_data = StdScoreData.get_score_data(replay_data, aimpoint_data)
-        #elif gamemode == Beatmap.GAMEMODE_CATCH: 
-        #    score_data = StdScoreData.get_score_data(replay_data, aimpoint_data)
-        elif gamemode == Beatmap.GAMEMODE_MANIA: 
-            map_data = ManiaMapData.get_hitobject_data(hitobjects)
-            score_data = np.vstack(ManiaScoreData.get_score_data(replay_data, map_data))
-            score_data = score_data[np.argsort(score_data[:,0])]
-            times, offsets = score_data[:,ManiaScoreDataEnums.TIME.value], score_data[:,ManiaScoreDataEnums.HIT_OFFSET.value]
-        else:
-            RuntimeError('Unsupported gamemode')
-        
-        self.add_graph_2d_data('replay hit offsets', (times, offsets), temporal=True, plot_type=Data2DGraph.SCATTER_PLOT)
-        self.status_bar.showMessage('Created replay hit offsets graph. Check graphs tab.')
-
-
-    def create_cursor_velocity_graph(self, replay_data):
-        self.status_bar.showMessage('Creating replay cursor velocity graph')
-
-        velocity_data = StdReplayMetrics.cursor_velocity(replay_data)
-        self.add_graph_2d_data('replay cursor velocity', velocity_data, temporal=True, plot_type=Data2DGraph.LINE_PLOT)
-
-        self.status_bar.showMessage('Created replay cursor velocity graph. Check graphs tab.')
-
-
-    def create_cursor_acceleration_graph(self, replay_data):
-        self.status_bar.showMessage('Creating replay cursor acceleration graph')
-
-        acceleration_data = StdReplayMetrics.cursor_acceleration(replay_data)
-        self.add_graph_2d_data('replay cursor acceleration', acceleration_data, temporal=True, plot_type=Data2DGraph.LINE_PLOT)
-
-        self.status_bar.showMessage('Created replay cursor acceleration graph. Check graphs tab.')
-    
-
-    def create_cursor_jerk_graph(self, replay_data):
-        self.status_bar.showMessage('Creating replay cursor jerk graph')
-
-        jerk_data = StdReplayMetrics.cursor_jerk(replay_data)
-        self.add_graph_2d_data('replay cursor jerk', jerk_data, temporal=True, plot_type=Data2DGraph.LINE_PLOT)
-
-        self.status_bar.showMessage('Created replay cursor jerk graph. Check graphs tab.')
 
 
 

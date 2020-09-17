@@ -1,4 +1,5 @@
 import unittest
+import pandas as pd
 
 from osu.local.beatmap.beatmapIO import BeatmapIO
 from osu.local.replay.replayIO import ReplayIO
@@ -14,7 +15,30 @@ class TestStdScoreData(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         beatmap = BeatmapIO.open_beatmap('unit_tests\\maps\\osu\\test\\score_test.osu')
-        cls.map_data = StdMapData.get_map_data(beatmap.hitobjects)
+        
+        map_data = [ 
+            pd.DataFrame(
+            [
+                [ 100, 0,   0, StdMapData.TYPE_PRESS, StdMapData.TYPE_SLIDER ],
+                [ 350, 100, 0, StdMapData.TYPE_HOLD, StdMapData.TYPE_SLIDER ],
+                [ 600, 200, 0, StdMapData.TYPE_HOLD, StdMapData.TYPE_SLIDER ],
+                [ 750, 300, 0, StdMapData.TYPE_RELEASE, StdMapData.TYPE_SLIDER ],
+            ],
+            columns=['time', 'x', 'y', 'type', 'object']),
+            pd.DataFrame(
+            [ 
+                [ 1000, 500, 500, StdMapData.TYPE_PRESS, StdMapData.TYPE_CIRCLE ],
+                [ 1001, 500, 500, StdMapData.TYPE_RELEASE, StdMapData.TYPE_CIRCLE ],
+            ],
+            columns=['time', 'x', 'y', 'type', 'object']),
+            pd.DataFrame(
+            [ 
+                [ 2000, 300, 300, StdMapData.TYPE_PRESS, StdMapData.TYPE_CIRCLE ],
+                [ 2001, 300, 300, StdMapData.TYPE_RELEASE, StdMapData.TYPE_CIRCLE ],
+            ],
+            columns=['time', 'x', 'y', 'type', 'object']),
+        ]
+        cls.map_data = pd.concat(map_data, axis=0, keys=range(len(map_data)), names=[ 'hitobject', 'aimpoint' ])
 
 
     @classmethod
@@ -22,114 +46,215 @@ class TestStdScoreData(unittest.TestCase):
         pass
 
 
-    def test_get_key_state(self):
-        # Shorthand
-        FREE = StdReplayData.FREE
-        PRESS = StdReplayData.PRESS
-        HOLD = StdReplayData.HOLD
-        RELEASE = StdReplayData.RELEASE
+    def test_adv(self):
+        map_time = 0
 
-        # free -> all free
-        key_state = StdScoreData._StdScoreData__get_key_state(FREE, [ FREE, FREE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, FREE)
+        # Time:        Before start
+        # Hitobject:   Slider
+        # Advancement: No operation
+        adv = StdScoreData._StdScoreData__ADV_NOP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 0)
 
-        # TODO: this is an illegal state (you can't have a press transition into a free, it must go to a release first)
-        #key_state = StdScoreData._StdScoreData__get_key_state(PRESS, [ FREE, FREE, FREE, FREE ], press_block=False, release_block=False)
-        #self.assertEqual(key_state, )
+        # Time:        Before start
+        # Hitobject:   Slider 
+        # Advancement: Aimpoint
+        adv = StdScoreData._StdScoreData__ADV_AIMP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 100)
 
-        # TODO: this is an illegal state (you can't have a hold transition into a free, it must go to a release first)
-        #key_state = StdScoreData._StdScoreData__get_key_state(HOLD, [ FREE, FREE, FREE, FREE ], press_block=False, release_block=False)
-        #self.assertEqual(key_state, )
+        # Time:        Before start
+        # Hitobject:   Slider
+        # Advancement: Note
+        adv = StdScoreData._StdScoreData__ADV_NOTE
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 100)
 
-        # release -> all free
-        key_state = StdScoreData._StdScoreData__get_key_state(RELEASE, [ FREE, FREE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, FREE)
+        map_time = 100
 
-        # free -> one press
-        key_state = StdScoreData._StdScoreData__get_key_state(FREE, [ PRESS, FREE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, PRESS)
+        # Time:        At first aimpoint
+        # Hitobject:   Slider
+        # Advancement: No operation
+        adv = StdScoreData._StdScoreData__ADV_NOP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 100)
 
-        # press -> one press
-        key_state = StdScoreData._StdScoreData__get_key_state(PRESS, [ PRESS, FREE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, PRESS)
+        # Time:        At first aimpoint
+        # Hitobject:   Slider 
+        # Advancement: Aimpoint
+        adv = StdScoreData._StdScoreData__ADV_AIMP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 350)
 
-        # hold -> one press (non blocking)
-        key_state = StdScoreData._StdScoreData__get_key_state(HOLD, [ PRESS, FREE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, PRESS)
+        # Time:        At first aimpoint
+        # Hitobject:   Slider
+        # Advancement: Note
+        adv = StdScoreData._StdScoreData__ADV_NOTE
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 1000)
 
-        # hold -> one press (blocking)
-        key_state = StdScoreData._StdScoreData__get_key_state(HOLD, [ PRESS, FREE, FREE, FREE ], press_block=True, release_block=False)
-        self.assertEqual(key_state, HOLD)
+        map_time = 350
 
-        # TODO: this is an illegal state (you can't have a release transition into a press, it must go to a free first)
-        #key_state = StdScoreData._StdScoreData__get_key_state(RELEASE, [ PRESS, FREE, FREE, FREE ], press_block=False, release_block=False)
-        #self.assertEqual(key_state, )
+        # Time:        At second aimpoint
+        # Hitobject:   Slider
+        # Advancement: No operation
+        adv = StdScoreData._StdScoreData__ADV_NOP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 350)
 
-        # TODO: this is an illegal state (you can't have a free transition into a hold, it must go to a press first)
-        #key_state = StdScoreData._StdScoreData__get_key_state(FREE, [ HOLD, FREE, FREE, FREE ], press_block=False, release_block=False)
-        #self.assertEqual(key_state, )
+        # Time:        At second aimpoint
+        # Hitobject:   Slider 
+        # Advancement: Aimpoint
+        adv = StdScoreData._StdScoreData__ADV_AIMP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 600)
 
-        # press -> one hold
-        key_state = StdScoreData._StdScoreData__get_key_state(PRESS, [ HOLD, FREE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, HOLD)
+        # Time:        At second aimpoint
+        # Hitobject:   Slider
+        # Advancement: Note
+        adv = StdScoreData._StdScoreData__ADV_NOTE
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 1000)
 
-        # hold -> one hold
-        key_state = StdScoreData._StdScoreData__get_key_state(HOLD, [ HOLD, FREE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, HOLD)
+        map_time = 750
 
-        # TODO: this is an illegal state (you can't have a release transition into a hold, it must go to press first)
-        #key_state = StdScoreData._StdScoreData__get_key_state(RELEASE, [ HOLD, FREE, FREE, FREE ], press_block=False, release_block=False)
-        #self.assertEqual(key_state, )
+        # Time:        At slider release
+        # Hitobject:   Slider
+        # Advancement: No operation
+        adv = StdScoreData._StdScoreData__ADV_NOP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 750)
 
-        # press -> one release
-        key_state = StdScoreData._StdScoreData__get_key_state(PRESS, [ RELEASE, FREE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, RELEASE)
+        # Time:        At slider release
+        # Hitobject:   Slider 
+        # Advancement: Aimpoint
+        adv = StdScoreData._StdScoreData__ADV_AIMP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 1000)
 
-        # Test hold -> one release (non blocking)
-        key_state = StdScoreData._StdScoreData__get_key_state(HOLD, [ RELEASE, FREE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, RELEASE)
+        # Time:        At slider release
+        # Hitobject:   Slider
+        # Advancement: Note
+        adv = StdScoreData._StdScoreData__ADV_NOTE
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 1000)
 
-        # hold -> one release (blocking)      
-        key_state = StdScoreData._StdScoreData__get_key_state(HOLD, [ RELEASE, FREE, FREE, FREE ], press_block=False, release_block=True)
-        self.assertEqual(key_state, HOLD)
+        map_time = 1000
 
-        # release -> one release
-        key_state = StdScoreData._StdScoreData__get_key_state(RELEASE, [ RELEASE, FREE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, RELEASE)
+        # Time:        At 2nd hitobject
+        # Hitobject:   Circle
+        # Advancement: No operation
+        adv = StdScoreData._StdScoreData__ADV_NOP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 1000)
 
-        # free -> one press, one release
-        key_state = StdScoreData._StdScoreData__get_key_state(FREE, [ PRESS, RELEASE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, PRESS)
+        # Time:        At 2nd hitobject
+        # Hitobject:   Circle 
+        # Advancement: Aimpoint
+        adv = StdScoreData._StdScoreData__ADV_AIMP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 1001)
 
-        # press -> one press, one release
-        key_state = StdScoreData._StdScoreData__get_key_state(FREE, [ PRESS, RELEASE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, PRESS)
+        # Time:        At 2nd hitobject
+        # Hitobject:   Circle
+        # Advancement: Note
+        adv = StdScoreData._StdScoreData__ADV_NOTE
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 2000)
 
-        # hold -> one press, one release (non blocking)
-        key_state = StdScoreData._StdScoreData__get_key_state(HOLD, [ PRESS, RELEASE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, PRESS)
+        map_time = 2000
 
-        # hold -> one press, one release (press blocking)
-        key_state = StdScoreData._StdScoreData__get_key_state(HOLD, [ PRESS, RELEASE, FREE, FREE ], press_block=True, release_block=False)
-        self.assertEqual(key_state, RELEASE)
+        # Time:        At last hitobject
+        # Hitobject:   Circle
+        # Advancement: No operation
+        adv = StdScoreData._StdScoreData__ADV_NOP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 2000)
 
-        # hold -> one press, one release (release blocking)
-        key_state = StdScoreData._StdScoreData__get_key_state(HOLD, [ PRESS, RELEASE, FREE, FREE ], press_block=False, release_block=True)
-        self.assertEqual(key_state, PRESS)
+        # Time:        At last hitobject
+        # Hitobject:   Circle 
+        # Advancement: Aimpoint
+        adv = StdScoreData._StdScoreData__ADV_AIMP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 2001)
 
-        # hold -> one press, one release (press blocking, release blocking)
-        key_state = StdScoreData._StdScoreData__get_key_state(HOLD, [ PRESS, RELEASE, FREE, FREE ], press_block=True, release_block=True)
-        self.assertEqual(key_state, HOLD)
+        # Time:        At last hitobject
+        # Hitobject:   Circle
+        # Advancement: Note
+        adv = StdScoreData._StdScoreData__ADV_NOTE
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 2002)
 
-        # hold -> one hold, one release (non blocking)        
-        key_state = StdScoreData._StdScoreData__get_key_state(HOLD, [ HOLD, RELEASE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, RELEASE)
+        map_time = 2001
 
-        # hold -> one hold, one release (blocking)
-        key_state = StdScoreData._StdScoreData__get_key_state(HOLD, [ HOLD, RELEASE, FREE, FREE ], press_block=False, release_block=True)
-        self.assertEqual(key_state, HOLD)
+        # Time:        At last scorepoint
+        # Hitobject:   Circle
+        # Advancement: No operation
+        adv = StdScoreData._StdScoreData__ADV_NOP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 2001)
+
+        # Time:        At last hitobject
+        # Hitobject:   Circle 
+        # Advancement: Aimpoint
+        adv = StdScoreData._StdScoreData__ADV_AIMP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 2002)
+
+        # Time:        At last hitobject
+        # Hitobject:   Circle
+        # Advancement: Note
+        adv = StdScoreData._StdScoreData__ADV_NOTE
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 2002)
+
+        map_time = 3000
+
+        # Time:        After last hitobject
+        # Hitobject:   Circle
+        # Advancement: No operation
+        adv = StdScoreData._StdScoreData__ADV_NOP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 3000)
+
+        # Time:        After last hitobject
+        # Hitobject:   Circle 
+        # Advancement: Aimpoint
+        adv = StdScoreData._StdScoreData__ADV_AIMP
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 2002)
+
+        # Time:        After last hitobject
+        # Hitobject:   Circle
+        # Advancement: Note
+        adv = StdScoreData._StdScoreData__ADV_NOTE
+        new_map_time = StdScoreData._StdScoreData__adv(self.map_data, map_time, adv)
+        self.assertEqual(new_map_time, 2002)
 
 
+    def test_process_press(self):
+        pass
+
+
+    def test_process_hold(self):
+        pass
+
+
+    def test_process_release(self):
+        pass
+
+
+    '''
+    def test_get_score_data(self):
+        beatmap = BeatmapIO.open_beatmap('unit_tests/maps/osu/test/score_test_new.osu')
+        map_data = StdMapData.get_map_data(beatmap.hitobjects)
+        #replay = ReplayIO.open_replay('unit_tests/replays/osu/score_test/autoplay.osr')
+        replay = ReplayIO.open_replay('unit_tests/replays/osu/score_test/best_play.osr')
+        replay_data = StdReplayData.get_replay_data(replay.play_data)
+        score_data = StdScoreData.get_score_data(replay_data, map_data)
+    '''
+
+    '''
     def test_get_score_data(self):
         # TODO: This replay has cursor pressing and wander in random parts sometimes making a hit
         replay = ReplayIO.open_replay('unit_tests/replays/osu/abraker - aim_miss [score_test] (2019-06-07) Osu.osr')
@@ -368,3 +493,36 @@ class TestStdScoreData(unittest.TestCase):
 
         odds_all_conditions_within = StdScoreData.odds_all_conditions_within(score_data, 1, 1)
         self.assertEqual(odds_all_conditions_within, 1.0)
+
+
+    def test_playable_scores(self):
+        beatmap = BeatmapIO.open_beatmap('unit_tests\\maps\\osu\\playable\\LeaF - I (Maddy) [Terror].osu')
+        map_data = StdMapData.get_map_data(beatmap.hitobjects)
+        replay = ReplayIO.open_replay('unit_tests/replays/osu/LeaF - I (Maddy) [Terror] replay_0.osr')
+        replay_data = StdReplayData.get_replay_data(replay.play_data)
+        score_data = StdScoreData.get_score_data(replay_data, map_data)
+
+        tap_offset_mean = StdScoreData.tap_offset_mean(score_data)
+        cursor_pos_offset_mean = StdScoreData.cursor_pos_offset_mean(score_data)
+        print('LeaF - I (Maddy) [Terror] replay_0:', tap_offset_mean, cursor_pos_offset_mean)
+
+        beatmap = BeatmapIO.open_beatmap('unit_tests\\maps\\osu\\playable\\Nakamura Meiko - Aka no Ha (Lily Bread) [Extra].osu')
+        map_data = StdMapData.get_map_data(beatmap.hitobjects)
+        replay = ReplayIO.open_replay('unit_tests/replays/osu/so bad - Nakamura Meiko - Aka no Ha [Extra] (2020-03-01) std Osu.osr')
+        replay_data = StdReplayData.get_replay_data(replay.play_data)
+        score_data = StdScoreData.get_score_data(replay_data, map_data)
+
+        tap_offset_mean = StdScoreData.tap_offset_mean(score_data)
+        cursor_pos_offset_mean = StdScoreData.cursor_pos_offset_mean(score_data)
+        print('so bad - Nakamura Meiko - Aka no Ha [Extra] (2020-03-01) std Osu:', tap_offset_mean, cursor_pos_offset_mean)
+
+        beatmap = BeatmapIO.open_beatmap('unit_tests\\maps\\osu\\playable\\Within Temptation - The Unforgiving (Armin) [Marathon].osu')
+        map_data = StdMapData.get_map_data(beatmap.hitobjects)
+        replay = ReplayIO.open_replay('unit_tests/replays/osu/Toy - Within Temptation - The Unforgiving [Marathon] (2018-02-06) Osu.osr')
+        replay_data = StdReplayData.get_replay_data(replay.play_data)
+        score_data = StdScoreData.get_score_data(replay_data, map_data)
+
+        tap_offset_mean = StdScoreData.tap_offset_mean(score_data)
+        cursor_pos_offset_mean = StdScoreData.cursor_pos_offset_mean(score_data)
+        print('Toy - Within Temptation - The Unforgiving [Marathon] (2018-02-06) Osu:', tap_offset_mean, cursor_pos_offset_mean)
+    '''

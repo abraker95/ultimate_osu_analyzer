@@ -38,7 +38,7 @@ class StdReplayHoldLayer(Layer, Temporal):
 
         start_time  = self.time - StdSettings.view_time_back
         end_time    = self.time + StdSettings.view_time_ahead
-        replay_data = self.replay_data[(start_time <= self.replay_data.index) & (self.replay_data.index <= end_time)]
+        replay_data = self.replay_data[(start_time <= self.replay_data['time']) & (self.replay_data['time'] <= end_time)]
 
         for prev_event, curr_event in zip(replay_data.iloc[:-1].iterrows(), replay_data.iloc[1:].iterrows()):
             _, prev_event = prev_event

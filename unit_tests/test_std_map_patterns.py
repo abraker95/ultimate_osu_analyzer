@@ -20,9 +20,13 @@ class TestStdMapPatterns(unittest.TestCase):
         pass
 
 
-    def test_detect_short_sliders(self):
-        short_sliders = StdMapPatterns.detect_short_sliders(self.map_data, cs_px=4)
+    def test_detect_short_sliders_dist(self):
+        short_sliders = StdMapPatterns.detect_short_sliders_dist(self.map_data, cs_px=4)
+
+
+    def test_detect_short_sliders_time(self):
+        short_sliders = StdMapPatterns.detect_short_sliders_time(self.map_data, min_time=100)
 
 
     def test_reinterpret_short_sliders(self):
-        map_data = StdMapPatterns.reinterpret_short_sliders(self.map_data, cs_px=4)
+        map_data = StdMapPatterns.reinterpret_short_sliders(self.map_data, min_time=100, cs_px=4)

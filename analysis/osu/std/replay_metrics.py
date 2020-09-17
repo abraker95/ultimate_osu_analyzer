@@ -31,11 +31,12 @@ class StdReplayMetrics():
             ::
                 ( times, vel )
         """
-        all_times = replay_data[:,0]
+        replay_data = replay_data.values
+        all_times = replay_data[:, 0]
         if len(all_times) < 2: return [], []
         
-        vel = np.sqrt(np.diff(replay_data[:,1])**2 + np.diff(replay_data[:,2])**2)/np.diff(replay_data[:, 0])
-        return all_times, vel[1:]
+        vels = np.sqrt(np.diff(replay_data[:, 1])**2 + np.diff(replay_data[:, 2])**2)/np.diff(all_times)
+        return all_times[2:], vels[1:]
 
 
     @staticmethod

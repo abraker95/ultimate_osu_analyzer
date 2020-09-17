@@ -23,6 +23,10 @@ from unit_tests.test_std_map_data import TestStdMapData
 from unit_tests.test_std_map_metrics import TestStdMapMetrics
 from unit_tests.test_std_map_patterns import TestStdMapPatterns
 from unit_tests.test_std_replay_data import TestStdReplayData
+from unit_tests.test_std_score_data_free import TestStdScoreDataFree
+from unit_tests.test_std_score_data_press import TestStdScoreDataPress
+from unit_tests.test_std_score_data_release import TestStdScoreDataRelease
+from unit_tests.test_std_score_data_hold import TestStdScoreDataHold
 from unit_tests.test_std_score_data import TestStdScoreData
 from unit_tests.test_std_score_metrics import TestStdScoreMetrics
 

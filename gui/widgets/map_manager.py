@@ -26,6 +26,12 @@ class MapManager(QTabBar):
         return self.tabData(self.currentIndex())
 
 
+    def get_current_map_data(self):
+        # TODO: For there to be a central place gui elements get map data from
+        # because currently it needs to be recalculated every time
+        pass
+
+
     def add_map(self, beatmap, name):
         # Because adding tab switches tabs before tab data is filled in
         self.currentChanged.disconnect(self.map_changed_event)

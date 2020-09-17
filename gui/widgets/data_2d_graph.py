@@ -2,6 +2,7 @@ from pyqtgraph.Qt import QtGui, QtCore
 import numpy as np
 import pyqtgraph
 
+
 from misc.callback import callback
 from gui.objects.graph.scatter_plot import ScatterPlot
 from gui.objects.graph.line_plot import LinePlot
@@ -14,14 +15,16 @@ class Data2DGraph(pyqtgraph.PlotWidget):
     LINE_PLOT    = 1
     BAR_PLOT     = 2
 
+    MIN_TIME     = -5000
+
     @callback
-    def __init__(self, name, data_2d, plot_type=None):
+    def __init__(self, name, data_2d, temporal=True, plot_type=None):
         super().__init__()
 
         pyqtgraph.setConfigOptions(antialias=True)
 
         #self.showAxis('left', show=False)
-        #self.setLimits(xMin=TemporalHitobjectGraph.MIN_TIME)
+        self.setLimits(xMin=Data2DGraph.MIN_TIME)
         self.setRange(xRange=(-100, 10000))
 
         self.getViewBox().setMouseEnabled(y=False)
@@ -30,11 +33,17 @@ class Data2DGraph(pyqtgraph.PlotWidget):
         if   plot_type == Data2DGraph.SCATTER_PLOT: self.plot_item = ScatterPlot()
         elif plot_type == Data2DGraph.LINE_PLOT:    self.plot_item = LinePlot()
         elif plot_type == Data2DGraph.BAR_PLOT:     self.plot_item = BarPlot()
-        else:                                       self.plot_item = ScatterPlot()
+        else:                                               self.plot_item = ScatterPlot()
 
         self.update_data(data_2d)
         self.addItem(self.plot_item)
 
+        if temporal:
+            self.timeline_marker = pyqtgraph.InfiniteLine(angle=90, movable=True)
+            self.timeline_marker.setBounds((Data2DGraph.MIN_TIME + 100, None))
+            self.timeline_marker.sigPositionChanged.connect(self.time_changed_event)
+            self.addItem(self.timeline_marker, ignoreBounds=True)
+        
         self.__init__.emit(self)
 
 
@@ -44,9 +53,11 @@ class Data2DGraph(pyqtgraph.PlotWidget):
 
 
     def update_data(self, data_2d):
-        if data_2d == None: return
-        data_x, data_y = data_2d
+        if data_2d == None: 
+            self.plot_item.update_data(None, None)
+            return
 
+        data_x, data_y = data_2d
         data_2d = self.plot_item.update_data(data_x, data_y)
         if data_2d == None: return
 
@@ -68,3 +79,8 @@ class Data2DGraph(pyqtgraph.PlotWidget):
     
     def get_name(self):
         return self.getPlotItem().titleLabel.text
+
+    
+    @callback
+    def time_changed_event(self, marker):
+        self.time_changed_event.emit(marker.value())

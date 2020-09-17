@@ -19,7 +19,7 @@ class StdMapPatterns():
     """
     
     @staticmethod
-    def detect_short_sliders(map_data, cs_px):
+    def detect_short_sliders_dist(map_data, cs_px):
         """
         Returns a True/False mask indicating whether the hitobject's ends are short enough to not
         require the player to move their mouse to complete.
@@ -42,8 +42,8 @@ class StdMapPatterns():
             ::
                 [ bool, bool, bool ]
         """
-        start_x, start_y = StdMapData.start_positions(map_data)
-        end_x, end_y = StdMapData.end_positions(map_data)
+        presses = StdMapData.get_presses(map_data).values
+        releases = StdMapData.get_releases(map_data).values
 
         # TODO: Aimpoints in between slider ends are being ignored. That can make a long slider
         # marked as a short one. This function was inteaded to be used to determine whether to
@@ -51,26 +51,60 @@ class StdMapPatterns():
         # to be iterated through and determined if each if far enough from the next that they can
         # be skipped.
 
-        dists = lambda x1, x2, y1, y2: np.sqrt((x1 - x2)**2 + (y1 - y2)**2)
-        data  = end_x, start_x, end_y, start_y
-        return dists(*data) < cs_px
+        xs = presses[:, StdMapData.IDX_X]
+        xe = releases[:, StdMapData.IDX_X]
+        ys = presses[:, StdMapData.IDX_Y]
+        ye = releases[:, StdMapData.IDX_Y]
+
+        dists = lambda xs, xe, ys, ye: np.sqrt((xe - xs)**2 + (ye - ys)**2)
+        return dists(xs, xe, ys, ye) < cs_px
 
 
     @staticmethod
-    def reinterpret_short_sliders(map_data, cs_px):
+    def detect_short_sliders_time(map_data, min_time):
+        """
+        Returns a True/False mask indicating whether the slider is brief enough to not
+        require the player to need to be held
+
+        .. note::
+            Use StdMapData.start_times to correlate mask with hitobject timing
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to operate on
+
+        min_time : int
+            Minimum slider time in ms. Sliders lasting shorter than this are considered to be hitcircles
+
+        Returns
+        -------
+        numpy.array
+            Masked boolean data
+            ::
+                [ bool, bool, bool ]
+        """
+        presses = StdMapData.get_presses(map_data).values
+        releases = StdMapData.get_releases(map_data).values
+
+        return ((releases[:, StdMapData.IDX_TIME] - presses[:, StdMapData.IDX_TIME]) < min_time)
+
+
+    @staticmethod
+    def reinterpret_short_sliders(map_data, min_time, cs_px):
         """
         Makes short sliders single notes if they are short enough
 
         .. note::
             Use StdMapData.start_times to correlate mask with hitobject timing
 
-        .. note::
-            Makes a copy of the map data
-
         Parameters
         ----------
         map_data : numpy.array
             Map data to operate on
+
+        min_time : float
+            Min hold time of a slider
 
         cs_px : float
             Circle size of the map, in osu!px
@@ -86,25 +120,16 @@ class StdMapPatterns():
                     ... N aimpoints
                 ]
         """
-        presses = StdMapData.get_presses(map_data)
-        releases = StdMapData.get_releases(map_data)
-        is_short_sliders = StdMapPatterns.detect_short_sliders(map_data, cs_px)
+        is_short_sliders_time = StdMapPatterns.detect_short_sliders_time(map_data, min_time)
+        is_short_sliders_dist = StdMapPatterns.detect_short_sliders_dist(map_data, cs_px)
 
-        for data in zip(start_time_idxs, end_time_idxs, is_short_sliders):
-            start_time_idx, end_time_idx, is_short_slider = data
-            hitobject_data = map_data[start_time_idx : end_time_idx + 1]
+        map_data = map_data.copy()
 
-            if is_short_slider:
-                press   = hitobject_data[0].copy()
-                release = hitobject_data[0].copy()
-                release[StdMapData.TYPE] = StdMapData.TYPE_RELEASE
-                
-                new_map_data.append(press)
-                new_map_data.append(release)
-                continue
-            
-            for aimpoint in hitobject_data:
-                new_map_data.append(aimpoint.copy())
+        short_sliders_idxs = np.arange(len(is_short_sliders_time))[is_short_sliders_time | is_short_sliders_dist]
+        for short_sliders_idx in short_sliders_idxs:
+            map_data.loc[short_sliders_idx].drop(map_data.loc[short_sliders_idx].index[1:], inplace=True)
 
-        return np.asarray(new_map_data)
+        # TODO: Get this working
 
+        return map_data
+    
