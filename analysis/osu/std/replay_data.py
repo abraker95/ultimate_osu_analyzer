@@ -187,9 +187,19 @@ class StdReplayData():
             if key_state != new_key_state:
                 if key_state == StdReplayData.HOLD and new_key_state == StdReplayData.PRESS:
                     new_data[len(new_data)] = np.asarray([ replay_time - 1, replay_xpos, replay_ypos, StdReplayData.RELEASE ])
-                
+
+            # It's possible to trigger two PRESSES/RELEASES in a row if left/right keys happen to press/release one frame after another
+            if key_state == StdReplayData.PRESS and new_key_state == StdReplayData.PRESS:
+                # If we get two presses in a row, then it's effectively a HOLD
+                key_state = StdReplayData.HOLD
+                new_key_state = StdReplayData.HOLD
+            elif key_state == StdReplayData.RELEASE and new_key_state == StdReplayData.RELEASE:
+                # If we get two releases in a row, then it's effectively a FREE
+                key_state = StdReplayData.FREE
+                new_key_state = StdReplayData.FREE
+            else:
                 key_state = new_key_state
-        
+
             new_data[len(new_data)] = np.asarray([ replay_time, replay_xpos, replay_ypos, new_key_state ])
 
         # Convert recorded timings and states into a pandas data
