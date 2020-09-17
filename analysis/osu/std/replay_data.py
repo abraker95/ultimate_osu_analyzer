@@ -118,11 +118,11 @@ class StdReplayData():
             release_reg = True
             if release_block:  # Make sure player is not holding a key already
                 release_reg = all(key_states != StdReplayData.HOLD)
-            release_reg &= (master_key_state != StdReplayData.FREE)
+            release_reg &= (master_key_state != StdReplayData.FREE) and (master_key_state != StdReplayData.RELEASE)
             if release_reg:
                 return StdReplayData.RELEASE
 
-        if any(key_states == StdReplayData.HOLD) or (master_key_state == StdReplayData.HOLD):
+        if (any(key_states == StdReplayData.HOLD) and (master_key_state != StdReplayData.RELEASE)) or (master_key_state == StdReplayData.HOLD):
             return StdReplayData.HOLD
 
         return StdReplayData.FREE
@@ -193,10 +193,6 @@ class StdReplayData():
                 # If we get two presses in a row, then it's effectively a HOLD
                 key_state = StdReplayData.HOLD
                 new_key_state = StdReplayData.HOLD
-            elif key_state == StdReplayData.RELEASE and new_key_state == StdReplayData.RELEASE:
-                # If we get two releases in a row, then it's effectively a FREE
-                key_state = StdReplayData.FREE
-                new_key_state = StdReplayData.FREE
             else:
                 key_state = new_key_state
 
