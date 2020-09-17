@@ -235,6 +235,36 @@ class StdMapData():
 
 
     @staticmethod
+    def get_visible_at(map_data, time, ar_ms):
+        """
+        Gets number of hitobjects visible at time `time` given `ar_ms`
+
+        Parameters
+        ----------
+        map_data : numpy.array
+            Map data to operate on
+        
+        time : int
+            Time to determine which hitobject are visible at
+        
+        ar_ms : int
+            AR of map in milliseconds
+
+        Returns
+        -------
+        int
+        number of hitobjects in the map
+        """
+        releases = StdMapData.get_releases(map_data).values
+        presses  = StdMapData.get_presses(map_data).values
+
+        visible = ((time - ar_ms) < releases[:, StdMapData.IDX_TIME]) & (presses[:, StdMapData.IDX_TIME] <= time)
+        visible = np.arange(len(presses))[visible]
+        
+        return map_data.loc[visible]
+
+
+    @staticmethod
     def get_scorepoint_before(map_data, time):
         """
         Get the closest scorepoint right before the desired point in time

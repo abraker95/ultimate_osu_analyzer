@@ -137,6 +137,11 @@ class TestStdMapData(unittest.TestCase):
     '''
 
 
+    def test_get_visible_at(self):
+        for time in range(-1000, 10000, 100):
+            visible = StdMapData.get_visible_at(self.map_data, time, 400)
+
+
     def test_get_note_before(self):
         # Time: Before start
         hitobject_data = StdMapData.get_note_before(self.map_data, 0)
