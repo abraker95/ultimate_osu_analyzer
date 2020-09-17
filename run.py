@@ -30,8 +30,6 @@ from gui.objects.layer.layers.mania_data_2d_layer import ManiaData2DLayer
 from gui.objects.layer.layers.std.hitobject_outline_layer import HitobjectOutlineLayer
 from gui.objects.layer.layers.std.hitobject_aimpoint_layer import HitobjectAimpointLayer
 
-from gui.objects.layer.layers.std.replay_cursor_layer import StdReplayCursorLayer
-from gui.objects.layer.layers.std.replay_hold_layer import StdReplayHoldLayer
 from gui.objects.layer.layers.std.score_debug_layer import StdScoreDebugLayer
 
 from gui.objects.layer.layers.mania.score_debug_layer import ManiaScoreDebugLayer
@@ -318,9 +316,10 @@ class MainWindow(QMainWindow):
         group = 'replay.' + str(replay.player_name)
 
         if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
-            self.layer_manager_switch_gui.get().add_layer(group, StdReplayCursorLayer(replay, self.timeline.time_changed_event))
-            self.layer_manager_switch_gui.get().add_layer(group, StdReplayHoldLayer(replay, self.timeline.time_changed_event))
-            #self.layer_manager_switch_gui.get().add_layer(group, StdScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
+            replay_data = StdReplayData.get_replay_data(replay.play_data)
+            
+            self.add_std_layer(group, 'Replay cursor - ' + str(replay.player_name), replay_data, StdLayers.StdReplayCursorLayer)
+            self.add_std_layer(group, 'Replay keys - ' + str(replay.player_name), replay_data, StdLayers.StdReplayHoldLayer)
 
         if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
             #self.layer_manager_switch_gui.get().add_layer(group, ManiaScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
