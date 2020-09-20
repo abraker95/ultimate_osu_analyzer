@@ -10,8 +10,28 @@ from gui.objects.graph.score_plot import ScorePlot
 
 
 
-class TimingGraph():
+class stdTimingGraph():
+    """
+    Displays score timing for a play. 
+    Graph displays: 
+        - Hitobjects
 
+        - Key timings
+            k1/m1 = Red, Top
+            k2/m2 = Red, Bottom
+            Merged = Blue, Bottom
+
+        - Score timing and type
+            Green = Press scoring
+            Blue = Release scoring
+            Purple = Hold scoring
+            Red = Miss scoring
+
+        - Distance of timing from hitobject center
+
+    beatmap_path - Path to *.osu file
+    replay_path - Path to *.osr file
+    """
     def run(self, beatmap_path, replay_path):
         self.graphs = {}
 
