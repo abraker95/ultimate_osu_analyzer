@@ -3,7 +3,7 @@ import pyqtgraph
 from pyqtgraph.Qt import QtCore, QtGui
 
 
-class HitOffsets():
+class StdHitOffsets():
 
     def run(self, replay=None):
         replay_idx = 0 if replay==None else replay
