@@ -29,7 +29,7 @@ class TestManiaScoreData(unittest.TestCase):
 
         # osu!topus should have played all notes perfectly (0 offset)
         score_data = ManiaScoreData.get_score_data(map_data, replay_data)
-        self.assertTrue(all(score_data[ManiaScoreData.DATA_OFFSET] == 0))
+        self.assertTrue(all((score_data['replay_t'] - score_data['map_t']).values == 0))
 
 
     def test_get_custom_score_data(self):
@@ -54,7 +54,7 @@ class TestManiaScoreData(unittest.TestCase):
         # TODO: implementation
 
 
-    def test_tap_offset_mean(self):
+    def test_tap_offset_mean_0(self):
         beatmap = BeatmapIO.open_beatmap('unit_tests\\maps\\mania\\playable\\DJ Genericname - Dear You (Taiwan-NAK) [S.Star\'s 4K HD+].osu')
         replay = ReplayIO.open_replay('unit_tests\\replays\\mania\\osu!topus! - DJ Genericname - Dear You [S.Star\'s 4K HD+] (2019-05-29) OsuMania.osr')
 
@@ -65,6 +65,38 @@ class TestManiaScoreData(unittest.TestCase):
         score_data = ManiaScoreData.get_score_data(map_data, replay_data)
         tap_offset_mean = ManiaScoreData.tap_offset_mean(score_data)
         self.assertEqual(tap_offset_mean, 0)
+
+
+    def test_tap_offset_mean_100(self):
+        beatmap = BeatmapIO.open_beatmap('unit_tests\\maps\\mania\\playable\\DJ Genericname - Dear You (Taiwan-NAK) [S.Star\'s 4K HD+].osu')
+        replay = ReplayIO.open_replay('unit_tests\\replays\\mania\\osu!topus! - DJ Genericname - Dear You [S.Star\'s 4K HD+] (2019-05-29) OsuMania.osr')
+
+        for event in replay.play_data:
+            event.t += 100
+
+        map_data = ManiaActionData.get_map_data(beatmap.hitobjects)
+        replay_data = ManiaActionData.get_replay_data(replay.play_data, beatmap.difficulty.cs)
+
+        # osu!topus should have played all notes perfectly (0 mean + 100 ms offset)
+        score_data = ManiaScoreData.get_score_data(map_data, replay_data)
+        tap_offset_mean = ManiaScoreData.tap_offset_mean(score_data)
+        self.assertEqual(tap_offset_mean, 100)
+
+
+    def test_tap_offset_mean_200(self):
+        beatmap = BeatmapIO.open_beatmap('unit_tests\\maps\\mania\\playable\\DJ Genericname - Dear You (Taiwan-NAK) [S.Star\'s 4K HD+].osu')
+        replay = ReplayIO.open_replay('unit_tests\\replays\\mania\\osu!topus! - DJ Genericname - Dear You [S.Star\'s 4K HD+] (2019-05-29) OsuMania.osr')
+
+        for event in replay.play_data:
+            event.t += 200
+
+        map_data = ManiaActionData.get_map_data(beatmap.hitobjects)
+        replay_data = ManiaActionData.get_replay_data(replay.play_data, beatmap.difficulty.cs)
+
+        # osu!topus should have played all notes perfectly (0 mean + 200 ms offset)
+        score_data = ManiaScoreData.get_score_data(map_data, replay_data)
+        tap_offset_mean = ManiaScoreData.tap_offset_mean(score_data)
+        self.assertEqual(tap_offset_mean, 200)
 
 
     def test_tap_offset_var(self):
