@@ -470,6 +470,7 @@ class StdScoreData():
             # Got all info at current index, now advance it
             replay_idx += 1
 
+            # Go through map
             while True:
                 # Get time of earliest visble hitobject still remaining, but if make sure things that
                 # have yet to be processed have been processed (in the case of replay skipping)

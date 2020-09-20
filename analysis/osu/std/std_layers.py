@@ -22,7 +22,6 @@ class StdLayers():
     Class used for time dependent visualization in central display.
     Sample use case: ``add_std_layer('layer group', 'layer name', replay_data, StdLayers.StdReplayCursorLayer)``
     """
-
     @staticmethod
     def StdReplayCursorLayer(painter, ratio_x, ratio_y, time, replay_data):
         """

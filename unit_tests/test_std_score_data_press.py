@@ -1,11 +1,6 @@
 import unittest
 import pandas as pd
 
-from osu.local.beatmap.beatmapIO import BeatmapIO
-from osu.local.replay.replayIO import ReplayIO
-
-from analysis.osu.std.map_data import StdMapData
-from analysis.osu.std.replay_data import StdReplayData
 from analysis.osu.std.score_data import StdScoreData
 
 

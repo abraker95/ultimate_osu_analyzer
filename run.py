@@ -312,7 +312,6 @@ class MainWindow(QMainWindow):
         # Add replay to a list of replays
         self.replay_manager_switch_gui.get().add_replay(replay)
 
-        # TODO: Adding layers will be one of things analysis manager does
         group = 'replay.' + str(replay.player_name)
 
         if beatmap.gamemode == Beatmap.GAMEMODE_OSU:
@@ -322,10 +321,10 @@ class MainWindow(QMainWindow):
             self.add_std_layer(group, 'Replay keys - ' + str(replay.player_name), replay_data, StdLayers.StdReplayHoldLayer)
 
         if beatmap.gamemode == Beatmap.GAMEMODE_MANIA:
-            #self.layer_manager_switch_gui.get().add_layer(group, ManiaScoreDebugLayer((beatmap, replay), self.timeline.time_changed_event))
-
             replay_data = ManiaActionData.get_replay_data(replay.play_data, beatmap.difficulty.cs)
+
             self.add_mania_layer('Replays', f'[ {replay.timestamp} ] {replay.player_name}', replay_data, ManiaLayers.ManiaActionFillLayer)
+            #self.add_mania_layer('Replays', f'[ {replay.timestamp} ] {replay.player_name}', replay_data, ManiaLayers.ManiaScoreDebugLayer)
 
         self.status_bar.showMessage('Replay applied. Check replay tab.')
 
