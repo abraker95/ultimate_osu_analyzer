@@ -17,6 +17,7 @@ from unit_tests.test_mania_layers import TestManiaLayers
 # Analysis tests
 from unit_tests.test_mania_action_data import TestManiaActionData
 from unit_tests.test_mania_metric_data import TestManiaMetricData
+from unit_tests.test_mania_score_data_press import TestManiaScoreDataPress
 from unit_tests.test_mania_score_data import TestManiaScoreData
 
 from unit_tests.test_std_map_data import TestStdMapData
