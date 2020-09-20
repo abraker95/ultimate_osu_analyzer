@@ -117,7 +117,7 @@ class TestStdReplayData(unittest.TestCase):
 
         # release -> one release
         key_state = StdReplayData._StdReplayData__get_key_state(RELEASE, [ RELEASE, FREE, FREE, FREE ], press_block=False, release_block=False)
-        self.assertEqual(key_state, RELEASE)
+        self.assertEqual(key_state, FREE)
 
         # free -> one press, one release
         key_state = StdReplayData._StdReplayData__get_key_state(FREE, [ PRESS, RELEASE, FREE, FREE ], press_block=False, release_block=False)
