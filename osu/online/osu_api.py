@@ -43,10 +43,12 @@ class OsuApi():
     
     @staticmethod
     @rate_limited(rate_limit=0.1)
-    def fetch_beatmap_info(beatmap_id):
+    def fetch_beatmap_info(beatmap_id=None, map_md5=None):
         param = []
         param.append('k=' + str(api_key))
-        param.append('b=' + str(beatmap_id))
+
+        if beatmap_id != None: param.append('b=' + str(beatmap_id))
+        if map_md5 != None:    param.append('h=' + str(map_md5))
 
         url = 'https://osu.ppy.sh/api/get_beatmaps?'
         url += '&'.join(param)
