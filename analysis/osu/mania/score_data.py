@@ -29,14 +29,20 @@ class ManiaScoreData():
     TYPE_MISS  = 2  # A miss has a hitobject associated with it, but not offset
     TYPE_EMPTY = 3  # An empty has neither hitobject nor offset associated with it
 
+    IDX_REPLAY_T = 0
+    IDX_MAP_T    = 1
+    IDX_TYPE     = 2
+    IDX_MAP_IDX  = 3
+
+    # TODO: deprecate
     DATA_OFFSET  = 0 
     DATA_TYPE    = 1
     DATA_MAP_IDX = 2
 
-    pos_hit_range       = 300  # ms point of the late hit window
-    neg_hit_range       = 300  # ms point of the early hit window
-    pos_hit_miss_range  = 500  # ms point of the late miss window
-    neg_hit_miss_range  = 500  # ms point of the early miss window
+    pos_hit_range       = 100  # ms point of the late hit window
+    neg_hit_range       = 100  # ms point of the early hit window
+    pos_hit_miss_range  = 200  # ms point of the late miss window
+    neg_hit_miss_range  = 200  # ms point of the early miss window
 
     pos_rel_range       = 300  # ms point of the late release window
     neg_rel_range       = 300  # ms point of the early release window
@@ -207,21 +213,21 @@ class ManiaScoreData():
             ... N cols
         ]
         """
-
         score_data = []
 
         # Go through each column
         for map_col_idx, replay_col_idx in zip(map_data, replay_data):
-            map_col = map_data[map_col_idx][map_data[map_col_idx] != ManiaActionData.FREE].values
-            map_times = map_data.index[map_data[map_col_idx] != ManiaActionData.FREE].values
+            free_filter = map_data[map_col_idx] != ManiaActionData.FREE
 
+            map_col    = map_data[map_col_idx][free_filter].values
+            map_times  = map_data.index[free_filter].values
             replay_col = replay_data[replay_col_idx]
 
             column_data = {}
             replay_idx = 0
 
-            map_idx = 0
-            map_time = map_data.index[map_idx]
+            map_idx   = 0
+            map_time  = map_times[map_idx]
             note_type = map_col[map_idx]
 
             # Number of things to loop through
