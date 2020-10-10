@@ -12,6 +12,7 @@ from osu.local.beatmap.beatmapIO import BeatmapIO
 from osu.local.beatmap.beatmap import Beatmap
 from osu.local.hitobject.std.std import Std, StdSettings
 from osu.local.replay.replayIO import ReplayIO
+from osu.local.monitor import Monitor
 
 from osu.online.osu_api import OsuApi
 from osu.online.osu_online import OsuOnline
@@ -165,6 +166,7 @@ class MainWindow(QMainWindow):
 
         self.ipython_console.push_vars({ 'BeatmapIO' : BeatmapIO })
         self.ipython_console.push_vars({ 'ReplayIO' : ReplayIO })
+        self.ipython_console.push_vars({ 'Monitor' : Monitor })
 
         self.ipython_console.push_vars({ 'timeline' : self.timeline })
         self.ipython_console.push_vars({ 'get_beatmap' : self.map_manager.get_current_map })
