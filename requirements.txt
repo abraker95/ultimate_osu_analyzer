@@ -3,7 +3,7 @@ pandas
 scipy
 matplotlib
 pyqtgraph==0.11.0rc0
-osrparse
+osrparse=3.0.0
 pyqt5
 qtconsole
 requests
