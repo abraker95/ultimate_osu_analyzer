@@ -16,7 +16,7 @@ After downloading, extract the "ultimate_osu_analyzer-master" folder to your des
 
 ![](https://i.imgur.com/QF3DYuC.png)
 
-If you have multiple Python versions installed, commands may differ slightly from min. But generally it will be either or similar variant of `pip`, `pip3`, or `pip37` and `python`, `python3`, or `python37`. If you still have issues running pip with multiple python versions installed, you can also do `python3 -m pip` as a replacement for `pip`.
+If you have multiple Python versions installed, commands may differ slightly from min. But generally it will be either or similar variant of `pip`, `pip3`, or `pip37` and `python`, `python3`, or `python37`. If you still have issues running pip with multiple python versions installed, you can also do `python3 -m pip` as a replacement for `pip`. If that still doesn't work try `py -m pip`.
 
 First make sure you have all the needed libraries by running the command `pip install -r requirements.txt`. This will download a bunch of libraries needed to run the app.
 
