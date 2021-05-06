@@ -53,7 +53,7 @@ class Data2DGraph(pyqtgraph.PlotWidget):
 
 
     def update_data(self, data_2d):
-        if data_2d == None: 
+        if type(data_2d) == type(None):
             self.plot_item.update_data(None, None)
             return
 
