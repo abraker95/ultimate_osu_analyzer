@@ -11,8 +11,11 @@ from osu.local.replay.replayIO import ReplayIO
 from osu.local.beatmap.beatmapIO import BeatmapIO
 
 from gui.objects.layer.layers.std.hitobject_outline_layer import HitobjectOutlineLayer
-from gui.objects.layer.layers.std.replay_cursor_layer import StdReplayCursorLayer
 from gui.objects.layer.layers.std.hitobject_aimpoint_layer import HitobjectAimpointLayer
+from gui.objects.layer.layers.std_data_2d_layer import StdData2DLayer
+
+from analysis.osu.std.replay_data import StdReplayData
+from analysis.osu.std.std_layers import StdLayers
 
 from generic.switcher import Switcher
 from gui.objects.display import Display
@@ -49,9 +52,11 @@ class TestStdReplayVisualization(unittest.TestCase):
         beatmap = BeatmapIO.open_beatmap('unit_tests\\maps\\osu\\playable\\Within Temptation - The Unforgiving (Armin) [Marathon].osu')
         replay  = ReplayIO.open_replay('unit_tests\\replays\\osu\\Toy - Within Temptation - The Unforgiving [Marathon] (2018-02-06) Osu.osr')
 
+        replay_data = StdReplayData.get_replay_data(replay.play_data)
+
         layer_manager = LayerManager()
         layer_manager.add_layer('Hitobject outline', HitobjectOutlineLayer(beatmap, time_browse))
-        layer_manager.add_layer('Replay cursor', StdReplayCursorLayer(replay, time_browse))
+        layer_manager.add_layer('Replays', StdData2DLayer('Replay cursor', replay_data, StdLayers.StdReplayCursorLayer, time_browse))
 
         self.display.setScene(layer_manager)
         time_browse()

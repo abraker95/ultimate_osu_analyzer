@@ -7,7 +7,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-from gui.widgets.data_2d_temporal_graph import Data2DTemporalGraph
+from gui.widgets.data_2d_graph import Data2DGraph
 from gui.objects.graph.line_plot import LinePlot
 
 
@@ -23,7 +23,7 @@ class TestGraph(unittest.TestCase):
 
 
     def test_scatter_plot(self):
-        temporal_graph = Data2DTemporalGraph('Test', None, plot_type=Data2DTemporalGraph.SCATTER_PLOT)
+        temporal_graph = Data2DGraph('Test', None, temporal=True, plot_type=Data2DGraph.SCATTER_PLOT)
         temporal_graph.show()
 
         for t in range(0, 30*10, 1):
@@ -37,7 +37,7 @@ class TestGraph(unittest.TestCase):
 
 
     def test_line_plot(self):
-        temporal_graph = Data2DTemporalGraph('Test', None, plot_type=Data2DTemporalGraph.LINE_PLOT)
+        temporal_graph = Data2DGraph('Test', None, temporal=True, plot_type=Data2DGraph.LINE_PLOT)
         temporal_graph.show()
 
         for t in range(0, 30*10, 1):
@@ -51,7 +51,7 @@ class TestGraph(unittest.TestCase):
 
 
     def test_bar_plot(self):
-        temporal_graph = Data2DTemporalGraph('Test', None, plot_type=Data2DTemporalGraph.BAR_PLOT)
+        temporal_graph = Data2DGraph('Test', None, temporal=True, plot_type=Data2DGraph.BAR_PLOT)
         temporal_graph.show()
 
         for t in range(0, 30*10, 1):

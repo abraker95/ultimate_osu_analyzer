@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 from gui.widgets.graph_manager import GraphManager
-from gui.widgets.data_2d_temporal_graph import Data2DTemporalGraph
+from gui.widgets.data_2d_graph import Data2DGraph
 from gui.objects.graph.line_plot import LinePlot
 
 
@@ -35,7 +35,7 @@ class TestGraphManager(unittest.TestCase):
     General Graph Tests
     """
     def test_add_remove_graph(self):
-        temporal_graph = Data2DTemporalGraph('test', np.asarray([[0], [0]]))
+        temporal_graph = Data2DGraph('test', np.asarray([[0], [0]]), temporal=True)
         self.graph_manager.add_graph(temporal_graph)
         time.sleep(0.1)
         self.app.processEvents()
@@ -53,7 +53,7 @@ class TestGraphManager(unittest.TestCase):
 
     def test_multi_add_remove_graph(self):
         for i in range(10):
-            temporal_graph = Data2DTemporalGraph(f'test {i}', np.asarray([[0], [0]]))
+            temporal_graph = Data2DGraph(f'test {i}', np.asarray([[0], [0]]), temporal=True)
             self.graph_manager.add_graph(temporal_graph)
             time.sleep(0.1)
             self.app.processEvents()
@@ -73,7 +73,7 @@ class TestGraphManager(unittest.TestCase):
 
 
     def test_remove_graph_failure(self):
-        temporal_graph = Data2DTemporalGraph('test', np.asarray([[0], [0]]))
+        temporal_graph = Data2DGraph('test', np.asarray([[0], [0]]), temporal=True)
         self.graph_manager.add_graph(temporal_graph)
         time.sleep(0.1)
         self.app.processEvents()
@@ -95,7 +95,7 @@ class TestGraphManager(unittest.TestCase):
 
     def test_clear_graphs(self):
         for i in range(10):
-            temporal_graph = Data2DTemporalGraph(f'test {i}', np.asarray([[0], [0]]))
+            temporal_graph = Data2DGraph(f'test {i}', np.asarray([[0], [0]]), temporal=True)
             self.graph_manager.add_graph(temporal_graph)
             time.sleep(0.1)
             self.app.processEvents()
@@ -116,14 +116,14 @@ class TestGraphManager(unittest.TestCase):
     """
     def test_multi_time_minupilation(self):
         # Test them both connected
-        temporal_graph_1 = Data2DTemporalGraph('test', np.asarray([[0], [0]]))
+        temporal_graph_1 = Data2DGraph('test', np.asarray([[0], [0]]), temporal=True)
         self.graph_manager.add_graph(temporal_graph_1)
 
-        temporal_graph_2 = Data2DTemporalGraph('test', np.asarray([[0], [0]]))
+        temporal_graph_2 = Data2DGraph('test', np.asarray([[0], [0]]), temporal=True)
         self.graph_manager.add_graph(temporal_graph_2)
 
-        Data2DTemporalGraph.time_changed_event.connect(temporal_graph_2.timeline_marker.setValue)
-        Data2DTemporalGraph.time_changed_event.connect(temporal_graph_1.timeline_marker.setValue)
+        Data2DGraph.time_changed_event.connect(temporal_graph_2.timeline_marker.setValue)
+        Data2DGraph.time_changed_event.connect(temporal_graph_1.timeline_marker.setValue)
 
         for t in range(1, 2000, 10):
             temporal_graph_1.timeline_marker.setValue(t)
@@ -135,8 +135,8 @@ class TestGraphManager(unittest.TestCase):
             self.assertEqual(graph_1_time, graph_2_time, 'Graph time markers do not match')
 
         # Disconnect and move each graphs' marker
-        Data2DTemporalGraph.time_changed_event.disconnect(temporal_graph_2.timeline_marker.setValue)
-        Data2DTemporalGraph.time_changed_event.disconnect(temporal_graph_1.timeline_marker.setValue)
+        Data2DGraph.time_changed_event.disconnect(temporal_graph_2.timeline_marker.setValue)
+        Data2DGraph.time_changed_event.disconnect(temporal_graph_1.timeline_marker.setValue)
 
         for t in range(2001, 4000, 10):
             temporal_graph_1.timeline_marker.setValue(t)
@@ -164,12 +164,12 @@ class TestGraphManager(unittest.TestCase):
         # Create a bunch of graphs and connect their markers
         graphs = {}
         for i in range(5):
-            graph = Data2DTemporalGraph(f'test {i}', np.asarray([[0], [0]]))
+            graph = Data2DGraph(f'test {i}', np.asarray([[0], [0]]), temporal=True)
             self.graph_manager.add_graph(graph)
             graphs[f'test {i}'] = graph
 
         for graph in graphs.values():
-            Data2DTemporalGraph.time_changed_event.connect(graph.timeline_marker.setValue)
+            Data2DGraph.time_changed_event.connect(graph.timeline_marker.setValue)
  
         # Move the marker of each graph, one by one
         for graph in graphs.values():
@@ -189,7 +189,7 @@ class TestGraphManager(unittest.TestCase):
         # Remove a few graphs
         remove_graphs = [ 'test 1', 'test 4' ]
         for name in remove_graphs:
-            Data2DTemporalGraph.time_changed_event.disconnect(graphs[name].timeline_marker.setValue)
+            Data2DGraph.time_changed_event.disconnect(graphs[name].timeline_marker.setValue)
 
             self.graph_manager.remove_graph(name)
             del graphs[name]

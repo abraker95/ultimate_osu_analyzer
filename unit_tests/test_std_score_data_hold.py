@@ -2,7 +2,7 @@ import unittest
 import pandas as pd
 
 from analysis.osu.std.score_data import StdScoreData
-
+from analysis.osu.std.map_data import StdMapData
 
 
 class TestStdScoreDataHold(unittest.TestCase):
