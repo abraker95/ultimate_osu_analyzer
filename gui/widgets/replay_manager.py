@@ -6,6 +6,7 @@ from enum import Enum
 from analysis.osu.std.replay_data import StdReplayData
 #from analysis.osu.taiko.replay_data import TaikoReplayData
 #from analysis.osu.catch.replay_data import CatchReplayData
+from analysis.osu.mania import ManiaReplayData
 
 from osrparse.enums import GameMode
 from cli.cmd_osu import CmdOsu
@@ -169,35 +170,12 @@ class ReplayManager(QWidget):
             copy_score_code_action.setStatusTip('Copies the code needed to access the score to clipboard')
             copy_score_code_action.triggered.connect(lambda _, item=item: self.__score_code_to_clipboard(item))
 
-            # Graph menu items
-            create_score_offset_graph_action = QAction('&Create offset graph')
-            create_score_offset_graph_action.setStatusTip('Add an offset graph to the Graphs tab')
-            create_score_offset_graph_action.triggered.connect(lambda _, item=item: self.__create_score_offset_graph(item))
-
-            create_cursor_velocity_graph_action = QAction('&Create cursor velocity graph')
-            create_cursor_velocity_graph_action.setStatusTip('Add a cursor velocity graph to the Graphs tab')
-            create_cursor_velocity_graph_action.triggered.connect(lambda _, item=item: self.__create_cursor_velocity_graph(item))
-
-            create_cursor_acceleration_graph_action = QAction('&Create cursor acceleration graph')
-            create_cursor_acceleration_graph_action.setStatusTip('Add a cursor acceleration graph to the Graphs tab')
-            create_cursor_acceleration_graph_action.triggered.connect(lambda _, item=item: self.__create_cursor_acceleration_graph(item))
-
-            create_cursor_jerk_graph_action = QAction('&Create cursor jerk graph')
-            create_cursor_jerk_graph_action.setStatusTip('Add a cursor vjerkelocity graph to the Graphs tab')
-            create_cursor_jerk_graph_action.triggered.connect(lambda _, item=item: self.__create_cursor_jerk_graph(item))
-
             # Menu construction
             menu = QMenu(self)
-            menu.addAction(set_visible_action)
-            menu.addAction(locate_replay_action)
+            #menu.addAction(set_visible_action)     # TODO
+            #menu.addAction(locate_replay_action)   # TODO
             menu.addAction(copy_replay_code_action)
             menu.addAction(copy_score_code_action)
-            
-            graph_submenu = menu.addMenu('Graphs')
-            graph_submenu.addAction(create_score_offset_graph_action)
-            graph_submenu.addAction(create_cursor_velocity_graph_action)
-            graph_submenu.addAction(create_cursor_acceleration_graph_action)
-            graph_submenu.addAction(create_cursor_jerk_graph_action)
 
             menu.exec(self.replay_list.mapToGlobal(pos))
         else:
@@ -282,31 +260,3 @@ class ReplayManager(QWidget):
         per_hitobject_data = 'per_hitobject_data = ' + per_hitobject_data
         
         QApplication.clipboard().setText(per_hitobject_data)
-
-        
-    def __create_score_offset_graph(self, item):
-        replay_data = item.get_replay_data()
-        CmdOsu.create_score_offset_graph(replay_data)
-
-
-    def __create_cursor_velocity_graph(self, item):
-        replay_data = item.get_replay_data()
-        CmdOsu.create_cursor_velocity_graph(replay_data)
-
-
-    def __create_cursor_acceleration_graph(self, item):
-        replay_data = item.get_replay_data()
-        CmdOsu.create_cursor_acceleration_graph(replay_data)
-
-
-    def __create_cursor_jerk_graph(self, item):
-        replay_data = item.get_replay_data()
-        CmdOsu.create_cursor_jerk_graph(replay_data)
-
-
-    def __probabilistic_analysis(self, items):
-        # TODO: UI to select 
-
-        #replay_data = item.get_replay_data()
-        #CmdOsu.create_cursor_acceleration_graph(replay_data)
-        pass
