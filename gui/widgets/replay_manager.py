@@ -6,7 +6,7 @@ from enum import Enum
 from analysis.osu.std.replay_data import StdReplayData
 #from analysis.osu.taiko.replay_data import TaikoReplayData
 #from analysis.osu.catch.replay_data import CatchReplayData
-from analysis.osu.mania import ManiaReplayData
+from analysis.osu.mania.action_data import ManiaActionData
 
 from osrparse.enums import GameMode
 from cli.cmd_osu import CmdOsu
@@ -69,7 +69,7 @@ class ReplayManagerItem(QTreeWidgetItem):
             if   self.replay.game_mode == GameMode.Standard:     self.replay_data = StdReplayData.get_replay_data(self.replay.play_data)
             #elif self.replay.game_mode == GameMode.Taiko:        self.replay_data = TaikoReplayData.get_replay_data(self.replay.play_data)
             #elif self.replay.game_mode == GameMode.CatchTheBeat: self.replay_data = CatchReplayData.get_replay_data(self.replay.play_data)
-            elif self.replay.game_mode == GameMode.Osumania:     self.replay_data = ManiaReplayData.get_replay_data(self.replay.play_data, self.replay.mania_keys)
+            elif self.replay.game_mode == GameMode.Osumania:     self.replay_data = ManiaActionData.get_replay_data(self.replay.play_data, self.replay.mania_keys)
             else:
                 RuntimeError('Unsupported gamemode: ' + str(self.replay.game_mode))
 
