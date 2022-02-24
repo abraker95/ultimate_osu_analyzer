@@ -1,4 +1,11 @@
 import sys
+
+if (sys.version_info.major == 3) and (sys.version_info.minor > 8):
+    print('Latest supported is Python 3.8.')
+    print(f'You are using Python {sys.version_info.major}.{sys.version_info.minor}')
+    sys.exit(1)
+
+
 import time
 import numpy as np
 
